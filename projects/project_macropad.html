@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Possum Den</title> <!--Tab Title-->
+<link href="/css/requiredCss.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/mediaQueries.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/projects.css" rel="stylesheet" type="text/css" media="all" >
+<link rel='shortcut icon' type='image/jpg' href ='/assets/favicon.ico'/>    
+</head>
+
+<noscript>
+<pre class="header">
+
+88888888888 888    888 8888888888      8888888b.   .d88888b.   .d8888b.   .d8888b.  888     888 888b     d888      8888888b.  8888888888 888b    888
+    888     888    888 888             888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 888     888 8888b   d8888      888  "Y88b 888        8888b   888
+    888     888    888 888             888    888 888     888 Y88b.      Y88b.      888     888 88888b.d88888      888    888 888        88888b  888
+    888     8888888888 8888888         888   d88P 888     888  "Y888b.    "Y888b.   888     888 888Y88888P888      888    888 8888888    888Y88b 888
+    888     888    888 888             8888888P"  888     888     "Y88b.     "Y88b. 888     888 888 Y888P 888      888    888 888        888 Y88b888
+    888     888    888 888             888        888     888       "888       "888 888     888 888  Y8P  888      888    888 888        888  Y88888
+    888     888    888 888             888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888      888  .d88P 888        888   Y8888
+    888     888    888 8888888888      888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888      8888888P"  8888888888 888    Y888</pre>    
+<nav class="buttons">
+<a href="/index.html">
+<img src="/assets/home.gif"></a>
+<a href="/about.html">
+<img src="/assets/aboutme.gif"></a>
+<a href="/art.html">
+<img src="/assets/art.gif"></a>
+<a href="/Thoughts/MainBlogPage.html">
+<img src="/assets/thoughts.gif"></a>
+<a href="/radio.html">
+<img src="/assets/radio.gif"></a>
+<a href="/projects/projects.html">
+<img src="/assets/projects.gif"></a>
+<a href="/programs.html">
+<img src="/assets/programs.gif"></a>
+<a href="/sites.html">
+<img src="/assets/coolsites.gif"></a>
+<a href="/guestbook.html">
+<img src="/assets/guestbook.gif"></a>
+</nav>
+</noscript>
+<script src="/JS/headerfooter.js"></script>
+    <hr style="border-bottom-style: solid;border-bottom-width: 1px;border-top-style: solid;border-top-width: 3px;" color="#63227a"> 
+
+<!--Start of navigation buttons-->
+
+<table><tbody><tr><style type="text/css"></style></tr></tbody></table><table class="SITEBODY"><tbody> <!--START OF SITEBODY-->
+
+<tr><td>
+    <div class="post"> 
+        <center><h1 class="rainbowtext">DIY Macropad/Streamdeck!</h1></center>
+        <div class="text">
+        <!--<img class="imageleft" src="assets/sona_50.png">-->    
+        <p class="posttext">I've been wanting to get into electronics for a long long while, but only recently have I acquired the workbench and tools to actually begin building stuff! I found the .stl files and code for this macropad on thingiverse right <a href="https://www.thingiverse.com/thing:4186055">here,</a> and I figured it would be a perfect project to help me learn how to solder properly! I didn't have any wire spools, so I just used some of the threaded 22 gauge wire jumpers that came with the Arduino Uno kit I ordered and never opened. It sucked to cut up perfectly good jumpers for a breadboard, but sacrifices HAD to be made!!!</p><!--<div class="imagebox">
+            <div><img class="imagecenter" style="width: 250px; height:auto;" src="assets/projectstuff/groundwires.jpg"><p class="imagetext">ssdf</p></div>
+            <div><img class="imagecenter" style="width: 250px; height:auto;" src="assets/projectstuff/wires.jpg"><p class="imagetext">ssdf</p></div>
+            <div><img class="imagecenter" style="width: 250px; height:auto;" src="assets/projectstuff/switches.jpg"><p class="imagetext">ssdf</p></div>
+            <div><img class="imagecenter" style="width: 250px; height:auto;" src="assets/projectstuff/finished.jpg"><p class="imagetext">ssdf</p></div>
+            </div><br><br><p class="posttext">--><br>1. First, I had to solder the ground wires for the switches together in a matrix, so I could ground them all with one pin on the Arduino Micro! These were my first soldering attempts ever, and I was pretty skeptical everything was gonna connect, since I've heard how bad <a href="https://www.pcbdirectory.com/community/what-is-a-cold-solder-joint">cold soldering</a> can be, and I was pretty sure some of my joints were exactly that. However, I verified continuity with my multimeter--everything worked!<br><br>2.Then, I soldered every individual pin to pins 2-15 on the micro. Soldering directly to the little microcontroller was an absolute challenge, but I found pre-tinning the wires, and using rosin flux to make it flow easy onto the pins made it SO much easier. less is really more in regards to soldering--I used too much, and had to use a solder sucker to suck up all the excess. The guide lays out exactly which pins go to which switches, but I didn't bother. We'll address this later!<br><br>3. After everything looked good, I jammed the front plate into the enclosure and made sure all the wires fit nice and snug! I attatched a usb-C cable to the ardruino, and hot glued it in place to stop the connector from rocking about.<br><br>4. It's time to atone for our laziness in step 2, by going back into the .ino file and changing which pins trigger which function key, making it so it lined up neatly from left to right, going from F-13 to F-24! Then, I uploaded the sketch to the arduino, and BOOM! everything wrorked! Now it's time for the finishing touches!<br><br>5. I printed out the keycaps with all my different filament spools using concentric infill for the bottom layer, giving it the cool checkered type effect! I plan on making an <a href="https://www.autohotkey.com/">autohotkey</a> script to really leverage this to it's full potential, but it's already incredibly usedful for all the different shortcuts in programs like blender, sony vegas, and mixxxx, the software I use to broadcast live to KP Radio!</p>
+    
+        <div class="imagebox">
+        <div class="orangeborder"><img class="imagecenter" src="/assets/projectstuff/groundwires.jpg"><p class="imagetext">1. Groundwire matrix</p></div>
+        <div><img class="imagecenter" src="/assets/projectstuff/wires.jpg"><p class="imagetext">2. Soldering the Micro!</p></div>
+        <div><img class="imagecenter" src="/assets/projectstuff/switches.jpg"><p class="imagetext">3. Front panel switches</p></div>
+        <div><img class="imagecenter" src="/assets/projectstuff/finished.jpg"><p class="imagetext">5. Finished product!!!</p></div>
+        </div>
+        
+        <p class="postdate">11/14/2022</p>
+        
+        </div> <!--end of text div -->
+        </div> <!--end of post div-->
+</td></tr>
+
+<!--REQUIRED ENDING CODE START-->
+
+<!--Marquee-->
+<tr><td>
+    <marquee><script>
+        document.write("This page was last updated on" + " " +document.lastModified);
+        </script></marquee>  
+    
+    </tbody></table><!--END OF SITEBODY-->
+    
+    <!--Bottom of the website, where counter and webring are located-->
+    
+
+        </html>
+        <!--REQUIRED ENDING CODE END-->

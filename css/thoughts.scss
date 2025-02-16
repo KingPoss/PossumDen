@@ -1,0 +1,36 @@
+    .post{
+      display: flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      vertical-align: middle;
+      margin-right: 2%;
+      margin-left: 8px;
+      padding-top: 5px;
+      max-width: 100%;
+      
+    }
+  
+    .headers{
+      margin-left: .5%;
+      margin-top: -2px;
+      margin-bottom: 5px;
+      color:orange;
+      font-weight: bold;
+      text-decoration-line: underline;
+      font-style: italic;
+      
+    }
+  
+    .text{
+      max-width: 100%;
+    }
+  
+  .postdate{
+    float: right;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    color: orange;
+  }

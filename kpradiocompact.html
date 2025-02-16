@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Possum Den</title> <!--Tab Title-->
+<link href="css/kpradiocompact.css" rel="stylesheet" type="text/css" media="all" >
+<link rel='shortcut icon' type='image/jpg' href ='assets/favicon.ico'/>  
+<script src="/JS/jquery-3.6.1.min.js"></script>
+</head>
+<script>
+    setInterval(getMetaData, 1000);
+  
+    function getMetaData() {
+        $.ajax({
+            type: "GET",
+            url: "https://radio.kingposs.com/api/nowplaying/kpradio",
+            dataType: "json",
+            success: function(result, status, xhr) {
+                //console.log('success');
+                $('.display').html(result["now_playing"]["song"]["title"]);
+                $('.display1').html(result["now_playing"]["song"]["artist"]);
+                
+                vari = JSON.stringify(result["live"]["is_live"]);
+
+                if (vari == "true"){
+                    var popouttext = document.querySelector('.popouttext');
+                    popouttext.textContent = "KP LIVE!";                }
+                else{
+
+                var popouttext = document.querySelector('.popouttext');
+                popouttext.textContent = "Auto-DJ";
+
+                }
+            },
+            error: function(xhr, status, error) {
+                //console.log(status);
+                //console.log(error);
+            }
+        });
+    }
+  </script>
+<!-- BEGINS: AUTO-GENERATED MUSES RADIO PLAYER CODE -->
+<td><tr>
+<center>
+    <section class="now-playing"><div class="np"><div class="popouttext">Unknown</div></div></section>
+    <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;"><span class="popouttextwidget">[x]</span></a>
+
+<div class="radio">
+<div class="makeunclickable">
+<script type="text/javascript" src="/JS/mrpbeautified.js"></script>
+<script type="text/javascript">
+MRP.insert({
+'url':'https://radio.kingposs.com:8000/radio.mp3',
+'codec':'mp3',
+'volume':40,
+'autoplay':false,
+'forceHTML5':true,
+'jsevents':true,
+'buffering':0,
+'title':"KPradio.net",
+'wmode':'transparent',
+'skin':'/radioThemes/compact/compact.xml',
+'width':191,
+'height':46,
+'tracking':false
+
+});
+</script>
+</div>
+
+    <div class="np">
+        <section class="now-playing">
+            
+            <div class="display">Now Playing</div>
+            <div class="display1">Unknown</div>
+
+        </section>
+        <noscript>Javascript is required to view the "now playing" data.</noscript>
+      </div>
+</div>
+</center>
+
+<!-- ENDS: AUTO-GENERATED MUSES RADIO PLAYER CODE -->
+    </html>
+    <!--REQUIRED ENDING CODE END-->

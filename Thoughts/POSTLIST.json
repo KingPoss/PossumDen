@@ -1,0 +1,45 @@
+[
+{
+  "PostTitle": "Hello World",  
+  "PostPath": "/examplePersonal.html",
+  "PostDate": "03-14-2024",
+  "PostTags": ["Personal","Vent"]
+},
+{
+  "PostTitle": "The New Hotness",  
+  "PostPath": "/examplePolitics.html",
+  "PostDate": "06-03-2024",
+  "PostTags": ["Personal"]
+},
+{
+  "PostTitle": "Getting Back to it",  
+  "PostPath": "/backtoit.html",
+  "PostDate": "12-14-2024",
+  "PostTags": ["Personal"]
+},
+{
+  "PostTitle": "Night Crawler",  
+  "PostPath": "/nightcrawler.html",
+  "PostDate": "12-14-2024",
+  "PostTags": ["Poem"]
+},
+{
+  "PostTitle": "A Collection of Haikus",  
+  "PostPath": "/haikus.html",
+  "PostDate": "12-14-2024",
+  "PostTags": ["Poem"]
+},
+{
+  "PostTitle": "Coffee Beans and Cannabis",  
+  "PostPath": "/coffeebeans.html",
+  "PostDate": "12-14-2024",
+  "PostTags": ["Poem"]
+},
+{
+  "PostTitle": "To Be an Aphid",  
+  "PostPath": "/aphid.html",
+  "PostDate": "12-14-2024",
+  "PostTags": ["Poem"]
+}
+
+]

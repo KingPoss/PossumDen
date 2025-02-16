@@ -1,0 +1,24 @@
+TODO:
+
+XXX1. Update index site update page with new layout from radio.html broadcast recording code, will have to refactor some as index should have title on one side, date on other. might change? xxxxx
+xxx2. Split up the featured artist page into multiple lists, like what was done with the sharing widgets. side by side, multiple rows. maybe have them reorder randomly?
+3. Possibly change how assets are organized - i think having more folders could be good
+4. Add 88x31 button back to index page, maybe create a new one
+5. Sub rosa. go somewhere with that maybe
+6. Idea - weekly broadcasts add an ad on the index page by default. it would appear only on certain days of the week. might be bad if not integrated with google calendar. if i dont broadcast, it will still show up. can we fix this?
+7. Update site page with new people 88x31, and cool/useful sites you've found since
+8. ADD REN AND TOXARDS TO KP RADIO ROSTER, ANY OTHERS FORGOTTEN?
+9. XXX!!!!HIGH PRIORITY!!! Move Guestbook to more elegant option. 123guestbook is shutting down end of july. Need to do this.
+10. Possibly update stamps?
+11. Idea - Add variables for things like text color, background repeating texture, even text. webpages could have SEVERAL THEMES???
+12. Possibly update the nav buttons. IDK
+13. XXXUpdate the gallery where not all the script code is in the webpage. hard to update, hard to maintain, hard to share.
+14. Create more blog posts. Test system out. Possibly automate with python?
+15. Reorder how blog post date is. make it usual, month, day, year. much better on the eyes.
+16. XXXsite webmaster updates header pressing into update field
+17. Idea - Halve the size of kingchat, and have something else on the other side? cool little website widget like a pet possum or something? investigate further
+18. Migrate form muses radio player hosted online, to self hosted. https://stackoverflow.com/questions/71197527/turn-flash-radio-player-code-to-html-radio-player-code
+
+main
+ng-app app
+maincontroller as vm
