@@ -1,0 +1,42 @@
+@font-face {
+  font-family: "computerfontregular";
+  src: url("../assets/fonts/computerfont-webfont.woff2") format("woff2"), url("../assets/fonts/computerfont-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "inky_thin_pixelsregular";
+  src: url("../assets/fonts/inky_thin_pixels-webfont.woff2") format("woff2"), url("../assets/fonts/inky_thin_pixels-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "pixel_powerlineregular";
+  src: url("../assets/fonts/pixel_powerline-webfont.woff2") format("woff2"), url("../assets/fonts/pixel_powerline-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "dec_terminal_modernregular";
+  src: url("../assets/fonts/_decterm-webfont.woff2") format("woff2"), url("../assets/fonts/_decterm-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "stv5730aregular";
+  src: url("../assets/fonts/stv5730a-webfont.woff2") format("woff2"), url("../assets/fonts/stv5730a-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "digitaldiscomedium";
+  src: url("../assets/fonts/digitaldisco-webfont.woff2") format("woff2"), url("../assets/fonts/digitaldisco-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "retron2000regular";
+  src: url("../assets/fonts/retron2000-webfont.woff2") format("woff2"), url("../assets/fonts/retron2000-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}/*# sourceMappingURL=fontMapping.css.map */

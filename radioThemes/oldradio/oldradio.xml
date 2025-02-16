@@ -1,0 +1,8 @@
+﻿<ffmp3-skin folder="ffmp3-oldradio">
+  <bg image="mono.png" x="0" y="0" />
+  <play image="play.png" x="21" y="89" clickimage="playclick.png" />
+  <stop image="stop.png" x="69" y="90" clickimage="stopclick.png" />
+  <text x="20" y="41" width="170" height="25" color="#000000" font="Verdana" size="16" />
+  <volume mode="holder" x="18" y="65" width="110" height="17" holderImage="holder.png" />
+  <status imagePlay="statusplay.png" imageStop="statusstop.png" x="12" y="32" />
+</ffmp3-skin>

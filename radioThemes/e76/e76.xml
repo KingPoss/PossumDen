@@ -1,0 +1,7 @@
+<ffmp3-skin folder="ffmp3-e76">
+  <bg image="bg.png" x="0" y="0" ></bg>
+  <play image="play.png" x="18" y="1" />
+  <stop image="pause.png" x="70" y="1" />
+  <text x="0" y="59" width="130" height="15" color="#000000" font="Arial" size="11" align="center" />
+  <volume x="18" y="43" width="94" height="19" barwidth="3" barStep="5" holderImage="holder.png" mode="holder" />
+</ffmp3-skin>
