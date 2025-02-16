@@ -36,7 +36,7 @@
 ehthumbs.db
 Thumbs.db
 
-# Other Files #
+# Other Files & Folders#
 ######################
 *.txt
 *.scss
@@ -45,3 +45,4 @@ Thumbs.db
 *.code-workspace
 mrp.js
 mrpbeautified.js
+xray/
