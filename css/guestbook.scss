@@ -1,0 +1,35 @@
+
+  
+    .container{
+      width:780px;
+      overflow: hidden;
+      justify-content: center;
+      
+    }
+  
+    .ifrm{
+      display: block;
+      overflow: auto;
+    }
+  
+    .top{
+      padding-top: .5%;
+      padding-left: .5%;
+      padding-right: .5%;
+    }
+    
+    .books{
+      padding-left: 3%;
+      padding-right: 3%;
+    }
+  
+  #c_widget{
+    max-width: 90%;
+    
+  }
+  
+  .guestbookwrapper {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    width: 100%; /* Ensure it takes the full width of the table cell */
+}
