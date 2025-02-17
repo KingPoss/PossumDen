@@ -17,7 +17,7 @@ body, html{
     
     #stampsleft{
       position:absolute;
-      display:flex;
+      display:none;
       justify-content: center;
       left:0px;
       width:14%;
@@ -35,7 +35,7 @@ body, html{
     
     #stampsright{
       position:absolute;
-      display:flex;
+      display:none;
       justify-content: center;
       right:0px;
       width:14%;
