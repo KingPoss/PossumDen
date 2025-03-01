@@ -5,7 +5,7 @@ $(document).ready(function() {
 
     setInterval(function() {
         getMetaData($display, $display1, $image);
-    }, 1000);
+    }, 3000);
 });
 
 function getMetaData($display, $display1, $image) {
@@ -16,7 +16,7 @@ function getMetaData($display, $display1, $image) {
         success: function(result) {
             $display.text(result["now_playing"]["song"]["title"]);
             $display1.text(result["now_playing"]["song"]["artist"]);
-
+ 
             let isLive = result["live"]["is_live"];
             $image.attr('src', isLive ? "/assets/kplive.gif" : "/assets/autodj.gif");
         },
