@@ -1,5 +1,5 @@
 // Get references to the elements
-const modal = document.getElementById('modal');
+const modal = document.getElementById('phone_modal');
 const thumbnail = document.getElementById('thumbnail');
 
 // Open the modal when the thumbnail is clicked
