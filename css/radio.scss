@@ -232,6 +232,10 @@
 }
 
 /* Optional: Style the thumbnail to indicate it's clickable */
-#thumbnail {
+.thumbnail {
   cursor: pointer;
+}
+
+.rotaryphone{
+  image-rendering: pixelated;
 }

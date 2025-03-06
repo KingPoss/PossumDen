@@ -1,13 +1,18 @@
-// Get references to the elements
-const modal = document.getElementById('phone_modal');
-const thumbnail = document.getElementById('thumbnail');
+document.addEventListener("DOMContentLoaded", function() {
+    // Select all elements with the 'thumbnail' class
+    const thumbnails = document.querySelectorAll(".thumbnail");
+    const modal = document.getElementById("phone_modal");
 
-// Open the modal when the thumbnail is clicked
-thumbnail.addEventListener('click', () => {
-modal.style.display = 'flex';
-});
+    // Attach a click listener to each thumbnail element
+    thumbnails.forEach(function(thumbnail) {
+      thumbnail.addEventListener("click", function(event) {
+        event.preventDefault();
+        modal.style.display = "flex"; // Open the modal using flex to center its content
+      });
+    });
 
-// Close the modal when clicking anywhere on it
-modal.addEventListener('click', () => {
-modal.style.display = 'none';
-});
+    // Close the modal when clicking anywhere on it
+    modal.addEventListener("click", function() {
+      modal.style.display = "none";
+    });
+  });
