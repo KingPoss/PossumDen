@@ -19,6 +19,8 @@ function getMetaData($display, $display1, $image) {
  
             let isLive = result["live"]["is_live"];
             $image.attr('src', isLive ? "/assets/kplive.gif" : "/assets/autodj.gif");
+            $('.chatWindow').toggle(isLive);
+
         },
         error: function(xhr, status, error) {
             console.error("Error fetching metadata:", error);
