@@ -17,12 +17,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-        fetch-depth: 0
+          fetch-depth: 0
 
       # 2) Generate updates.json from full commit history + base of 1996
       - name: Generate updates.json
         run: |
-          BASE=1938
+          BASE=1936
           COUNT=$(git rev-list --count HEAD)
           TOTAL=$(( BASE + COUNT ))
 
