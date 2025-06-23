@@ -22,7 +22,7 @@ jobs:
       # 2) Generate fresh updates.json from last 20 commits (base 2001)
       - name: Generate updates.json
         run: |
-          BASE=2001
+          BASE=1933
           MAX=20
 
           # total commits so we can compute the top number
