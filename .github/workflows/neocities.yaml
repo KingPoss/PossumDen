@@ -19,44 +19,53 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2) Incremental updates.json generation (base 1,997)
-      - name: Generate incremental updates.json
+      # 2) Generate updates.json (last 20 commits, base=1997)
+      - name: Generate updates.json
         run: |
-          FILE=updates.json
           BASE=1997
+          # total commits so we can offset update numbers
+          TOTAL=$(( BASE + $(git rev-list --count HEAD) ))
+          MAX=20
 
-          # Determine last number (or start at BASE)
-          if [[ -f $FILE ]]; then
-            LAST=$(jq '.[0].number' "$FILE")
-          else
-            LAST=$BASE
-          fi
+          echo "[" > updates.json
+          i=0
 
-          NEXT=$(( LAST + 1 ))
+          # iterate last $MAX commits, splitting fields by \x1f
+          git log -n $MAX --pretty=format:'%h%x1f%s%x1f%ci' | \
+          while IFS=$'\x1f' read -r sha subject date; do
+            num=$(( TOTAL - i ))
 
-          # Grab latest commit info
-          MSG=$(git log -1 --pretty=format:'%s')
-          DATE=$(git log -1 --pretty=format:'%ci')
+            # split title / message
+            if [[ "$subject" == *-* ]]; then
+              title=${subject%%-*}
+              message=${subject#*-}
+            else
+              title="Update #$num"
+              message="$subject"
+            fi
 
-          # Build a new JSON object
-          NEW_ENTRY=$(jq -n \
-            --arg num "$NEXT" \
-            --arg msg "$MSG" \
-            --arg dt  "$DATE" \
-            '{ number: ($num|tonumber), message: $msg, date: $dt }'
-          )
+            # format date to MONTH-day-year
+            fmt_date=$(date -d "$date" +"%B-%-d-%Y")
 
-          # Prepend into the existing array or create a new one
-          if [[ -f $FILE ]]; then
-            jq --argjson new "$NEW_ENTRY" '[ $new ] + .' "$FILE" > /tmp/updates.json
-          else
-            echo "[$NEW_ENTRY]" > /tmp/updates.json
-          fi
+            # escape quotes
+            esc_title=$(printf '%s' "$title" | sed 's/"/\\"/g')
+            esc_msg=$(printf '%s' "$message" | sed 's/"/\\"/g')
 
-          mv /tmp/updates.json "$FILE"
-          echo "🗒️ Added update #$NEXT to $FILE"
+            entry="{\"sha\":\"$sha\",\"number\":$num,\"title\":\"$esc_title\",\"message\":\"$esc_msg\",\"date\":\"$fmt_date\"}"
+
+            # comma separation
+            if [ $i -gt 0 ]; then
+              echo "," >> updates.json
+            fi
+            echo "$entry" >> updates.json
+
+            i=$(( i + 1 ))
+          done
+
+          echo "]" >> updates.json
+          echo "🗒️ Generated updates.json with $i entries, starting at #$TOTAL"
         shell: bash
-        
+
       # Prepare a deployment folder that excludes .git and .github
       - name: Prepare deployment folder
         run: |
