@@ -57,18 +57,17 @@
 
 .pages {
   margin: 1%;
+  max-height: 100%;
 }
 
 .updates {
   width: 100%;
-  height: 400px;
-  max-width: 1000px;
-  max-height: 490px;
   margin-left: auto;
   margin-right: auto;
   overflow-x: hidden;
   overflow-y: auto;
   margin-top: 5px;
+  height: 60vh;
 }
 
 .post {
@@ -121,4 +120,57 @@
 
 ::-webkit-scrollbar {
   margin-right: 50px;
+}
+
+.siteparent {
+  display: grid;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  border-width: 5px;
+  border-spacing: 2px;
+  border-style: outset;
+  border-color: #df7126;
+  border-collapse: separate;
+  background: #41103e url(../assets/background.png) repeat;
+  width: 70%;
+  margin: 0 auto;
+}
+
+#test {
+  border-width: 1px;
+  padding: 1px;
+  border-style: inset;
+  border-color: #df7126;
+}
+
+.div1 {
+  grid-area: 1/1/2/4;
+}
+
+.div2 {
+  grid-area: 1/4/2/5;
+}
+
+.div3 {
+  grid-area: 2/1/3/3;
+}
+
+.div4 {
+  grid-area: 2/3/3/5;
+}
+
+.div5 {
+  grid-area: 3/1/4/5;
+}
+
+.div6 {
+  grid-area: 4/1/5/3;
+}
+
+.div7 {
+  grid-area: 4/3/5/5;
+}
+
+.div8 {
+  grid-area: 5/1/6/5;
 }/*# sourceMappingURL=index.css.map */

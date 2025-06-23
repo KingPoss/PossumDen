@@ -16,7 +16,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+        fetch-depth: 0
 
+      # 2) Generate updates.json from full commit history + base of 1996
+      - name: Generate updates.json
+        run: |
+          BASE=1938
+          COUNT=$(git rev-list --count HEAD)
+          TOTAL=$(( BASE + COUNT ))
+
+          # last 10 commits as JSON array
+          git log -n 10 --pretty=format:'{"sha":"%h","number":'"$TOTAL"',"message":"%s","date":"%ci"}' \
+            | jq -s . > updates.json
+
+          echo "Created updates.json starting at update #$TOTAL"
+        shell: bash
       # Prepare a deployment folder that excludes .git and .github
       - name: Prepare deployment folder
         run: |

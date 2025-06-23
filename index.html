@@ -54,8 +54,19 @@
 </nav>
 </noscript>
 <script src="/JS/headerfooter.js"></script>
+<script src="/JS/theme-wizard.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var library = {
+        "SubRosa": "/css/subRosaTheme.css",
+        "Glass": "glass.css",
+        "Atlas": "atlas.css"
+      };
+      window.themes.initialize(library);
+    });
+  </script>
 
-<hr style="border-bottom-style: solid;border-bottom-width: 1px;border-top-style: solid;border-top-width: 3px;" color="#63227a"> 
+<hr class="dividingLine"> 
 
 <div id="stampsleft">
 
@@ -71,43 +82,54 @@
 <tr><td>
 <center class="headertext"><h1 class="rainbowtext">Hello fellow Netizen! Welcome to my den!</h1></center>
 
-<div class="introwrapper">
-    <div class="radio">
-        <div class="popoutbutton"><a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;" >
-        <img id="onair" src="assets/autodj.gif"><img src="assets/popout.png"></a>
-        </div>
-        <script src="/JS/mrp.js"></script>
-        <script type="text/javascript">
-        MRP.insert({
-        'url':'https://radio.kingposs.com:8000/radio.mp3',
-        'codec':'mp3',
-        'volume':40,
-        'autoplay':false,
-        'forceHTML5':true,
-        'jsevents':true,
-        'buffering':0,
-        'title':'KPradio.net',
-        'wmode':'transparent',
-        'skin':'/radioThemes/oldradio/oldradio.xml',
-        'width':205,
-        'height':132
-        });
-        </script>
-        <center>
-        <div class="np">
-            <section class="now-playing">
-                
-                <div class="display">Now Playing</div>
-                <div class="display1">Unknown</div>
-            </section>
-            <noscript>Javascript is required to view the "now playing" data.</noscript>
-        </div>
-        </center>
-    </div>
-            <!-- ENDS: AUTO-GENERATED MUSES RADIO PLAYER CODE -->
-    <p class="intro">Hello! Thanks for checkin' my site out! I'm KingPoss, or KP for short. This place has become my home and creative outlet on the net. Outside of messaging platforms like Signal & Discord, you won't find me anywhere else. Like just about everyone else on <a href="https://neocities.org/">Neocities</a>, I've become entirely disillusioned with social media, web 3.0 (and 2.0 for that matter), and the general state of the net in modern times. It feels good to stake a claim and make my corner of the web--take back a bit of landscape in this digital serfdom we're all serving under lol. Here, you'll find my <a href="art.html">art n pictures</a>, <a href="/Thoughts/MainBlogPage.html">writings</a>, <a href="/projects/projects.html">projects</a>, <a href="programs.html">programs</a>, and a <a href="radio.html">radio station</a> I run with scheduled live broadcasts & interviews! I implore you to check out the music, learn a lil <a href="about.html">about me</a>, and check out some of the other <a href="sites.html">awesome sites</a> here on Neocities. Oh, and there's a <a href="guestbook.html">guestbook</a> you can sign too! I hope you have fun lookin around!</p>
+<div class="wrapper">
+    <p class="intro">
+      Hello! Thanks for checkin' my site out! I'm KingPoss, or KP for short. This place has become my home and creative outlet on the net. Outside of messaging platforms like Signal & Discord, you won't find me anywhere else. Like just about everyone else on <a href="https://neocities.org/">Neocities</a>, I've become entirely disillusioned with social media, web 3.0 (and 2.0 for that matter), and the general state of the net in modern times. It feels good to stake a claim and make my corner of the web--take back a bit of landscape in this digital serfdom we're all serving under lol. Here, you'll find my <a href="art.html">art n pictures</a>, <a href="/Thoughts/MainBlogPage.html">writings</a>, <a href="/projects/projects.html">projects</a>, <a href="programs.html">programs</a>, and a <a href="radio.html">radio station</a> I run with scheduled live broadcasts & interviews! I implore you to check out the music, learn a lil <a href="about.html">about me</a>, and check out some of the other <a href="sites.html">awesome sites</a> here on Neocities. Oh, and there's a <a href="guestbook.html">guestbook</a> you can sign too! I hope you have fun lookin around!
+    </p>
 
+  <!-- Right column grouping radio and theme switcher -->
+  <div class="right-column">
+    <div class="radio">
+      <div class="popoutbutton">
+        <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;">
+          <img id="onair" src="assets/autodj.gif">
+          <img src="assets/popout.png">
+        </a>
+      </div>
+      <script src="/JS/mrp.js"></script>
+      <script type="text/javascript">
+        MRP.insert({
+          'url':'https://radio.kingposs.com:8000/radio.mp3',
+          'codec':'mp3',
+          'volume':40,
+          'autoplay':false,
+          'forceHTML5':true,
+          'jsevents':true,
+          'buffering':0,
+          'title':'KPradio.net',
+          'wmode':'transparent',
+          'skin':'/radioThemes/oldradio/oldradio.xml',
+          'width':205,
+          'height':132
+        });
+      </script>
+      <center>
+        <div class="np">
+          <section class="now-playing">
+            <div class="display">Now Playing</div>
+            <div class="display1">Unknown</div>
+          </section>
+          <noscript>Javascript is required to view the "now playing" data.</noscript>
+        </div>
+      </center>
+    </div>
+    <div class="theme-switcher-container">
+    Site Theme: <select id="theme-switcher"></select>
+    </div>
+  </div>
 </div>
+            <!-- ENDS: AUTO-GENERATED MUSES RADIO PLAYER CODE -->
+
 <!--NEW SECTION-->
 <tr><td>
 

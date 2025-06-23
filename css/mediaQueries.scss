@@ -12,6 +12,9 @@
     .SITEBODY {
       width: 100%;
     }
+    .siteparent {
+      width: 100%;
+    }
     .updates{
         max-width: 100%;
     }
@@ -62,6 +65,9 @@
   /* smartphones, touchscreens */
   @media (hover: none) and (pointer: coarse) {
   .SITEBODY {
+      width: 100%;
+    }
+  .siteparent {
       width: 100%;
     }
   #stampsleft{
