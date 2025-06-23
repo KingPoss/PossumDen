@@ -19,51 +19,63 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2) Generate updates.json (last 20 commits, base=1997)
-      - name: Generate updates.json
+ # 2) Incremental updates.json generation (base 1999, keep last 20)
+      - name: Generate incremental updates.json
         run: |
-          BASE=1997
-          # total commits so we can offset update numbers
-          TOTAL=$(( BASE + $(git rev-list --count HEAD) ))
-          MAX=20
+          FILE=updates.json
+          BASE=1999
+          MAX_ENTRIES=20
 
-          echo "[" > updates.json
-          i=0
+          #1 Determine last number (or start at BASE)
+          if [[ -f $FILE ]]; then
+            LAST=$(jq '.[0].number' "$FILE")
+          else
+            LAST=$BASE
+          fi
+          NEXT=$(( LAST + 1 ))
 
-          # iterate last $MAX commits, splitting fields by \x1f
-          git log -n $MAX --pretty=format:'%h%x1f%s%x1f%ci' | \
-          while IFS=$'\x1f' read -r sha subject date; do
-            num=$(( TOTAL - i ))
+          # 2 Grab latest commit info
+          RAW_SUBJ=$(git log -1 --pretty=format:'%s')
+          DATE_RAW=$(git log -1 --pretty=format:'%ci')
 
-            # split title / message
-            if [[ "$subject" == *-* ]]; then
-              title=${subject%%-*}
-              message=${subject#*-}
-            else
-              title="Update #$num"
-              message="$subject"
-            fi
+          # split title/message on first hyphen
+          if [[ "$RAW_SUBJ" == *-* ]]; then
+            TITLE=${RAW_SUBJ%%-*}
+            MSG=${RAW_SUBJ#*-}
+          else
+            TITLE="Update #$NEXT"
+            MSG="$RAW_SUBJ"
+          fi
 
-            # format date to MONTH-day-year
-            fmt_date=$(date -d "$date" +"%B-%-d-%Y")
+          # format date as Month-day-Year
+          DATE_FMT=$(date -d "$DATE_RAW" +"%B-%-d-%Y")
 
-            # escape quotes
-            esc_title=$(printf '%s' "$title" | sed 's/"/\\"/g')
-            esc_msg=$(printf '%s' "$message" | sed 's/"/\\"/g')
+          # build JSON object, safely escaping quotes
+          NEW_ENTRY=$(jq -n \
+            --arg sha   "$(git rev-parse --short HEAD)" \
+            --arg num   "$NEXT" \
+            --arg title "$TITLE" \
+            --arg msg   "$MSG" \
+            --arg date  "$DATE_FMT" \
+            '{ sha: $sha,
+               number: ($num|tonumber),
+               title: $title,
+               message: $msg,
+               date: $date }'
+          )
 
-            entry="{\"sha\":\"$sha\",\"number\":$num,\"title\":\"$esc_title\",\"message\":\"$esc_msg\",\"date\":\"$fmt_date\"}"
+          #3 Prepend & truncate to MAX_ENTRIES
+          if [[ -f $FILE ]]; then
+            jq --argjson new "$NEW_ENTRY" \
+               --arg max "$MAX_ENTRIES" \
+               '[ $new ] + . | .[0:( $max|tonumber )]' \
+               "$FILE" > /tmp/updates.json
+          else
+            echo "[ $NEW_ENTRY ]" > /tmp/updates.json
+          fi
+          mv /tmp/updates.json "$FILE"
 
-            # comma separation
-            if [ $i -gt 0 ]; then
-              echo "," >> updates.json
-            fi
-            echo "$entry" >> updates.json
-
-            i=$(( i + 1 ))
-          done
-
-          echo "]" >> updates.json
-          echo "🗒️ Generated updates.json with $i entries, starting at #$TOTAL"
+          echo "🗒️ Added Update #$NEXT and kept latest $MAX_ENTRIES entries."
         shell: bash
 
       # Prepare a deployment folder that excludes .git and .github
