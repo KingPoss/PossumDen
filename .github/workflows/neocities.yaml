@@ -19,13 +19,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2) Generate fresh updates.json from last 20 commits (base 2001)
+      # 2) Generate fresh updates.json from last 20 commits (base 1933 + total commits)
       - name: Generate updates.json
         run: |
-          BASE=1933
+          BASE=1933      # 2003 total updates − 70 commits
           MAX=20
 
-          # total commits so we can compute the top number
           TOTAL_COMMITS=$(git rev-list --count HEAD)
           TOP=$(( BASE + TOTAL_COMMITS ))
 
@@ -45,26 +44,25 @@ jobs:
               message="$subj"
             fi
 
-            # format date
+            # format date and time separately
             date_fmt=$(date -d "$date_raw" +"%B-%-d-%Y")
+            time_fmt=$(date -d "$date_raw" +"%-l:%M %p")
 
             # escape quotes
             title=${title//\"/\\\"}
             message=${message//\"/\\\"}
 
-            entry="{\"sha\":\"$sha\",\"number\":$num,\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\"}"
+            entry="{\"sha\":\"$sha\",\"number\":$num,\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
 
-            # comma before every entry except the first
             if [[ $i -gt 0 ]]; then
               echo "," >> updates.json
             fi
             echo "$entry" >> updates.json
-
             i=$(( i + 1 ))
           done
 
           echo "]" >> updates.json
-          echo "Generated updates.json with $i entries (#$TOP down to $#((TOP-MAX+1)))."
+          echo "Generated updates.json with $i entries, newest #$TOP at ${date_fmt} ${time_fmt}."
         shell: bash
 
       # Prepare a deployment folder that excludes .git and .github
