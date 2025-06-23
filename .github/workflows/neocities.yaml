@@ -19,50 +19,63 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2) Generate updates.json from the last 20 commits (base 2000)
-      - name: Generate updates.json
+ # 2) Incremental updates.json generation (base 1999, keep last 20)
+      - name: Generate incremental updates.json
         run: |
-          BASE=2000
-          # how many commits total?
-          TOTAL_COMMITS=$(git rev-list --count HEAD)
-          MAX=20
+          FILE=updates.json
+          BASE=2001
+          MAX_ENTRIES=20
 
-          # the top label: most recent update number
-          TOP=$(( BASE + TOTAL_COMMITS ))
+          #1 Determine last number (or start at BASE)
+          if [[ -f $FILE ]]; then
+            LAST=$(jq '.[0].number' "$FILE")
+          else
+            LAST=$BASE
+          fi
+          NEXT=$(( LAST + 1 ))
 
-          echo "[" > updates.json
-          git log -n $MAX --pretty=format:'%h%x1f%s%x1f%ci' | \
-          awk -F"\x1f" -v top="$TOP" -v max="$MAX" '
-            {
-              idx = NR - 1;
-              num = top - idx;
-              subj = $2;
-              # split on first hyphen:
-              split(subj, parts, "-");
-              if (index(subj, "-") > 0) {
-                title = parts[1];
-                message = substr(subj, length(parts[1]) + 2);
-              } else {
-                title = "Update #" num;
-                message = subj;
-              }
-              # format date via strftime
-              cmd = "date -d \"" $3 "\" \"+%B-%-d-%Y\"";
-              cmd | getline formatted;
-              close(cmd);
-              # JSON-escape quotes
-              gsub(/"/, "\\\"", title);
-              gsub(/"/, "\\\"", message);
-              entry = sprintf(
-                "{\"sha\":\"%s\",\"number\":%d,\"title\":\"%s\",\"message\":\"%s\",\"date\":\"%s\"}",
-                $1, num, title, message, formatted
-              );
-              printf("%s%s\n", (NR>1?",":""), entry);
-            }
-          ' >> updates.json
-          echo "]" >> updates.json
+          #2 Grab latest commit info
+          RAW_SUBJ=$(git log -1 --pretty=format:'%s')
+          DATE_RAW=$(git log -1 --pretty=format:'%ci')
 
-          echo "🗒️ Wrote updates.json with last $MAX commits, numbered $TOP down to $((TOP-MAX+1))."  
+          # split title/message on first hyphen
+          if [[ "$RAW_SUBJ" == *-* ]]; then
+            TITLE=${RAW_SUBJ%%-*}
+            MSG=${RAW_SUBJ#*-}
+          else
+            TITLE="Update #$NEXT"
+            MSG="$RAW_SUBJ"
+          fi
+
+          # format date as Month-day-Year
+          DATE_FMT=$(date -d "$DATE_RAW" +"%B-%-d-%Y")
+
+          # build JSON object, safely escaping quotes
+          NEW_ENTRY=$(jq -n \
+            --arg sha   "$(git rev-parse --short HEAD)" \
+            --arg num   "$NEXT" \
+            --arg title "$TITLE" \
+            --arg msg   "$MSG" \
+            --arg date  "$DATE_FMT" \
+            '{ sha: $sha,
+               number: ($num|tonumber),
+               title: $title,
+               message: $msg,
+               date: $date }'
+          )
+
+          #3 Prepend & truncate to MAX_ENTRIES
+          if [[ -f $FILE ]]; then
+            jq --argjson new "$NEW_ENTRY" \
+               --arg max "$MAX_ENTRIES" \
+               '[ $new ] + . | .[0:( $max|tonumber )]' \
+               "$FILE" > /tmp/updates.json
+          else
+            echo "[ $NEW_ENTRY ]" > /tmp/updates.json
+          fi
+          mv /tmp/updates.json "$FILE"
+
+          echo "🗒️ Added Update #$NEXT and kept latest $MAX_ENTRIES entries."
         shell: bash
 
       # Prepare a deployment folder that excludes .git and .github
