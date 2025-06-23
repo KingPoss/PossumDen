@@ -63,7 +63,7 @@ jobs:
           ' >> updates.json
 
           echo "]" >> updates.json
-          echo "🗒️ updates.json regenerated: last $MAX commits numbered $TOP down to $((TOP-MAX+1))."
+          echo "updates.json regenerated: last $MAX commits numbered $TOP down to $((TOP-MAX+1))."
         shell: bash
 
       # Prepare a deployment folder that excludes .git and .github
