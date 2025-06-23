@@ -19,51 +19,52 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2) Generate a fresh updates.json (last 20 commits, base 2002)
+      # 2) Generate fresh updates.json from last 20 commits (base 2001)
       - name: Generate updates.json
         run: |
-          BASE=2002
+          BASE=2001
           MAX=20
 
-          # how many commits total?
+          # total commits so we can compute the top number
           TOTAL_COMMITS=$(git rev-list --count HEAD)
-
-          # highest update number = base + total commits
           TOP=$(( BASE + TOTAL_COMMITS ))
 
           echo "[" > updates.json
+          i=0
 
           git log -n $MAX --pretty=format:'%h%x1f%s%x1f%ci' | \
-          awk -F"\x1f" -v top="$TOP" -v max="$MAX" '
-            {
-              idx = NR - 1;
-              num = top - idx;
-              subj = $2;
-              # split on first hyphen
-              if (subj ~ /-/) {
-                split(subj, parts, "-");
-                title   = parts[1];
-                message = substr(subj, length(parts[1]) + 2);
-              } else {
-                title   = "Update #" num;
-                message = subj;
-              }
-              # format date
-              cmd = "date -d \"" $3 "\" +\"%B-%-d-%Y\"";
-              cmd | getline datefmt; close(cmd);
-              # escape quotes
-              gsub(/"/, "\\\"", title);
-              gsub(/"/, "\\\"", message);
-              entry = sprintf(
-                "{\"sha\":\"%s\",\"number\":%d,\"title\":\"%s\",\"message\":\"%s\",\"date\":\"%s\"}",
-                $1, num, title, message, datefmt
-              );
-              printf("%s%s\n", (NR>1?",":""), entry);
-            }
-          ' >> updates.json
+          while IFS=$'\x1f' read -r sha subj date_raw; do
+            num=$(( TOP - i ))
+
+            # split title/message
+            if [[ "$subj" == *-* ]]; then
+              title=${subj%%-*}
+              message=${subj#*-}
+            else
+              title="Update #$num"
+              message="$subj"
+            fi
+
+            # format date
+            date_fmt=$(date -d "$date_raw" +"%B-%-d-%Y")
+
+            # escape quotes
+            title=${title//\"/\\\"}
+            message=${message//\"/\\\"}
+
+            entry="{\"sha\":\"$sha\",\"number\":$num,\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\"}"
+
+            # comma before every entry except the first
+            if [[ $i -gt 0 ]]; then
+              echo "," >> updates.json
+            fi
+            echo "$entry" >> updates.json
+
+            i=$(( i + 1 ))
+          done
 
           echo "]" >> updates.json
-          echo "updates.json regenerated: last $MAX commits numbered $TOP down to $((TOP-MAX+1))."
+          echo "Generated updates.json with $i entries (#$TOP down to $#((TOP-MAX+1)))."
         shell: bash
 
       # Prepare a deployment folder that excludes .git and .github
