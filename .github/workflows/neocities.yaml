@@ -19,19 +19,44 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2) Generate updates.json from full commit history + base of 1996
-      - name: Generate updates.json
+      # 2) Incremental updates.json generation (base 1,997)
+      - name: Generate incremental updates.json
         run: |
-          BASE=1936
-          COUNT=$(git rev-list --count HEAD)
-          TOTAL=$(( BASE + COUNT ))
+          FILE=updates.json
+          BASE=1997
 
-          # last 10 commits as JSON array
-          git log -n 10 --pretty=format:'{"sha":"%h","number":'"$TOTAL"',"message":"%s","date":"%ci"}' \
-            | jq -s . > updates.json
+          # Determine last number (or start at BASE)
+          if [[ -f $FILE ]]; then
+            LAST=$(jq '.[0].number' "$FILE")
+          else
+            LAST=$BASE
+          fi
 
-          echo "Created updates.json starting at update #$TOTAL"
+          NEXT=$(( LAST + 1 ))
+
+          # Grab latest commit info
+          MSG=$(git log -1 --pretty=format:'%s')
+          DATE=$(git log -1 --pretty=format:'%ci')
+
+          # Build a new JSON object
+          NEW_ENTRY=$(jq -n \
+            --arg num "$NEXT" \
+            --arg msg "$MSG" \
+            --arg dt  "$DATE" \
+            '{ number: ($num|tonumber), message: $msg, date: $dt }'
+          )
+
+          # Prepend into the existing array or create a new one
+          if [[ -f $FILE ]]; then
+            jq --argjson new "$NEW_ENTRY" '[ $new ] + .' "$FILE" > /tmp/updates.json
+          else
+            echo "[$NEW_ENTRY]" > /tmp/updates.json
+          fi
+
+          mv /tmp/updates.json "$FILE"
+          echo "🗒️ Added update #$NEXT to $FILE"
         shell: bash
+        
       # Prepare a deployment folder that excludes .git and .github
       - name: Prepare deployment folder
         run: |
