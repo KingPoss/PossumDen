@@ -21,6 +21,9 @@ jobs:
 
       # 2) Generate fresh updates.json from last 20 commits (base 1933 + total commits)
       - name: Generate updates.json
+        env:
+          TZ: America/Los_Angeles
+          
         run: |
           BASE=1933      # 2003 total updates − 70 commits
           MAX=20

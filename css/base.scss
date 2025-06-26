@@ -1,0 +1,159 @@
+html{
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body{
+background-color: #000000;
+background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23673d6f' fill-opacity='0.73'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+color: white;
+font-family: 'retron2000';
+font-size: 1.04rem;
+}
+
+main{
+  /* 1) fluid width: never smaller than 20rem, ideally 90% viewport,
+        never larger than 100% */
+  inline-size: clamp(0rem, 100%, 90rem);
+
+  /* 2) center the block itself in the viewport */
+  margin-inline: auto;
+
+  /* 3) breathing room on the sides—but capped so it doesn’t explode */
+  padding-inline: clamp(1rem, 0vw, 2.5rem);
+
+  display: block;
+  background-image: url(../assets/background.png);
+  border: inset;
+  border-color: orange;
+}
+
+
+/*Header stuff*/
+h1{
+  color: rgb(236, 233, 9);
+margin: .5rem;
+font-family: 'computerfontregular';
+}
+h2{
+font-family: 'inky_thin_pixelsregular';
+margin: .5rem;
+  color: rgb(236, 233, 9);
+}
+h3{
+color: rgb(236, 233, 9);
+margin: .5rem;
+font-family: 'inky_thin_pixelsregular';
+}
+.centerheader{
+    display: flex;
+    justify-content: flex-start;
+}
+
+/*Changes how <a> tags look*/
+a{
+color: orange;
+}
+a:link{
+text-decoration: orange;
+}
+a:hover{
+  color: #de630b;
+}
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;               /* let items wrap to new lines */
+  justify-content: center;       /* center each row under the one above */
+  gap: 0.5rem;                   /* gutter between buttons/rows */
+  padding: 0.5rem;
+  width: 100%;
+}
+.navbar a {
+  flex: 0 0 150px;            /* fixed total width = 150px */
+  display: flex;              /* make the <a> a flex container */
+  align-items: center;        /* vertical center */
+  justify-content: center;    /* horizontal center */
+  width: 150px;               /* explicitly set width */
+  height: 3rem;               /* or whatever height you like */
+  padding: 0 0.5rem;          /* small horizontal padding inside */
+  box-sizing: border-box;  
+  background: #41103e;
+  text-decoration: none;
+  font-family: 'inky_thin_pixelsregular';
+  font-size: 1.5rem;
+  position: relative;
+  transition: background 100ms;
+  white-space: nowrap;
+  overflow: hidden;
+  color: orange;
+  border: outset;
+  border-radius: 10px;
+  border-color: rgb(87, 18, 87);
+}
+.navbar a:hover {
+  background: #571b6c;
+border-color:rgb(138, 25, 138);
+;
+
+}
+.navbar a:hover::after {
+  content: "?";
+  margin-left: 0.0em;
+}
+.navbar a:active {
+  transform: translate(2px, 2px);
+}
+
+.headerflex{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  margin-inline: auto;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #ff3f2d   0px,    /* red start */
+    #ff602d  100px,   /* orange at 10% */
+    #ff602d  200px,   /* yellow at 20% */
+    #ffc72d  300px,   /* green at 30% */
+    #9dff2d  400px,   /* cyan at 40% */
+    #2dffae  500px,   /* blue at 50% */
+    #2d98ff  600px,   /* indigo at 60% */
+    #7e2dff  700px,   /* violet at 70% */
+    #b12dff  800px,   /* magenta at 80% */
+    #ff2df2  900px,   /* pink at 90% */
+    #ff3f2d  1000px    /* back to red at 100% */
+  );
+
+  /* 2) Tile that exactly once every 1000px, and mask to text */
+  background-size: 1000px 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+
+  /* 3) Slide it left by exactly one tile (1000px) over 8s */
+  animation: slideRainbow 8s linear infinite;
+}
+
+/* Slide from 0 → -1000px, then repeat seamlessly */
+@keyframes slideRainbow {
+  from { background-position:   0   0; }
+  to   { background-position: 1000px 0; }
+}
+.rainbow {
+    /* 1) flex-shrink allowed */
+  min-width: 0;
+
+  /* 2) allow wrapping of long lines */
+  /* 🖌️ Font styling */
+  
+  font-weight: 700;
+  font-size: clamp(0.1rem, 2.3vw, 0.8rem);
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+}

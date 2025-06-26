@@ -10,62 +10,199 @@
 
 <title>The Possum Den</title> <!--Tab Title-->
 <meta name="description" content="The personal webpage and dwelling of the web's stinkiest opossum!">
-<link href="css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/newcss.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
 
+<link href="/css/base.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/newcss.css" rel="stylesheet" type="text/css" media="all" >
 
 
 
 </head>
-
+<script src="/JS/jquery-3.6.1.min.js"></script>
+<script src="/JS/radioData.js"></script>
 <body>
-  <nav>navbar go here</nav>
-<main>
+<div class="headerflex">
+<pre class="rainbow">
+88888888888 888    888 8888888888
+    888     888    888 888       
+    888     888    888 888       
+    888     8888888888 8888888   
+    888     888    888 888       
+    888     888    888 888       
+    888     888    888 888       
+    888     888    888 8888888888
+</pre>
+<pre class="rainbow">
+8888888b.   .d88888b.   .d8888b.   .d8888b.  888     888 888b     d888
+888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 888     888 8888b   d8888
+888    888 888     888 Y88b.      Y88b.      888     888 88888b.d88888
+888   d88P 888     888  "Y888b.    "Y888b.   888     888 888Y88888P888
+8888888P"  888     888     "Y88b.     "Y88b. 888     888 888 Y888P 888
+888        888     888       "888       "888 888     888 888  Y8P  888
+888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888
+888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888
+</pre>
+<pre class="rainbow">
+8888888b.  8888888888 888b    888
+888  "Y88b 888        8888b   888
+888    888 888        88888b  888
+888    888 8888888    888Y88b 888
+888    888 888        888 Y88b888
+888    888 888        888  Y88888
+888  .d88P 888        888   Y8888
+8888888P"  8888888888 888    Y888
+</pre>
+</div>  
+    <nav class="navbar">
+    <a href="#home">Home</a>
+    <a href="#about">About Me</a>
+    <a href="#projects">Art/Media</a>
+    <a href="#contact">Blog</a>
+    <a href="#contact">Radio</a>
+    <a href="#contact">Projects</a>
+    <a href="#contact">Programs</a>
+    <a href="#contact">Cool Sites</a>
+    <a href="#contact">Guestbook</a>
 
-<h2>Welcome to my den!</h2>
+  </nav>
+
+<main>
+<div> 
+<center><h1 class="centerheader">Welcome to my den!</h1></center>
+<div class="flexholder" id="introflex">
+  
 <p class="intro">
   Hello! Thanks for checkin' my site out! I'm KingPoss, or KP for short. This place has become my home and creative outlet on the net. Outside of messaging platforms like Signal & Discord, you won't find me anywhere else. Like just about everyone else on <a href="https://neocities.org/">Neocities</a>, I've become entirely disillusioned with social media, web 3.0 (and 2.0 for that matter), and the general state of the net in modern times. It feels good to stake a claim and make my corner of the web--take back a bit of landscape in this digital serfdom we're all serving under lol. Here, you'll find my <a href="art.html">art n pictures</a>, <a href="/Thoughts/MainBlogPage.html">writings</a>, <a href="/projects/projects.html">projects</a>, <a href="programs.html">programs</a>, and a <a href="radio.html">radio station</a> I run with scheduled live broadcasts & interviews! I implore you to check out the music, learn a lil <a href="about.html">about me</a>, and check out some of the other <a href="sites.html">awesome sites</a> here on Neocities. Oh, and there's a <a href="guestbook.html">guestbook</a> you can sign too! I hope you have fun lookin around!
 </p>
-<div class="flexholder"> 
-<nav class="sitenav">
-  <h2>Sitemap</h2>
-  <ul>
+<div class="radio">
+      <div class="popoutbutton">
+        <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;">
+          <img id="onair" src="assets/autodj.gif">
+          <img src="assets/popout.png">
+        </a>
+      </div>
+      <script src="/JS/mrp.js"></script>
+      <script type="text/javascript">
+        MRP.insert({
+          'url':'https://radio.kingposs.com:8000/radio.mp3',
+          'codec':'mp3',
+          'volume':40,
+          'autoplay':false,
+          'forceHTML5':true,
+          'jsevents':true,
+          'buffering':0,
+          'title':'KPradio.net',
+          'wmode':'transparent',
+          'skin':'/radioThemes/oldradio/oldradio.xml',
+          'width':205,
+          'height':132
+        });
+      </script>
+      <center>
+        <div class="np">
+          <section class="now-playing">
+            <div class="display">Now Playing</div>
+            <div class="display1">Unknown</div>
+          </section>
+          <noscript>Javascript is required to view the "now playing" data.</noscript>
+        </div>
+      </center>
+    </div>
+</div>
+</div>
+<hr style="border-bottom-style: solid;border-bottom-width: 1px;border-top-style: solid;border-top-width: 3px;" color="orange"> 
+<div class="flexholder">
+<div class="sitenav">
+   <ul>
+
     <li>
       <a href="art.html">Art & Media</a>
-      <span class="desc">Where you can find my art, music and other creative ventures!</span>
+      <span class="desc"> - Where you can find my art, music and other creative ventures!</span>
     </li>
     <li>
       <a href="/Thoughts/MainBlogPage.html">Thoughts</a>
-      <span class="desc">Where I post my rants, writing, and horribly written articles.</span>
+      <span class="desc"> - Where I post my rants, writing, and horribly written articles.</span>
     </li>
     <li>
       <a href="radio.html">KP Radio</a>
-      <span class="desc">Tracker Music, Indie Artists, fake ads, and LIVE BROADCASTS! You can't miss this one, folks.</span>
+      <span class="desc"> - Tracker Music, Indie Artists, fake ads, and LIVE BROADCASTS! You can't miss this one, folks.</span>
     </li>
     <li>
       <a href="radiowidget.html" class="popup">Radio Widget</a>
-      <span class="desc">A pop-out radio widget so you can listen to my tunes as you browse the possum den B)</span>
+      <span class="desc"> - A pop-out radio widget so you can listen to my tunes as you browse the possum den B)</span>
     </li>
     <li>
       <a href="/projects/projects.html">Projects</a>
-      <span class="desc">My projects (many unfinished) and their progress, or lack thereof.</span>
+      <span class="desc"> - My projects (many unfinished) and their progress, or lack thereof.</span>
     </li>
     <li>
       <a href="programs.html">Programs</a>
-      <span class="desc">Scripts of mine, plus useful tools from around the web.</span>
+      <span class="desc"> - Scripts of mine, plus useful tools from around the web.</span>
     </li>
     <li>
       <a href="sites.html">Cool Sites</a>
-      <span class="desc">A bunch of cool sites I've found on Neocities or elsewhere!</span>
+      <span class="desc"> - A bunch of cool sites I've found on Neocities or elsewhere!</span>
     </li>
     <li>
       <a href="guestbook.html">Guestbook</a>
-      <span class="desc">Pretty self-explanatory. If you stop by, please sign it :3</span>
+      <span class="desc"> - Pretty self-explanatory. If you stop by, please sign it :3</span>
     </li>
-  </ul>
-</nav>
+  </ul> 
+  
+</div>
+
+<div class="bulletin">
+
+  <div class="bulletinpost">
+  <img src="/assets/posterkpradioad.gif" alt="">
+  <div>what's ghappening?</div>
+  </div>
+  <div class="bulletinpost">
+  <img src="/assets/posterdecember7.png" alt="">
+  <div>click to give me acall!</div>
+  </div>
+</div>
+
+</div>
+
+<hr style="border-bottom-style: solid;border-bottom-width: 1px;border-top-style: solid;border-top-width: 3px;" color="orange"> 
+
+<div class="flexholder"> 
+<!-- <nav class="sitenav">
+  <center><h2>Site Map</h2></center>
+  <div class="siteupdateholder">
+
+  <div class="updates">
+    <div class="post">
+    <p class="postBody"><a href="art.html">Art & Media</a> - Where you can find my art, music and other creative ventures.</p>
+    </div>
+    <div class="post">
+    <p class="postBody"><a href="/Thoughts/MainBlogPage.html">Thoughts</a> - Where I post my rants, writing, and horribly written articles.</p>
+    </div>
+    <div class="post">
+    <p class="postBody"><a href="radio.html">KP Radio</a> - Tracker Music, Indie Artists, fake ads, and LIVE BROADCASTS!</p>
+    </div>
+    <div class="post">
+    <p class="postBody"><a href="radiowidget.html" class="popup">Radio Widget</a> - A pop-out radio widget so you can listen to my tunes as you browse the site</p>
+    </div>    
+    <div class="post">
+    <p class="postBody"><a href="/projects/projects.html">Projects</a> - My projects (many unfinished) and their progress, or lack thereof.</p>
+    </div> 
+    <div class="post">
+    <p class="postBody"><a href="programs.html">Programs</a> - Scripts of mine, plus useful tools from around the web.</p>
+    </div>    
+    <div class="post">
+    <p class="postBody"><a href="sites.html">Cool Sites</a> - A bunch of cool sites I've found on Neocities or elsewhere.</p>
+    </div>   
+    <div class="post">
+    <p class="postBody"><a href="guestbook.html">Guestbook</a> - Pretty self-explanatory. If you stop by, please sign it :3</p>
+    </div>                              
+  </div>
+</div>
+
+</nav> -->
 <div class="updateholder">
-<h2>Updates</h2>
+<center><h2>--- Personal News ---</h2></center>
 
 <div class="updates">
     <!--POST SEPERATOR-->
@@ -167,10 +304,67 @@
     </div>  
  
 </div>
+<div class="siteupdateholder">
+  <center><h2>--- Site Updates ---</h2></center>
+  <div class="updates" id="updates">
+    <!-- JS will populate this -->
+  </div>
+</div>
+
 </main>
 <footer>
   footer go here
 </footer>
 </body>
 
+<script>
+(async function() {
+  const resp = await fetch('updates.json');
+  if (!resp.ok) {
+    console.error('Failed to load updates.json');
+    return;
+  }
+  const updates = await resp.json();
+  const container = document.getElementById('updates');
+  container.innerHTML = '';  // clear any placeholder
+
+  updates.forEach(u => {
+    // .post wrapper
+    const post = document.createElement('div');
+    post.className = 'post';
+
+    // Title and date/time wrapper
+    const wrap = document.createElement('div');
+    wrap.className = 'postWrapper';
+
+    // Title
+    const titleEl = document.createElement('p');
+    titleEl.className = 'postTitle';
+    titleEl.textContent = u.title;
+
+    // Date/time container (stacked on right)
+    const dt = document.createElement('div');
+    dt.className = 'postDateContainer';
+
+    const dateEl = document.createElement('p');
+    dateEl.className = 'postDate';
+    dateEl.textContent = u.date;
+
+    const timeEl = document.createElement('p');
+    timeEl.className = 'postTime';
+    timeEl.textContent = u.time;
+
+    dt.append(dateEl, timeEl);
+    wrap.append(titleEl, dt);
+
+    // Body = commit message
+    const bodyEl = document.createElement('p');
+    bodyEl.className = 'postBody';
+    bodyEl.textContent = u.message.trim();
+
+    post.append(wrap, bodyEl);
+    container.append(post);
+  });
+})();
+</script>
 </html>
