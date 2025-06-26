@@ -23,7 +23,6 @@ jobs:
       - name: Generate updates.json
         env:
           TZ: America/Los_Angeles
-
         run: |
           BASE=1933      # 2003 total updates − 70 commits
           MAX=20
@@ -38,8 +37,8 @@ jobs:
           while IFS=$'\x1f' read -r sha subj date_raw; do
             num=$(( TOP - i ))
 
-            # split title/message
-            if [[ "$subj" == *|* ]]; then
+            # 1) Split on first pipe "|" if present, else fallback to auto-title
+            if [[ "$subj" == *"|"* ]]; then
               title=${subj%%|*}
               message=${subj#*|}
             else
