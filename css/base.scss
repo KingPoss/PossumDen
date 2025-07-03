@@ -1,123 +1,70 @@
-html{
+/*
+BASE.CSS - FOR USE IN ALL MAIN SITE PAGES
+*/
+
+
+
+/* VARIABLES AND DEFINITIONS */
+:root{
+  
+  --rotared: #ff3f2d;
+  --rotaorange: #ff602d;
+  --rotalightorange: #ff8b2d;
+  --rotayellow: #ffc72d;
+  --rotagreen: #9dff2d;
+  --rotacyan: #2dffae;
+  --rotablue: #2d98ff;
+  --rotaviolet: #7e2dff;
+  --rotamagenta: #b12dff;
+  --rotapink: #ff2df2;
+  --darkpurple:#41103e;
+  --lightpurple: #571b6c;
+  --def-border-color: #df7126;
+
+  --yellow-header: rgb(236, 233, 9);
+  --def-element-background: rgba(57, 19, 94, 0.5);
+  --def-detail-color: #ccc;
+  /*BODY BACKGROUNDS*/
+  --default-body-background: url(../assets/background.png);
+  /*SITE BACKGROUNDS*/
+  --default-site-background: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23673d6f' fill-opacity='0.73'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+
+
+
+/*---ELEMENT SIZING SIMPLIFICATION---*/
+html {
   box-sizing: border-box;
 }
+
 *, *::before, *::after {
   box-sizing: inherit;
 }
 
-body{
-background-color: #000000;
-background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23673d6f' fill-opacity='0.73'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-color: white;
-font-family: 'retron2000regular';
-font-size: 1.04rem;
-}
-
-main{
-  /* 1) fluid width: never smaller than 20rem, ideally 90% viewport,
-        never larger than 100% */
-  inline-size: clamp(0rem, 100%, 90rem);
-
-  /* 2) center the block itself in the viewport */
-  margin-inline: auto;
-
-  /* 3) breathing room on the sides—but capped so it doesn’t explode */
-  padding-inline: clamp(1rem, 0vw, 2.5rem);
-
-  display: block;
-  background-image: url(../assets/background.png);
-  border: inset;
-  border-color: orange;
-}
 
 
-/*Header stuff*/
-h1{
-  color: rgb(236, 233, 9);
-margin: .5rem;
-font-family: 'computerfontregular';
-}
-h2{
-font-family: 'inky_thin_pixelsregular';
-margin: .5rem;
-  color: rgb(236, 233, 9);
-}
-h3{
-color: rgb(236, 233, 9);
-margin: .5rem;
-font-family: 'inky_thin_pixelsregular';
-}
-.centerheader{
-    display: flex;
-    justify-content: flex-start;
-}
 
-/*Changes how <a> tags look*/
-a{
-color: orange;
-}
-a:link{
-text-decoration: orange;
-}
-a:hover{
-  color: #de630b;
-}
+/*---SITE HEADER AND ANIMATION---*/
 
-.navbar {
-  display: flex;
-  flex-wrap: wrap;               /* let items wrap to new lines */
-  justify-content: center;       /* center each row under the one above */
-  gap: 0.5rem;                   /* gutter between buttons/rows */
-  padding: 0.5rem;
-  width: 100%;
-}
-.navbar a {
-  flex: 0 0 150px;            /* fixed total width = 150px */
-  display: flex;              /* make the <a> a flex container */
-  align-items: center;        /* vertical center */
-  justify-content: center;    /* horizontal center */
-  width: 150px;               /* explicitly set width */
-  height: 3rem;               /* or whatever height you like */
-  padding: 0 0.5rem;          /* small horizontal padding inside */
-  box-sizing: border-box;  
-  background: #41103e;
-  text-decoration: none;
-  font-family: 'inky_thin_pixelsregular';
-  font-size: 1.5rem;
-  position: relative;
-  transition: background 100ms;
-  white-space: nowrap;
-  overflow: hidden;
-  color: orange;
-  border: outset;
-  border-radius: 10px;
-  border-color: rgb(87, 18, 87);
-}
-.navbar a:hover {
-  background: #571b6c;
-border-color:rgb(138, 25, 138);
-;
-
-}
-.navbar a:hover::after {
-  content: "?";
-  margin-left: 0.0em;
-}
-.navbar a:active {
-  transform: translate(2px, 2px);
-}
-
-.headerflex{
+.headerflex {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
   margin-inline: auto;
+  /* 2) Tile that exactly once every 1000px, and mask to text */
+  background-size: 1000px 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  /* 3) Slide it left by exactly one tile (1000px) over 8s */
+  animation: slideRainbow 8s linear infinite;
   background-image: repeating-linear-gradient(
     90deg,
     #ff3f2d   0px,    /* red start */
     #ff602d  100px,   /* orange at 10% */
-    #ff602d  200px,   /* yellow at 20% */
+    #ff8b2d  200px,   /* yellow at 20% */
     #ffc72d  300px,   /* green at 30% */
     #9dff2d  400px,   /* cyan at 40% */
     #2dffae  500px,   /* blue at 50% */
@@ -127,33 +74,305 @@ border-color:rgb(138, 25, 138);
     #ff2df2  900px,   /* pink at 90% */
     #ff3f2d  1000px    /* back to red at 100% */
   );
+}
+.rainbow {
+  margin-bottom: 0.1px;
+}
+#siteheader {
+  min-width: 0;
+  font-weight: 700;
+  font-size: clamp(0.1rem, 1.5vw, 0.8rem);
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;  
+}
+/* Slide from 0 → -1000px, then repeat seamlessly */
+@keyframes slideRainbow {
+  from  { background-position:   0   0; }
+  to  { background-position: 1000px 0; }
+}
 
-  /* 2) Tile that exactly once every 1000px, and mask to text */
-  background-size: 1000px 100%;
+/* force the gradient‐clip into the active link’s rainbow text */
+.topnav > a.active .rainbow {
+  /* hide the fallback link color */
+  color: transparent !important;
+  font-size: 1.5rem;
+  /* clip the background into the text */
   background-clip: text;
   -webkit-background-clip: text;
-  color: transparent;
-
-  /* 3) Slide it left by exactly one tile (1000px) over 8s */
+  /* make sure the animated gradient is applied here too */
+  background-image: repeating-linear-gradient(
+    90deg,
+    #ff3f2d   0px,
+    #ff602d  100px,
+    #ff8b2d  200px,
+    #ffc72d  300px,
+    #9dff2d  400px,
+    #2dffae  500px,
+    #2d98ff  600px,
+    #7e2dff  700px,
+    #b12dff  800px,
+    #ff2df2  900px,
+    #ff3f2d 1000px
+  );
+  background-size: 1000px 100%;
   animation: slideRainbow 8s linear infinite;
 }
 
-/* Slide from 0 → -1000px, then repeat seamlessly */
-@keyframes slideRainbow {
-  from { background-position:   0   0; }
-  to   { background-position: 1000px 0; }
+
+/*SITE NAVIGATION BAR*/
+
+.navbar {
+  display: flex;
+  flex-wrap: wrap;               /* let items wrap to new lines */
+  justify-content: center;       /* center each row under the one above */
+  gap: 0.5rem;                   /* gutter between buttons/rows */
+  padding: 0.5rem;
+  width: 100%;
 }
-.rainbow {
-    /* 1) flex-shrink allowed */
-  min-width: 0;
 
-  /* 2) allow wrapping of long lines */
-  /* 🖌️ Font styling */
+.navbar a {
+  flex: 0 0 150px;            /* fixed total width = 150px */
+  display: flex;              /* make the <a> a flex container */
+  align-items: center;        /* vertical center */
+  justify-content: center;    /* horizontal center */
+  width: 150px;               /* explicitly set width */
+  height: 3rem;               /* or whatever height you like */
+  padding: 0 0.5rem;          /* small horizontal padding inside */
+  box-sizing: border-box;  
+  background: var(--darkpurple);
+  text-decoration: none;
+  font-family: 'inky_thin_pixelsregular';
+  font-size: 1.5rem;
+  position: relative;
+  transition: background 100ms;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--rotalightorange);
+  border: outset;
+  border-radius: 10px;
+  border-color: rgb(87, 18, 87);
+}
+
+.navbar a:hover {
+  background: var(--lightpurple);
+  border-color: var(--lightpurple);
+}
+
+.navbar a:hover::after {
+  content: "?";
+}
+
+.navbar a:active {
+  transform: translate(2px, 2px);
+}
+
+/* 1) Make .topnav flex & allow wrapping */
+.topnav {
+  display: none;
+  flex-wrap: wrap;           /* allow items to wrap onto new lines */
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--darkpurple);
+  background-image: url(/assets/background.png);
+  position: relative;
+  border-style: double;
+  border-radius: 10px;
+  border-color: var(--def-border-color);
+  font-family: 'inky_thin_pixelsregular';
+
+}
+
+.active {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.active img {
+  height: 50px;
+  margin-top: -5px;
+}
+/* 2) Logo and icon stay on row 0 */
+.topnav > a.active,
+.topnav > a.icon {
+  flex: 0 0 auto;            /* never grow/shrink, stay their intrinsic width */
+  order: 0;                   /* force them to the first row */
   
-  font-weight: 700;
-  font-size: clamp(0.1rem, 2.3vw, 0.8rem);
-  text-align: center;
-  padding-left: 1rem;
-  padding-right: 1rem;
+}
 
+/* 3) Links container becomes a full-width row when shown */
+.topnav #myLinks {
+  order: 1;                   /* always below the logo+icon */
+  flex: 1 1 100%;             /* take full row width when visible */
+  display: none;         /* hidden by default */
+
+}
+/* when you press it, it moves down 2px and the shadow inverts */
+.topnav #myLinks a:active {
+  transform: translate(2px, 2px);
+  color: var(--rotaorange);
+
+}
+/* 4) When you click, show the links in-flow */
+.topnav.responsive #myLinks {
+  display: block;
+}
+
+/* 5) Style the links themselves */
+.topnav #myLinks a {
+  display: block;
+  padding: 0.8rem 1rem;
+  font-size: 1.3rem;
+  color: var(--rotalightorange);
+  text-decoration: none;
+  text-align: center;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: var(--def-border-color);
+  margin: 0.2rem;
+  background-color: var(--def-element-background);
+}
+
+/* 6) Hamburger container as before, but in flex */
+.topnav a.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 38px;
+  cursor: pointer;
+  background-color: var(--def-border-color);
+  border-radius: 10px;
+}
+/* And change the hamburger icon’s background too */
+.topnav.responsive a.icon {
+  background-color: var(--rotaorange);    /* light grey to show “active” */
+}
+/* 7) The SVG inside centers perfectly */
+.mobilemenu {
+  width: 100%;
+  height: 100%;
+  background: url("/assets/burgermenu.svg") no-repeat center/contain;
+}
+
+
+/*---MAIN SITE BODY---*/
+
+body {
+  background-color: #000000;
+  background-image: var(--default-site-background);
+  color: white;
+  font-family: 'retron2000regular';
+  font-size: 1.04rem;
+}
+
+main {
+  inline-size: clamp(0rem, 100%, 90rem);
+  /* 2) center the block itself in the viewport */
+  margin-inline: auto;
+  /* 3) breathing room on the sides—but capped so it doesn’t explode */
+  padding-inline: clamp(1rem, 0vw, 2.5rem);
+  display: block;
+  background-image: var(--default-body-background);
+  border-style: outset;
+  border-width: 3px;
+  border-radius: 10px;
+  border-color: var(--def-border-color);
+  outline: outset;
+  outline-width: 1px;
+  outline-offset: -6px;
+  outline-color: var(--def-border-color);
+  
+}
+
+
+
+
+/*HEADERS AND TEXT*/
+
+h1 {
+  color: var(--rotayellow);
+  margin: .5rem;
+  font-family: 'computerfontregular';
+}
+
+h2 {
+  font-family: 'inky_thin_pixelsregular';
+  margin: .5rem;
+  color: var(--rotayellow);
+}
+
+h3 {
+  color: var(--rotayellow);
+  margin: .5rem;
+  font-family: 'inky_thin_pixelsregular';
+}
+
+
+
+
+/*<A> TAGS AND LINKS*/
+
+a {
+  color: var(--rotalightorange);
+}
+
+a:link {
+  text-decoration: var(--rotalightorange);
+}
+
+a:hover {
+  color: var(--rotaorange);
+}
+
+
+
+
+/*---ELEMENT HOLDERS, COMMONLY USED ASSETS---*/
+
+.flexholder {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+hr {
+  color: var(--rotalightorange);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-top-style: solid;
+  border-top-width: 3px;
+}
+
+
+
+
+/*---FOOTER---*/
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding-top: 0.3rem;
+}
+
+
+
+
+/*--MEDIA QUERIES--*/
+@media (hover: none) and (pointer: coarse) {
+  .navbar{ 
+    display: none;
+  }
+  .headerflex {
+    display: none;
+  }
+  .topnav {
+    display: flex;
+  }
 }

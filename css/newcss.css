@@ -1,37 +1,37 @@
 @charset "UTF-8";
-/* ----------------------
-   FLEX LAYOUT FIX
-   ---------------------- */
-.flexholder {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 1rem;
+/*SITE INTRO*/
+.centerheader {
+  margin-left: 0;
 }
 
-/* THE MAGIC: let the intro actually shrink past its text width */
 .intro {
   flex: 1 1 800px; /* grow:1, shrink:1, basis:0 */
   min-width: 0; /* allow it to collapse under its content’s min-size */
 }
 
-#introflex {
+#introductionholder {
   margin-top: -30px;
 }
 
-/* Lock the radio column at exactly 205px */
+/*RADIO WIDGET*/
 .radio {
   position: relative;
   float: right;
   margin-bottom: 0px;
   margin-inline: auto;
-  margin-top: -22px;
-  border-width: 2px;
+  margin-top: -18px;
+  border-width: 1px;
   border-style: solid;
-  border-color: orange;
+  outline: outset;
+  outline-offset: 2px;
+  outline-color: var(--def-border-color);
+  outline-width: 2px;
+  border-color: var(--def-border-color);
   padding: 2px;
   padding-top: 20px;
+  align-content: center;
   justify-content: center;
+  background-color: var(--def-element-background);
 }
 
 .popoutbutton {
@@ -49,33 +49,41 @@
 .display {
   font-size: 1rem;
   max-width: 200px;
-  color: rgb(236, 233, 9);
+  color: var(--rotayellow);
 }
 
 .display1 {
   font-size: 1rem;
   max-width: 200px;
-  color: rgb(236, 233, 9);
+  color: var(--rotayellow);
   font-style: italic;
 }
 
+/*---SITEMAP---*/
 .sitenav {
   flex: 1 1 300px; /* same “breakpoint” as before */
   display: flex;
   flex-direction: column;
 }
 
-.bulletin {
-  display: flex;
-  flex-wrap: wrap; /* drop to next “line” if they overflow */
-  justify-content: center;
-  align-items: center; /* center the row(s) of posts */
-  gap: 1rem; /* space between posts */
-  /* keep your existing flex: so it fills the right half */
-  margin-inline: auto; /* optional, can remove if .flexholder handles it */
+.sitenav li {
+  padding: 0.1rem;
 }
 
-/* allow each post to size itself but never go below ~150px wide */
+.sitenav a:hover::after {
+  content: "?";
+}
+
+/*---BULLETIN BOARD / SITE ADVERTS---*/
+.bulletin {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-inline: auto;
+}
+
 .bulletinpost {
   flex: 1 1 0px; /* grow/shrink equally, base = 150px */
   display: flex; /* if you want to center img/text inside each post */
@@ -86,9 +94,20 @@
   text-align: center;
   padding: 0.5rem;
   border: dotted;
-  border-color: rgb(236, 233, 9);
+  border-color: var(--rotayellow);
   width: 295px;
   max-width: 305px;
+}
+
+/*---PERSONAL NEWS / SITE UPDATES---*/
+#personalandsite {
+  border: dashed;
+  border-width: 2px;
+  border-color: var(--rotayellow);
+  margin-bottom: 1rem;
+  padding-bottom: 0.2rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
 }
 
 .updateholder {
@@ -97,24 +116,18 @@
   flex-direction: column;
 }
 
-.siteupdateholder {
-  flex: 1 1 300px; /* same “breakpoint” as before */
-  display: flex;
-  flex-direction: column;
-}
-
-/* Scrollable updates box */
 .updates {
   flex: 1 1 auto;
   max-height: 25rem;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rotaorange) rgba(255, 97, 45, 0.3647058824);
 }
 
-/* Post styling (unchanged) */
 .post {
-  background-color: rgba(57, 19, 94, 0.5);
+  background-color: var(--def-element-background);
   padding: 0.5rem;
-  margin: 0.8rem;
+  margin-bottom: 0.6rem;
 }
 
 .postWrapper {
@@ -124,7 +137,7 @@
 }
 
 .postTitle {
-  color: rgb(236, 233, 9);
+  color: var(--rotayellow);
   font-size: 1.25rem;
   margin-top: 0px;
 }
@@ -138,48 +151,21 @@
 }
 
 .postDate {
-  color: #ccc;
+  color: var(--def-detail-color);
   font-size: 0.9rem;
-  margin-bottom: 0;
-  margin-top: 0;
+  margin: 0;
+  margin-top: 0.3rem;
 }
 
 /* time styling */
 .postTime {
-  color: #ccc;
+  color: var(--def-detail-color);
   font-size: 0.8rem;
   margin: 0;
+  margin-bottom: 0.5rem;
 }
 
 .postBody {
   margin-top: -9px;
   margin-bottom: 0;
-}
-
-div1 {
-  font-family: "computerfontregular";
-}
-
-div2 {
-  font-family: "inky_thin_pixelsregular";
-}
-
-div3 {
-  font-family: "pixel_powerlineregular";
-}
-
-div4 {
-  font-family: "dec_terminal_modernregular";
-}
-
-div5 {
-  font-family: "stv5730aregular";
-}
-
-div6 {
-  font-family: "digitaldiscomedium";
-}
-
-div7 {
-  font-family: "retron2000regular";
 }/*# sourceMappingURL=newcss.css.map */

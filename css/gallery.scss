@@ -1,23 +1,55 @@
 /* Bold, italic header text */
-.headers {
-  margin-left: 0.5%;
-  margin-top: -2px;
-  margin-bottom: 0px;
-  font-weight: bold;
-  font-style: italic;
-  font-size: 21px;
-  text-align: center;
+
+.genreheader{
+  display: flex;
+  align-content: start;
+  align-self: center;
+  justify-content: start;
+  color: var(--rotalightorange);
+  font-size: 1rem;
+  justify-content: start;
+  margin-top: 0;
+  margin: 3px;
 }
 
 /* Reshuffle button (kept as an ID) */
 #reshuffle {
+  display: flex;
+  flex: auto;
   cursor: pointer;
   margin-left: 0.5%;
   margin-top: -2px;
   margin-bottom: 0px;
-  font-weight: bold;
-  font-style: italic;
-  font-size: 21px;
+  width: 12.2rem;
+  justify-content: center;
+  
+}
+
+.genreholder {
+  display: flex;
+  border-style: solid;
+  border-color: var(--def-border-color);
+  flex-direction: column;
+  align-items: center;
+  min-width: 190px;
+  max-width: 180px;
+  background-color: var(--def-element-background);
+  margin-bottom: 1rem;
+  align-content: center;
+}
+
+
+.genreholder > a {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none; /* keep the link styling tidy */
+}
+.genreholder img {
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  padding: .3rem;
+  
 }
 
 /* Gallery loader (switched to a class) */
@@ -36,12 +68,16 @@
   align-content: flex-start;
 }
 
+#galleryholder{
+  justify-content: center;
+}
+
 /* Individual image container */
 .imageContainer {
   width: 150px;              /* or 'auto' if you prefer fluid width */
   text-align: center;
   margin: 10px;
-  border: 3px solid orange;
+  border: 3px solid var(--def-border-color);
   padding: 10px;
   box-sizing: border-box;     /* includes border + padding in total width */
   align-self: flex-start;     /* each container can size independently */
@@ -53,7 +89,7 @@
 }
 .imageContainer p {
   margin: 0;
-  font-size: 1em;
+  font-size: 1rem;
   word-wrap: break-word;
   cursor: pointer;
 }
@@ -125,11 +161,11 @@
   width: 80%;
   max-width: 700px;
   text-align: center;
-  color: orange;
+  color: var(--rotayellow);
   min-height: 0px;
   font-weight: bold;
   font-style: italic;
-  font-size: 120%;
+  font-size: 1.5rem;
 }
 #caption {
   margin: 0 auto;
@@ -147,14 +183,14 @@
   position: absolute;
   top: 15px;
   right: 35px;
-  color: #f1f1f1;
+  color: var(--rotalightorange);
   font-size: 40px;
   font-weight: bold;
   transition: 0.3s;
 }
 .close:hover,
 .close:focus {
-  color: #bbb;
+  color: var(--rotaorange);
   text-decoration: none;
   cursor: pointer;
 }

@@ -1,0 +1,13 @@
+.mobilecalendar { 
+    display: none;
+}
+
+/*--MEDIA QUERIES--*/
+@media (hover: none) and (pointer: coarse) {
+    .mobilecalendar {
+    display: block;
+    }
+    .desktopcalendar {
+    display: none;
+    }
+}
