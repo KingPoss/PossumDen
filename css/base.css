@@ -246,7 +246,7 @@ main {
   background-image: var(--default-body-background);
   border-style: outset;
   border-width: 3px;
-  border-radius: 10px;
+  border-radius: 20px;
   border-color: var(--def-border-color);
   outline: outset;
   outline-width: 1px;
@@ -288,19 +288,203 @@ a:hover {
 }
 
 /*---ELEMENT HOLDERS, COMMONLY USED ASSETS---*/
-.flexholder {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  gap: 1rem;
+.centerheader {
+  margin-left: 0;
+  margin-bottom: 25px;
+}
+
+.textbox1 {
+  min-width: 0;
+  margin-top: -0.4rem; /* allow it to collapse under its content’s min-size */
+}
+
+.textbox2 {
+  min-width: 0;
+  margin-top: -1.4rem;
+}
+
+#introductionholder {
+  margin-top: -30px;
 }
 
 hr {
-  color: var(--rotalightorange);
+  color: var(--def-border-color);
   border-bottom-style: solid;
   border-bottom-width: 1px;
   border-top-style: solid;
   border-top-width: 3px;
+  border-radius: 20px;
+}
+
+/* 1) Your parent flex row */
+.flexholder {
+  display: flex;
+  flex-wrap: wrap; /* will wrap on narrow screens */
+  align-items: flex-start; /* align top of both columns */
+  gap: 1rem;
+}
+
+/* 2) Text column (left) */
+.text-column {
+  flex: 1 1 800px; /* grow/shrink with 800px basis */
+  min-width: 0; /* let it collapse naturally */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* 3) Force HR to fill text column */
+.flextextbreak {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--def-border-color);
+  border-top: 3px solid var(--def-border-color);
+  border-radius: 20px;
+}
+
+/*RADIO WIDGET*/
+.radio {
+  flex: 0 0 205px; /* fixed 205px column, no grow/shrink */
+  position: relative;
+  float: right;
+  margin-bottom: 0px;
+  margin-inline: auto;
+  margin-top: -2rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  outline: outset;
+  outline-offset: 2px;
+  outline-color: var(--def-border-color);
+  outline-width: 2px;
+  border-color: var(--def-border-color);
+  padding: 2px;
+  padding-top: 20px;
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  background-color: var(--def-element-background);
+}
+
+.popoutbutton {
+  position: absolute;
+  top: 2px;
+  right: 5PX;
+  pointer-events: all;
+  z-index: 10;
+}
+
+.popoutbutton img {
+  margin: 2px;
+}
+
+.display {
+  font-size: 1rem;
+  max-width: 200px;
+  color: var(--rotayellow);
+}
+
+.display1 {
+  font-size: 1rem;
+  max-width: 200px;
+  color: var(--rotayellow);
+  font-style: italic;
+}
+
+/* Full-screen modal overlay */
+.phone_modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Modal content container */
+.phone_modal_content {
+  width: 50%; /* Adjust as needed */
+  height: 90%; /* Adjust as needed */
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* SVG image scales to fill the container */
+.phone_modal_content img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain; /* Keeps aspect ratio */
+}
+
+.updateholder {
+  flex: 1 1 300px; /* same “breakpoint” as before */
+  display: flex;
+  flex-direction: column;
+}
+
+.updates {
+  flex: 1 1 auto;
+  max-height: 50rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rotaorange) rgba(255, 97, 45, 0.3647058824);
+}
+
+.post {
+  background-color: var(--def-element-background);
+  padding: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.postWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* align date/time to top of title */
+}
+
+.postTitle {
+  color: var(--rotayellow);
+  font-size: 1.25rem;
+  margin-top: 0px;
+}
+
+/* new container for date+time */
+.postDateContainer {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  margin-left: 1rem;
+}
+
+.postDate {
+  color: var(--def-detail-color);
+  font-size: 0.9rem;
+  margin: 0;
+  margin-top: 0.3rem;
+}
+
+/* time styling */
+.postTime {
+  color: var(--def-detail-color);
+  font-size: 0.8rem;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.postBody {
+  margin-top: -9px;
+  margin-bottom: 0;
+}
+
+.recording {
+  width: 50rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
 }
 
 /*---FOOTER---*/

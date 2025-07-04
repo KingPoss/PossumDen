@@ -1,67 +1,14 @@
-/*SITE INTRO*/
-.centerheader {
-  margin-left: 0;
-}
 .intro {
   flex: 1 1 800px;  /* grow:1, shrink:1, basis:0 */  
-  min-width: 0;  /* allow it to collapse under its content’s min-size */
+  min-width: 0; 
+  margin-top: -0.4rem;
+  margin-bottom: 2rem;
 }
 
-#introductionholder {
-  margin-top: -30px;
-}
 
 
 
 
-/*RADIO WIDGET*/
-
-.radio{
-  position: relative;
-  float: right;
-  margin-bottom: 0px;
-  margin-inline: auto;
-  margin-top: -18px;
-  border-width:1px;
-  border-style:solid;
-  outline: outset;
-  outline-offset: 2px;
-  outline-color: var(--def-border-color);
-  outline-width: 2px;
-  border-color:var(--def-border-color);
-  padding: 2px;
-  padding-top:20px;
-  align-content: center;
-  justify-content: center;
-  background-color: var(--def-element-background);
-
-
-}
-
-.popoutbutton{
-  position: absolute;
-  top: 2px;
-  right: 5PX;
-  pointer-events: all;
-  z-index: 10;
-}
-
-.popoutbutton img{
-  margin: 2px;
-}
-
-.display{
-  font-size: 1rem;
-  max-width: 200px;
-  color: var(--rotayellow);
-}
-
-.display1{
-  font-size: 1rem;
-  max-width: 200px;
-  color: var(--rotayellow);
-  font-style: italic;
-}
 
 
 
@@ -120,64 +67,6 @@
   padding-left: 0.4rem;
   padding-right: 0.4rem;
 }
-.updateholder {
-  flex: 1 1 300px;       /* same “breakpoint” as before */
-  display: flex;
-  flex-direction: column;
-}
 
-.updates {
-  flex: 1 1 auto;
-  max-height: 25rem;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--rotaorange) #ff612d5d;
-}
-
-.post {
-  background-color: var(--def-element-background);
-  padding: 0.5rem;
-  margin-bottom: 0.6rem;
-}
-
-.postWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; /* align date/time to top of title */
-}
-
-.postTitle {
-  color: var(--rotayellow);
-  font-size: 1.25rem;
-  margin-top: 0px;
-}
-
-/* new container for date+time */
-.postDateContainer {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-  margin-left: 1rem;
-}
-
-.postDate {
-  color: var(--def-detail-color);
-  font-size: 0.9rem;
-  margin:0;
-  margin-top: 0.3rem;
-}
-
-/* time styling */
-.postTime {
-  color: var(--def-detail-color);
-  font-size: 0.8rem;
-  margin: 0;
-  margin-bottom: 0.5rem;
-}
-
-.postBody {
-  margin-top: -9px;
-  margin-bottom: 0;
-}
 
 

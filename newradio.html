@@ -17,7 +17,9 @@
 <!--SCRIPT IMPORTS-->
 
 <script src="/JS/mobileNav.js"></script> <!--Populates Site Updates from updates.json-->
-
+<script src="/JS/mrp.js"></script> <!--For the Radio-->
+<script src="/JS/jquery-3.6.1.min.js"></script> <!--For the Radio metadata-->
+<script src="/JS/radioData.js"></script> <!--Also for the Radio-->
 
 
 
@@ -72,8 +74,18 @@
 
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <div class="mobilemenu"></div>
+    
   </a>
 </div>
+<script src="/JS/openphone.js"></script> <!--Also for the Radio-->
+
+
+<div id="phone_modal" class="phone_modal">
+    <div class="phone_modal_content">
+    <img src="assets/phonenumdesc.svg" alt="Full-screen SVG">
+    </div>
+</div>
+
 
 <!--NAVIGATION BAR-->
 <nav class="navbar">
@@ -90,9 +102,163 @@
 
 <!--START OF MAIN SITE BODY-->
 <main>
+<h1 class="centerheader">KP Radio - Tune in, Space Out</h1>
+<div class="flexholder" id="introductionholder">
+<div class="text-column">
+<p class="textbox1">
+Thanks for visiting KP Radio! Here you'll find 24/7 music handpicked from the <a href="https://modarchive.org/" target="_blank">modarchive</a>, old experimental albums, fictional ads, and indie artists from around the net!! The <img style="margin-bottom: -4px;"src="assets/autodj.gif"> will typically be in control, but there will be live broadcasts DJ'd by me as well as other guest hosts, indicated by the <img style="margin-bottom: -4px;" src="assets/kplive.gif"> icon. During broadcasts, you can <a class="thumbnail" href="javascript: void(0)">call into the station</a> and speak with me on air! We also have live interviews with webmasters, musicians, and other interesting people!
+</p>
+<hr class="flextextbreak">
+<h2 class="centerheader">Wanna Play Your Music / Get Interviewed? Run Ads For Your Site? </h2>
+<p class="textbox2">
+I'd love to hear from you! If you're in the U.S. or dont mind international rates, you can <a class="thumbnail" href="javascript: void(0)">call me</a> on the telephone, or you can <a href="mailto:kp@kingposs.com">email me.</a> Calling me/voicemail is the quickest, but I'll respond to any emails before too long!
+</p>
+</div>
+
+<div class="radio">
+<div class="popoutbutton">
+  <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;">
+    <img id="onair" src="assets/autodj.gif">
+    <img src="assets/popout.png">
+  </a>
+</div>
+      <script type="text/javascript">
+        MRP.insert({
+          'url':'https://radio.kingposs.com:8000/radio.mp3',
+          'codec':'mp3',
+          'volume':40,
+          'autoplay':false,
+          'forceHTML5':true,
+          'jsevents':true,
+          'buffering':0,
+          'title':'KPradio.net',
+          'wmode':'transparent',
+          'skin':'/radioThemes/oldradio/oldradio.xml',
+          'width':205,
+          'height':132
+        });
+      </script>
+
+      <center>
+      <div class="np">
+        <section class="now-playing">
+          <div class="display">Now Playing</div>
+          <div class="display1">Unknown</div>
+        </section>
+      <noscript>Javascript is required</noscript>
+      </div>
+      </center>
+    <a class="streamlink" href="https://radio.kingposs.com:8000/radio.mp3">Stream Link</a>
+    </div>
+</div>
+</div>
+<hr>
+<center><h2>--- Featured Artists ---</h2></center>
+        <div class="listholder">
+            <ul class="artists">
+                <li><a href="https://upallnight.wtf/" target="_blank">Up All Night</a></li>
+                <li><a href="https://ksbp.space/" target="_blank">Kansas Beach Patrol</a></li>
+                <li><a href="https://chezmonplaisir.bandcamp.com/music" target="_blank">Loyalty Freak</a></li>
+                <li><a href="https://tomslack.neocities.org/" target="_blank">Tom Slack</a></li>
+                <li><a href="https://www.nelward.com/" target="_blank">Nelward</a></li>
+                <li><a href="https://jlehr.neocities.org/" target="_blank">Jerry Lehr</a></li>
+                <li><a href="https://dot-pitch.neocities.org/" target="_blank">Dead Mall</a></li>
+                <li><a href="https://paintkiller.neocities.org/" target="_blank">Paintkiller</a></li>
+                <li><a href="https://tournament420.bandcamp.com/" target="_blank">Tournament</a></li>
+                <li><a href="https://pleasantries.bandcamp.com/music" target="_blank">Pleasantries</a></li>
+                <li><a href="https://soopurkul.bandcamp.com/music" target="_blank">SoopurKul</a></li>
+                <li><a href="https://linktr.ee/keepittogetherband" target="_blank">Keep It Together</a></li>
+                <li><a href="https://glassoforange.neocities.org/" target="_blank">Glass of Orange</a></li>
+                <li><a href="https://castlerat.bandcamp.com" target="_blank">Castle Rat</a></li>
+                <li><a href="https://steviasphere.bandcamp.com/" target="_blank">Stevia Sphere</a></li>
+                <li><a href="https://www.youtube.com/@Aliantos" target="_blank">Aliantos</a></li>
+                <li><a href="https://medscape.bandcamp.com/" target="_blank">Medscape</a></li>
+                <li><a href="https://snuffles.bandcamp.com/" target="_blank">Snuffles</a></li>
+                <li><a href="https://monoculus.bandcamp.com/" target="_blank">Monoculus Rex Murum</a></li>
+                <li><a href="https://thesinkboy.bandcamp.com/" target="_blank">Sink Boy</a></li>
+                <li><a href="https://corporateddreams.bandcamp.com/" target="_blank">Dream.Corp</a></li>
+                <li><a href="https://doomvega.bandcamp.com/" target="_blank">Doomvega</a></li>
+                <li><a href="https://www.toxhards.com/" target="_blank">The Toxards</a></li>
+                <li><a href="https://oppositionjht.bandcamp.com/" target="_blank">Opposition</a></li>
+                <li><a href="https://blxxdbvrn.bandcamp.com/" target="_blank">Blxxd Bvrn</a></li>
+                <li><a href="https://daltonists.bandcamp.com/" target="_blank">Daltonists</a></li>
+                <li><a href="https://mothershiploudspeakerz.bandcamp.com/" target="_blank">Mothership Loudspeakerz</a></li>
+                <li><a href="https://lunite76.carrd.co/" target="_blank">Lunite76</a></li>
+            </ul>
+        </div>
+<hr>
+<center><h2>--- Broadcast Schedule ---</h2></center>
 <div class="desktopcalendar"><div data-tockify-component="calendar" data-tockify-calendar="kpradioschedule"></div></div>
 <div class="mobilecalendar"><div data-tockify-component="mini" data-tockify-calendar="kpradioschedule"></div></div>
 <script data-cfasync="false" data-tockify-script="embed" src="https://public.tockify.com/browser/embed.js"></script>
+
+<hr>
+<center><h2>--- Broadcast Recordings ---</h2></center>
+<div class="updateholder">
+        <div class="updates">
+
+            <!--POST SEPERATOR-->
+            <div class="post">
+                <div class="postWrapper">
+                <div class="postTitleWrapper">
+                <p class="postTitle">Interview & acoustic set with Adam!</p>
+                </div>
+                <p class="postDate">03/03/2024</p>
+                </div>
+
+                <center>
+                <audio id="broadcasts" class="recording" controls>
+                <script>
+                    var audio = document.getElementById("broadcasts");
+                    audio.volume = 0.4;
+                </script>
+                <source src="assets/audio/AdamInterview.mp3" type="audio/wav">
+                Your browser does not support the audio tag.
+                </audio>
+                </center>
+                <p class="postBody">Adam of <a href="https://december7.neocities.org/">December7th</a>, the sole creator of <a href="https://linktr.ee/1207cbc">"Swollen to Bursting Until I Am Disappearing on Purpose"</a> joins us for an interview regarding their game and creative process. They also recorded 3 acoustic versions of songs from their game, and debuted them live on air! give this one a listen folks!</p>
+            </div>
+            <!--POST SEPERATOR-->
+
+            <!--POST SEPERATOR-->
+            <div class="post">
+                <div class="postWrapper">
+                <div class="postTitleWrapper">
+                <p class="postTitle">Interview with Ophanimkei!</p>
+                </div>
+                <p class="postDate">6/8/2023</p>
+                </div>
+
+                <center>
+                <audio id="broadcasts" class="recording" controls>
+                <script>
+                    var audio = document.getElementById("broadcasts");
+                    audio.volume = 0.4;
+                </script>
+                <source src="assets/audio/2023-06-08_19h30m18s.mp3" type="audio/wav">
+                Your browser does not support the audio tag.
+                </audio>
+                </center>
+                <p class="postBody">In our first ever interview with a webmaster, we speak with artist and game developer <a href="https://ophanimkei.com/">Ophanim/Mala!</a> We dive into their recent projects, creative process, experiences with studying abroad, and so much more!</p>
+            </div>
+            <!-- POST SEPERATOR-->
+
+        </div>  
+      </div>
+<hr>
+<center><h2>--- Radio Widgets ---</h2></center>
+<div class="widgetWrapper">
+
+    <div class="wrapper">
+        <div class="theframe" style="width:227px; overflow-x: hidden; overflow-y: hidden;"><iframe src="kpradio.html" style="overflow:hidden; display: block; " width="auto" height="200px" frameborder="0" ></iframe></div>
+        <textarea class="widgetbox" readonly><div><iframe src="https://kingposs.com/kpradio.html" style="overflow:hidden; display: block; " width="auto" height="auto" frameborder="0"></iframe></div></textarea>
+    </div>
+    
+    <div class="wrapper">
+        <div class="theframe" style="width:227px; justify-content: center;"><iframe src="kpradiocompact.html" allowtransparency="true" frameborder="0" scrolling="no" style="overflow:hidden; width: 230px; height: 100px; "></iframe></div>
+        <textarea class="widgetbox" readonly><div><iframe src="https://kingposs.com/kpradiocompact.html" allowtransparency="true" frameborder="0" scrolling="no" style="overflow:hidden; width: 230px; height: 100px; "></iframe></div></textarea>
+    </div>
+</div>
 </main>
 
 <footer>

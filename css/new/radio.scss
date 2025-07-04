@@ -2,6 +2,16 @@
     display: none;
 }
 
+.desktopcalendar { 
+    margin-top: -4rem;
+}
+
+
+
+
+
+
+
 /*--MEDIA QUERIES--*/
 @media (hover: none) and (pointer: coarse) {
     .mobilecalendar {
@@ -11,3 +21,97 @@
     display: none;
     }
 }
+.listholder {
+  display: flex;
+  max-width: 90rem;
+  margin: 0 auto;
+  
+  justify-content: center;
+  align-items: center;
+}
+
+.artists {
+  display: flex;
+  flex-wrap: wrap;              /* let items wrap to new rows */
+  justify-content: center;
+  align-content: center;    /* center each row under the one above */
+  gap: 0rem;                    /* space between items */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 60rem;
+}
+
+/* give each item a “column” width, but allow shrink/grow */
+.artists li {
+  flex: 1 1 200px;              /* base width 200px, but can shrink/grow */
+  max-width: 250px;
+}
+
+/* style the links */
+.artists a {
+  display: block;
+  padding: 0.3rem;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  color: var(--rotalightorange);
+  text-decoration: none;
+  background-color: var(--def-element-background);
+  border-style: inset;
+  border-width: 2px;
+  border-radius: 10px;
+  border-color: var(--def-border-color);
+  margin: 0.3rem;
+
+}
+
+.artists a:hover {
+  text-decoration: underline;
+}
+
+.streamlink{
+  display: flex;
+  font-style: italic;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  border: inset;
+  border-radius: 10px;
+  border-width: 2px;
+  width: 8rem;
+  font-size: 0.7rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
+
+  .wrapper{
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 10px;
+    flex: 0 0 auto;
+  }
+  .widgetWrapper{
+    display: flex;
+    justify-content: center;
+  }
+  .theframe{
+    float:left
+  }
+  .widgetbox{
+    float: right;
+    width: 100%;
+    height: 130px;
+    max-width: 227px;
+    width:227px; 
+    overflow-x: hidden; 
+    overflow-y: hidden;
+    
+  }
+  
