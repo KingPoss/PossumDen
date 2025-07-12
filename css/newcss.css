@@ -2,7 +2,7 @@
 .intro {
   flex: 1 1 800px; /* grow:1, shrink:1, basis:0 */
   min-width: 0;
-  margin-top: -0.4rem;
+  margin-top: 0;
   margin-bottom: 2rem;
 }
 
@@ -42,6 +42,7 @@
   padding: 0.5rem;
   border: dotted;
   border-color: var(--rotayellow);
+  border-radius: 20px;
   width: 295px;
   max-width: 305px;
 }

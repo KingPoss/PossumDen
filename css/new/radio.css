@@ -60,7 +60,8 @@
 }
 
 .artists a:hover {
-  text-decoration: underline;
+  color: var(--rotaorange);
+  border-color: var(--rotaorange);
 }
 
 .streamlink {
@@ -70,12 +71,21 @@
   align-items: center;
   margin: auto;
   border: inset;
-  border-radius: 10px;
+  border-radius: 8px;
   border-width: 2px;
-  width: 8rem;
+  width: 5.5rem;
   font-size: 0.7rem;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
+}
+
+audio {
+  border-radius: 20px;
+  background-color: var(--rotaviolet);
+}
+
+audio:hover {
+  color: var(--rotalightorange);
 }
 
 .wrapper {

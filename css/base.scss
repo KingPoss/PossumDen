@@ -295,14 +295,17 @@ main {
 
 h1 {
   color: var(--rotayellow);
-  margin: .5rem;
+
   font-family: 'computerfontregular';
+  line-height: 1.4rem;
+  margin-bottom: -0.6rem;
 }
 
 h2 {
   font-family: 'inky_thin_pixelsregular';
   margin: .5rem;
   color: var(--rotayellow);
+  line-height: 1.8rem;
 }
 
 h3 {
@@ -335,19 +338,20 @@ a:hover {
 
 .centerheader {
  margin-left: 0;
- margin-bottom: 25px;
+ margin-bottom: 0;
 
 }
 .textbox1 {
   min-width: 0;
-  margin-top: -0.4rem; /* allow it to collapse under its content’s min-size */
+  margin-top: 0;/* allow it to collapse under its content’s min-size */
 }
 .textbox2 { 
   min-width: 0;
-  margin-top: -1.4rem
+  margin-top: 0;
+  margin-bottom: 1.8rem;
 }
 #introductionholder {
-  margin-top: -30px;
+  margin-top: 0;
 }
 
 hr{
@@ -483,16 +487,29 @@ hr{
 
 .updates {
   flex: 1 1 auto;
-  max-height: 50rem;
+  max-height: 25rem;
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--rotaorange) #ff612d5d;
+  scrollbar-color: var(--rotayellow) #ff612d5d;
+  scrollbar-gutter: auto;
 }
-
+.updates::-webkit-scrollbar{
+  flex: 1 1 auto;
+  max-height: 25rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rotayellow) #ff612d5d;
+  scrollbar-gutter: auto;
+}
 .post {
   background-color: var(--def-element-background);
   padding: 0.5rem;
   margin-bottom: 0.6rem;
+  border-radius: 20px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--def-border-color);
+  margin-right: 0.2rem;
 }
 
 .postWrapper {
@@ -538,7 +555,7 @@ hr{
 .recording { 
   width: 50rem;
   margin-bottom: 1rem;
-  margin-top: 0;
+  margin-top: 0rem;
 }
 
 
