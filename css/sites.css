@@ -1,5 +1,5 @@
 .siteheader {
-  color: orange;
+  color: var(--rotayellow);
   margin-top: 5px;
   margin-bottom: 0px;
   font-size: 30px;
@@ -30,6 +30,10 @@
 }
 
 .myButton {
-  margin: 2px;
+  padding-bottom: 30;
   color: orange;
+}
+
+.mybuttonimage {
+  margin-bottom: 0.5rem;
 }/*# sourceMappingURL=sites.css.map */

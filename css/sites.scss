@@ -1,11 +1,11 @@
- .siteheader{
-  color: orange;
+ .siteheader {
+  color: var(--rotayellow);
   margin-top: 5px;
   margin-bottom: 0px;
   font-size: 30px;
   font-weight: bolder;
 }
-  .sites{
+  .sites {
     display: flex;
     flex-direction: column;
     padding-left: 5px;
@@ -13,13 +13,13 @@
     margin-bottom: 3px;
     max-width: 90%;
   }
-  .sitelinks{
+  .sitelinks {
     font-size: 23px;
     font-weight: bold;
 
   }
 
-  .neobadges{
+  .neobadges {
     margin-left: 4%;
     margin-right: 4%;
     margin-top: 5px;
@@ -28,7 +28,10 @@
     justify-content: center;
   }
 
-  .myButton{
-    margin: 2px;
+  .myButton {
+    padding-bottom: 30;
     color: orange;
+  }
+  .mybuttonimage {
+    margin-bottom: 0.5rem;
   }

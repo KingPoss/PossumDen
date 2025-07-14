@@ -74,9 +74,10 @@
     text-decoration: none;
 	text-align: center;
     text-transform: uppercase;
-    background-color: rgb(103, 24, 143);
+    background-color: var(--lightpurple);
     color: white;
-    border: 1px solid white;
+    border: 2px solid var(--def-border-color);
+    border-radius: 10px;
 }
 #c_widget button:hover, #c_widget input[type=submit]:hover {
     color: orange;
@@ -92,8 +93,9 @@
 #c_inputDiv {
     margin-bottom: 15px;
     padding: 10px;
-    background-image: url(../assets/darkerbackground.png);
-    border: 2px solid white;
+    border: 6px double var(--def-border-color);
+    border-radius: 20px;
+    background-color: var(--def-element-background);
 }
 
 #c_widgetTitle {
@@ -105,7 +107,6 @@
     font-weight: bold;
     text-align: center;
     color: orange;
-    background-image: url(../assets/darkerbackground.png);
 }
 
 .c-inputFields {
@@ -125,12 +126,15 @@
 
 .c-input {
     padding: 4px;
-    color: black;
-    border: 1px solid #2D0B52;
+    color: white;
+    border-radius: 10px;
     outline: none;
     width: 100%; /* Ensure input takes full width of its container */
     max-width: 250px; /* Adjust as needed */
     margin: 1%;
+    background-color: var(--darkpurple);
+    font-family: 'retron2000regular';
+    opacity: 100%;
 }
 
 .c-input:focus {
@@ -170,8 +174,9 @@
 .c-comment {
     margin-bottom: 15px;
     padding: 10px;
-    border: 2px solid white;
-    background-image: url(/assets/darkerbackground.png); 
+    border: 4px outset var(--def-border-color);
+    background-color: var(--def-element-background);
+    border-radius: 10px;
 }
 .c-reply {
     display: block;
@@ -180,15 +185,15 @@
     margin-left: auto;
     margin-right: 0;
     padding: 10px;
-    border: 2px solid white;
-    background-color: #2D0B52; 
+    border: 2px solid var(--def-border-color);
+    border-radius: 10px;
+    background-color: var(--darkpurple); 
 }
 .c-reply:last-child {margin-bottom: 0;}
 .c-replyContainer {
     margin: -10px;
     margin-top: 10px;
     padding: 10px;
-    background-image: url(/assets/darkerbackground.png); 
 }
 
 .c-name {
@@ -198,7 +203,7 @@
     padding: 0;
     text-transform: uppercase;
     font-weight: bold;
-    color: orange;
+    color: var(--rotayellow);
 }
 .c-site {
     text-transform: uppercase;
@@ -208,7 +213,7 @@
 .c-site:hover {color: orange;}
 .c-timestamp {
     float: right;
-    opacity: 75%;
+    color: var(--def-detail-color);
 }
 .c-text {
     margin: 0;
@@ -219,7 +224,6 @@
     font-size: 14px;
     text-align: justify;
     color: white;
-    background-color: #2D0B52; 
 }
 
 /* Pagination */

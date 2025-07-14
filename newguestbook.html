@@ -10,14 +10,16 @@
 <link href="/css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
 <link href="/css/effects.css" rel="stylesheet" type="text/css" media="all" >
 <link href="/css/base.css" rel="stylesheet" type="text/css" media="all" >
-<link href="/css/gallery.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/guestbook.css" rel="stylesheet" type="text/css" media="all" >
+
+<link href="/css/comment-widget-dark.css" rel="stylesheet" type="text/css" media="all" >
+
 
 </head>
 
 <!--SCRIPT IMPORTS-->
-<script src="/JS/mobileNav.js"></script> <!--Pops the navbar out on mobile-->
-<script src="/JS/neoGallery.js"></script>
 
+<script src="/JS/mobileNav.js"></script> <!--Populates Site Updates from updates.json-->
 
 
 
@@ -59,6 +61,8 @@
 </pre>
 </div>
 
+ <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+
 <!--MOBILE NAVIGATION BAR-->
 <div class="topnav" id="myTopnav">
   <a href="/index.html" class="active"><img src="/assets/mobileheader.gif"><div class="rainbow">The Possum Den</div></a>
@@ -94,71 +98,8 @@
 
 <!--START OF MAIN SITE BODY-->
 <main>
-<center>
-<a id="reshuffle"><h2>Random Selection!</h2></a>
-<!--if you want to add a new gallery item on your page, add everything between this comment, and the one that states 'snippet end'-->
-<div class="gallery" data-tag="random">
-  <!--galleryLoader shows while gallery items are parsed from the media json-->
-      <div class="galleryLoader" >
-          <div>
-          <img src="/assets/hourglass.gif" alt="Loading..." >
-          <p>Loading...</p>
-          </div>
-      </div>
-  </div>
-  <!--myModal shows when an image is clicked-->
-  <div id="myModal" class="modal">
-      <span class="close">&times;</span>
-      <img id="loadingPlaceholder" class="loading" src="/assets/hourglass.gif"></img>
-      <img class="modal-content" id="img01">
-      <div id="title"></div>
-       <div id="caption"></div>
-  </div>
-</center>
-
-<script src="/JS/neoGallery.js"></script>
-<hr>
-<center><h2>---Genres / Mediums---</h2></center>
-<div class="flexholder" id="galleryholder">
-
-<div class="genreholder">
-<a href="/TradDigi.html">
-<p class="genreheader">Traditional / Digital</p>
-<img src="/assets/thumbnails/thumbnail_lone_sailor.jpg" alt="">
-
-</a>
-</div> 
-
-<div class="genreholder">
-<a href="/glitchart.html">
-<p class="genreheader">Analog / Glitch</p>
-<img src="/assets/thumbnails/thumbnail_systemmhalted.gif" alt="">
-</a>
-</div>
-
-<div class="genreholder">
-<a href="/sonawebmaster.html">
-<p class="genreheader">Sona / Webmaster</p>
-<img src="/assets/thumbnails/thumbnail_kpevil.jpg" alt="">
-</a>
-</div>
-
-<div class="genreholder">
-<a href="/3Dart.html">
-<p class="genreheader">3D Art</p>
-<img src="/assets/thumbnails/thumbnail_mypossum.jpg" alt="">
-</a>
-</div>
-
-<div class="genreholder">
-<a href="/microscope.html">
-<p class="genreheader">Microscope Pics</p>
-<img src="/assets/thumbnails/thumbnail_copepod.jpg" alt="">
-</a>
-</div>
-<!--END-->
-
-</div>
+<div class="guestbookwrapper"><div id="c_widget"></div>
+<script src="JS/comment-widget.js"></script></div>
 
 </main>
 
