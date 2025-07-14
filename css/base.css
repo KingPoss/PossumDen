@@ -526,4 +526,15 @@ footer {
   .topnav {
     display: flex;
   }
+}
+@media only screen and (max-width: 800px) {
+  .navbar {
+    display: none;
+  }
+  .headerflex {
+    display: none;
+  }
+  .topnav {
+    display: flex;
+  }
 }/*# sourceMappingURL=base.css.map */
