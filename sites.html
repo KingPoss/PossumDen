@@ -1,154 +1,162 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel='shortcut icon' type='image/jpg' href ='/assets/favicon.ico'/>
+<title>The Possum Den</title>
 <meta name="description" content="The personal webpage and dwelling of the web's stinkiest opossum!">
-<title>The Possum Den - Cool Sites</title> <!--Tab Title-->
-<link href="css/requiredCss.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/mediaQueries.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/effects.css" rel="stylesheet" type="text/css" media="all" >
-
-<link href="css/sites.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
 <link href="/css/effects.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/base.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/sites.css" rel="stylesheet" type="text/css" media="all" >
 
-<link rel='shortcut icon' type='image/jpg' href ='assets/favicon.ico'/>
-    
 </head>
 
-<noscript>
-<pre class="header">
+<!--SCRIPT IMPORTS-->
 
-88888888888 888    888 8888888888      8888888b.   .d88888b.   .d8888b.   .d8888b.  888     888 888b     d888      8888888b.  8888888888 888b    888
-    888     888    888 888             888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 888     888 8888b   d8888      888  "Y88b 888        8888b   888
-    888     888    888 888             888    888 888     888 Y88b.      Y88b.      888     888 88888b.d88888      888    888 888        88888b  888
-    888     8888888888 8888888         888   d88P 888     888  "Y888b.    "Y888b.   888     888 888Y88888P888      888    888 8888888    888Y88b 888
-    888     888    888 888             8888888P"  888     888     "Y88b.     "Y88b. 888     888 888 Y888P 888      888    888 888        888 Y88b888
-    888     888    888 888             888        888     888       "888       "888 888     888 888  Y8P  888      888    888 888        888  Y88888
-    888     888    888 888             888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888      888  .d88P 888        888   Y8888
-    888     888    888 8888888888      888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888      8888888P"  8888888888 888    Y888</pre>    
-<nav class="buttons">
-<a href="/index.html">
-<img src="/assets/home.gif"></a>
-<a href="/about.html">
-<img src="/assets/aboutme.gif"></a>
-<a href="/art.html">
-<img src="/assets/art.gif"></a>
-<a href="/Thoughts/MainBlogPage.html">
-<img src="/assets/thoughts.gif"></a>
-<a href="/radio.html">
-<img src="/assets/radio.gif"></a>
-<a href="/projects/projects.html">
-<img src="/assets/projects.gif"></a>
-<a href="/programs.html">
-<img src="/assets/programs.gif"></a>
-<a href="/sites.html">
-<img src="/assets/coolsites.gif"></a>
-<a href="/guestbook.html">
-<img src="/assets/guestbook.gif"></a>
+<script src="/JS/mobileNav.js"></script> <!--Populates Site Updates from updates.json-->
+
+
+<body>
+
+<!--SITE HEADER-->
+
+<div class="headerflex">
+<pre class="rainbow" id="siteheader">
+88888888888 888    888 8888888888
+    888     888    888 888       
+    888     888    888 888       
+    888     8888888888 8888888   
+    888     888    888 888       
+    888     888    888 888       
+    888     888    888 888       
+    888     888    888 8888888888
+</pre>
+<pre class="rainbow" id="siteheader">
+8888888b.   .d88888b.   .d8888b.   .d8888b.  888     888 888b     d888
+888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 888     888 8888b   d8888
+888    888 888     888 Y88b.      Y88b.      888     888 88888b.d88888
+888   d88P 888     888  "Y888b.    "Y888b.   888     888 888Y88888P888
+8888888P"  888     888     "Y88b.     "Y88b. 888     888 888 Y888P 888
+888        888     888       "888       "888 888     888 888  Y8P  888
+888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888
+888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888
+</pre>
+<pre class="rainbow" id="siteheader">
+8888888b.  8888888888 888b    888
+888  "Y88b 888        8888b   888
+888    888 888        88888b  888
+888    888 8888888    888Y88b 888
+888    888 888        888 Y88b888
+888    888 888        888  Y88888
+888  .d88P 888        888   Y8888
+8888888P"  8888888888 888    Y888
+</pre>
+</div>
+
+ <!-- Load an icon library to show a hamburger menu (bars) on small screens -->
+
+<!--MOBILE NAVIGATION BAR-->
+<div class="topnav" id="myTopnav">
+  <a href="/index.html" class="active"><img src="/assets/mobileheader.gif"><div class="rainbow">The Possum Den</div></a>
+
+  <div id="myLinks">
+  <a href="/index.html">Home</a>
+  <a href="/about.html">About Me</a>
+  <a href="/art.html">Art/Media</a>
+  <a href="https://blog.kingposs.com">Blog</a>
+  <a href="/radio.html">Radio</a>
+  <a href="https://kb.kingposs.com">Brain Bank</a>
+  <a href="/sites.html">Cool Sites</a>
+  <a href="/guestbook.html">Guestbook</a>
+  </div>
+
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <div class="mobilemenu"></div>
+  </a>
+</div>
+
+<!--NAVIGATION BAR-->
+<nav class="navbar">
+  <a href="/index.html">Home</a>
+  <a href="/about.html">About Me</a>
+  <a href="/art.html">Art/Media</a>
+  <a href="https://blog.kingposs.com">Blog</a>
+  <a href="/radio.html">Radio</a>
+  <a href="https://kb.kingposs.com">Brain Bank</a>
+  <a href="/sites.html">Cool Sites</a>
+  <a href="/guestbook.html">Guestbook</a>
 </nav>
-</noscript>
-<script src="/JS/headerfooter.js"></script>
-
-<hr style="border-bottom-style: solid;border-bottom-width: 1px;border-top-style: solid;border-top-width: 3px;" color="#63227a"> 
 
 
-<table class="SITEBODY"> <!--START OF SITEBODY-->
-
-
-<!--NEW SECTION-->
-<tr><td>
-    <center style="padding-top:5px;"><img src="assets/iconcat.gif" style="padding-right: 10px;"alt=""><span class="siteheader">My Neighborhood!</span><img src="assets/iconcat.gif" style="padding-left: 10px;"alt=""></center>
+<!--START OF MAIN SITE BODY-->
+<main>
+    <center><img src="assets/iconcat.gif"><span class="siteheader">My Neighborhood!</span><img src="assets/iconcat.gif"></center>
     <div class="neobadges">
     <center>
     
-    <a href="https://benobii.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/benobii-btn.gif"></a>
-    <a href="https://intergoatlactic.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/intergoatlactic button.gif"></a>
-    <a href="https://morrysillusion.net/" target="_blank"><img class="h-swing" src="assets/buttons/MORRYSILLUSION.png"></a>
-    <a href="https://fairytrash.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/fairytrash.gif"></a>
-    <a href="https://arlita.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/arlita.gif"></a>
-    <a href="https://almightyandroid.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/almightyandroid.gif"></a>
-    <a href="https://palemomos.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/palebutton10.gif"></a>
-    <a href="https://sugarforbrains.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/sugarforbrains.gif"></a>
-    <a href="https://loafsona.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/loaf_background.png"></a>
-    <a href="https://expectationemesis.net/" target="_blank"><img class="h-swing" src="assets/buttons/expnembutton.png"></a>
-    <a href="https://metalvalley.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/valleybutton.png"></a>
-    <a href="https://badgersaurus.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/badgersaurus-button.png"></a>
-    <a href="https://hopeslair.neocities.org/" target="_blank"><img class="h-swing" src="https://hopeslair.neocities.org/pictures/buttonsite.png"></a>
-    <a href="https://divergentrays.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/drbutton.gif"></a>
-    <a href="https://atomicgothic.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/atomicgothic.gif"></a>
+    <a href="https://benobii.neocities.org/" ><img class="h-swing" src="assets/buttons/benobii-btn.gif"></a>
+    <a href="https://intergoatlactic.neocities.org/" ><img class="h-swing" src="assets/buttons/intergoatlactic button.gif"></a>
+    <a href="https://morrysillusion.net/" ><img class="h-swing" src="assets/buttons/MORRYSILLUSION.png"></a>
+    <a href="https://fairytrash.neocities.org/" ><img class="h-swing" src="assets/buttons/fairytrash.gif"></a>
+    <a href="https://arlita.neocities.org/" ><img class="h-swing" src="assets/buttons/arlita.gif"></a>
+    <a href="https://almightyandroid.neocities.org/" ><img class="h-swing" src="assets/buttons/almightyandroid.gif"></a>
+    <a href="https://palemomos.neocities.org/" ><img class="h-swing" src="assets/buttons/palebutton10.gif"></a>
+    <a href="https://sugarforbrains.neocities.org/" ><img class="h-swing" src="assets/buttons/sugarforbrains.gif"></a>
+    <a href="https://loafsona.neocities.org/" ><img class="h-swing" src="assets/buttons/loaf_background.png"></a>
+    <a href="https://expectationemesis.net/" ><img class="h-swing" src="assets/buttons/expnembutton.png"></a>
+    <a href="https://metalvalley.neocities.org/" ><img class="h-swing" src="assets/buttons/valleybutton.png"></a>
+    <a href="https://badgersaurus.neocities.org/" ><img class="h-swing" src="assets/buttons/badgersaurus-button.png"></a>
+    <a href="https://hopeslair.neocities.org/" ><img class="h-swing" src="https://hopeslair.neocities.org/pictures/buttonsite.png"></a>
+    <a href="https://divergentrays.neocities.org/" ><img class="h-swing" src="assets/buttons/drbutton.gif"></a>
+    <a href="https://atomicgothic.neocities.org/" ><img class="h-swing" src="assets/buttons/atomicgothic.gif"></a>
     <a href="https://daximus.neocities.org/"><img class="h-swing" src="https://daximus.neocities.org/images/dax_alien.gif" alt="Daximus"></a>
-    <a href="https://cosmic-kiko.neocities.org/" target="_blank"><img alt="Cosmic Kiko" class="h-swing" src="https://cosmic-kiko.neocities.org/images/stamps/kiko-banner.gif"></a> 
-    <a href="https://cyberoccultism.online/" target="_blank"><img alt="Cyberoccultism" class="h-swing" src="https://cyberoccultism.online/images/buttons/cyberoccultismbutton.gif"></a> 
+    <a href="https://cosmic-kiko.neocities.org/" ><img alt="Cosmic Kiko" class="h-swing" src="https://cosmic-kiko.neocities.org/images/stamps/kiko-banner.gif"></a> 
+    <a href="https://cyberoccultism.online/" ><img alt="Cyberoccultism" class="h-swing" src="https://cyberoccultism.online/images/buttons/cyberoccultismbutton.gif"></a> 
     <a href="http://prophetesque.gay"><img class="h-swing" src="assets/buttons/prophetesque.gif"></a>
-    <a href="https://maxilla.neocities.org/"target="_blank"><img class="h-swing" src="assets/buttons/maxdimo button.gif"></a> 
-    <a href="https://clownbonk.neocities.org/"target="_blank"><img class="h-swing" src="assets/buttons/clownbonk.gif"></a> 
-    <a href="https://neocities.org/site/waffles-cosmic-void"target="_blank"><img class="h-swing" src="assets/buttons/WAFFLESCOSMICVOID.png"></a> 
-    <a href="https://neocities.org/site/rksmith"target="_blank"><img class="h-swing" src="assets/buttons/rksmith.gif"></a> 
-    <a href="https://americasdecline.neocities.org/index.html" target="_blank"><img class="h-swing" src="https://i.postimg.cc/RFrypFnS/ad-button-01.png" border="0"></a>
-    <a href="https://anothermigrane.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/Laplacebutton.png"/></a>
-    <a href="https://faeriebottled97.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/margie.png"/></a>  
-    <a href="https://jlehr.neocities.org/" target="_blank"><img class="h-swing" src="assets/buttons/lehr.gif"/></a>
-    <a href="https://dokode.moe/indexv3" target="_blank"><img class="h-swing" src="assets/buttons/dokodemobutton2.gif"/></a> 
-    <a href="https://garbagedeity.neocities.org/" target="_blank"> <img class="h-swing" src="https://garbagedeity.neocities.org/assets/possbut.gif"></a> 
-    <a href="https://ophanimkei.com/" target="_blank"> <img class="h-swing" src="assets/buttons/ophanim.png"></a>
-    <a href="https://zauberfloete.neocities.org/" target="_blank"> <img class="h-swing" src="assets/buttons/zauberbutton.png"></a>
-    <a href="https://noctivagant.net/" target="_blank"> <img class="h-swing" src="assets/buttons/noctivagant.png"></a>
-    <a href="https://duckysden.neocities.org/" target="_blank"> <img class="h-swing" src="assets/buttons/DuckysDenPlaceholder.png"></a>
-    <a href="https://glassoforange.neocities.org/" target="_blank"> <img class="h-swing" src="assets/buttons/orangestamp.png"></a>
-    <a href="https://cavernofremembrance.neocities.org/" target="_blank"> <img class="h-swing" src="assets/buttons/cavernofremembrance.gif"></a>
-    <a href="https://lakestheguy.neocities.org/" target="_blank"> <img class="h-swing" src="assets/buttons/lakestheguy.png"></a>
-    <a href="https://lucky-goose.neocities.org/" target="_blank"> <img class="h-swing" src="assets/buttons/luckygoose.png"></a>
-
-
-    
-
-    
-
-
+    <a href="https://maxilla.neocities.org/"><img class="h-swing" src="assets/buttons/maxdimo button.gif"></a> 
+    <a href="https://clownbonk.neocities.org/"><img class="h-swing" src="assets/buttons/clownbonk.gif"></a> 
+    <a href="https://neocities.org/site/waffles-cosmic-void"><img class="h-swing" src="assets/buttons/WAFFLESCOSMICVOID.png"></a> 
+    <a href="https://neocities.org/site/rksmith"><img class="h-swing" src="assets/buttons/rksmith.gif"></a> 
+    <a href="https://americasdecline.neocities.org/index.html" ><img class="h-swing" src="https://i.postimg.cc/RFrypFnS/ad-button-01.png" border="0"></a>
+    <a href="https://anothermigrane.neocities.org/" ><img class="h-swing" src="assets/buttons/Laplacebutton.png"/></a>
+    <a href="https://faeriebottled97.neocities.org/" ><img class="h-swing" src="assets/buttons/margie.png"/></a>  
+    <a href="https://jlehr.neocities.org/" ><img class="h-swing" src="assets/buttons/lehr.gif"/></a>
+    <a href="https://dokode.moe/indexv3" ><img class="h-swing" src="assets/buttons/dokodemobutton2.gif"/></a> 
+    <a href="https://garbagedeity.neocities.org/" > <img class="h-swing" src="https://garbagedeity.neocities.org/assets/possbut.gif"></a> 
+    <a href="https://ophanimkei.com/" > <img class="h-swing" src="assets/buttons/ophanim.png"></a>
+    <a href="https://zauberfloete.neocities.org/" > <img class="h-swing" src="assets/buttons/zauberbutton.png"></a>
+    <a href="https://noctivagant.net/" > <img class="h-swing" src="assets/buttons/noctivagant.png"></a>
+    <a href="https://duckysden.neocities.org/" > <img class="h-swing" src="assets/buttons/DuckysDenPlaceholder.png"></a>
+    <a href="https://glassoforange.neocities.org/" > <img class="h-swing" src="assets/buttons/orangestamp.png"></a>
+    <a href="https://cavernofremembrance.neocities.org/" > <img class="h-swing" src="assets/buttons/cavernofremembrance.gif"></a>
+    <a href="https://lakestheguy.neocities.org/" > <img class="h-swing" src="assets/buttons/lakestheguy.png"></a>
+    <a href="https://lucky-goose.neocities.org/" > <img class="h-swing" src="assets/buttons/luckygoose.png"></a>
 
     </center>
     </div>
     <center>
-    <p class="myButton">My button!</p>
-    <img src="assets/buttons/PossBadge.gif">
+    <h3>My Button!</h3>
+    <img  class="mybuttonimage" src="assets/buttons/PossBadge.gif">
     </center>
-<!--NEW SECTION-->
-<tr><td>
-    <center style="padding-top:5px;"><img src="assets/chibi_kao.gif" style="padding-right: 10px;"alt=""><span class="siteheader">Cool/fun sites!</span><img src="assets/chibi_kao.gif" style="padding-left: 10px;"alt=""></center>
-    <div class="sites">
-    <Span><a href="https://www.sbnation.com/a/17776-football/chapter-1" target="_blank" class="sitelinks">17776</a> - What will football look like in the future?</Span>
-    <Span><a href="https://archive.org/details/internetarcade" target="_blank" class="sitelinks">Internet Arcade</a> - A huge list of old coin operated arcade machines playable entirely online!</Span>
-    <Span><a href="http://websdr.ewi.utwente.nl:8901/" target="_blank" class="sitelinks">WebSDR</a> - A web enabled Software Defined Radio with a waterfall view!</Span>
-</div>
-<!--NEW SECTION-->
+</main>
 
-<tr><td>
-    <center style="padding-top:5px;"><img src="assets/puffl.gif" style="padding-right: 10px; "alt=""><span class="siteheader">Useful sites!</span><img src="assets/puffr.gif" style="padding-left: 10px;"alt=""></center>
-    <div class="sites">
-    <Span><a href="https://archive.org/" target="_blank" class="sitelinks">Archive.org</a> - From the wayback machine, to archives of old ROMS and programs. archive.org has it all ☭</Span>
-    <Span><a href="https://libgen.fun/" target="_blank" class="sitelinks">Library Genesis</a> - A free library absolutely full of books. Knowledge is power, it should be free ☭</Span>
-    <Span><a href="https://sci-hub.se/" target="_blank" class="sitelinks">Scihub</a> - Put in the DOI of any research paper, and you can read it without paying a scummy journal ☭</Span>
-    <Span><a href="https://draw.io" target="_blank" class="sitelinks">Draw.io</a> - Create diagrams and flowcharts online!</Span>
-   
-    <Span><a href="https://gifcities.org/" target="_blank" class="sitelinks">Gifcities</a> - Search for GIFS archived from geocities!</Span>
-    <Span><a href="https://geocities.restorativland.org/" target="_blank" class="sitelinks">Geocities Archive</a> - Archive of geocities organized by districts!</Span>
-    </div>
+<footer>
 
-<!--NEW SECTION-->
+<a href="https://kingposs.com" ><img class="h-swing" src="/assets/buttons/PossBadge.gif"></a>
+<a href="https://neocities.org/" ><img class="h-swing" src="/assets/buttons/NeoCitiesGreen.gif"></a>
+<a href="https://32bit.cafe/" ><img class="h-swing" src="/assets/buttons/32bitty.png"></a>
+<img class="h-swing" src="/assets/buttons/twopaws.png">
+<img class="h-swing" src="/assets/buttons/piracy.png">
+<img class="h-swing" src="/assets/buttons/defund_badge.gif">
+<img class="h-swing" src="/assets/buttons/htmldream.gif">
+<a href="https://archive.org/" ><img class="h-swing" src="/assets/buttons/internetarchive.gif"></a>
+<a href="https://modarchive.org/" ><img class="h-swing" src="/assets/buttons/modarchive.png"></a>
+<a href="subrosa.html" ><img class="h-swing" src="/assets/buttons/PossButtonRosa.gif"></a>
 
+</footer>
+</body>
 
-<!--Marquee-->
-<tr><td>
-    <marquee><script>
-        document.write("This page was last updated on" + " " +document.lastModified);
-        </script></marquee> 
-    
-    </table><!--END OF SITEBODY-->
-    
-    <!--Bottom of the website, where counter and webring are located-->
-    
-
-        </html>
-        <!--REQUIRED ENDING CODE END-->
+</html>

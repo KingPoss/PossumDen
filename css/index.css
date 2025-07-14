@@ -1,176 +1,59 @@
-.headertext {
-  color: orange;
-  grid-auto-flow: column;
-  justify-content: center;
-  flex-wrap: wrap;
-  font-size: 89%;
-  margin-bottom: 0%;
-}
-
+@charset "UTF-8";
 .intro {
-  margin: 0%;
-  font-size: 110%;
+  flex: 1 1 800px; /* grow:1, shrink:1, basis:0 */
+  min-width: 0;
+  margin-top: 0;
+  margin-bottom: 2rem;
 }
 
-.radio {
-  position: relative;
-  float: right;
-  margin-bottom: 0px;
-  border-width: 2px;
-  border-style: solid;
-  border-color: orange;
-  padding: 2px;
-  padding-top: 20px;
-  margin-left: 1%;
+/*---SITEMAP---*/
+.sitenav {
+  flex: 1 1 300px; /* same “breakpoint” as before */
+  display: flex;
+  flex-direction: column;
 }
 
-.popoutbutton {
-  position: absolute;
-  top: 2px;
-  right: 5PX;
-  pointer-events: all;
-  z-index: 10;
+.sitenav li {
+  padding: 0.1rem;
 }
 
-.popoutbutton img {
-  margin: 2px;
+.sitenav a:hover::after {
+  content: "?";
 }
 
-.display {
-  font-size: 15px;
-  max-width: 200px;
-  color: orange;
+/*---BULLETIN BOARD / SITE ADVERTS---*/
+.bulletin {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-inline: auto;
 }
 
-.display1 {
-  font-size: 15px;
-  max-width: 200px;
-  color: orange;
-  font-style: italic;
-}
-
-.introwrapper {
-  margin: 1%;
-  margin-top: 0%;
+.bulletinpost {
+  flex: 1 1 0px; /* grow/shrink equally, base = 150px */
+  display: flex; /* if you want to center img/text inside each post */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
   text-align: center;
+  padding: 0.5rem;
+  border: dotted;
+  border-color: var(--rotayellow);
+  border-radius: 20px;
+  width: 295px;
+  max-width: 305px;
 }
 
-.pages {
-  margin: 1%;
-  max-height: 100%;
-}
-
-.updates {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
-  margin-top: 5px;
-  height: 60vh;
-}
-
-.post {
-  width: 99%;
-  max-width: auto;
-  height: auto;
-  background-color: rgba(57, 19, 94, 0.5);
-  position: relative;
-}
-
-.postWrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: left;
-}
-
-.postTitle {
-  justify-content: left;
-  align-items: left;
-  font-size: 20px;
-  color: orange;
-  margin-top: auto;
-  margin-left: 2%;
-}
-
-.postTitleWrapper {
-  flex-grow: 1;
-  display: flex;
-  justify-content: left;
-}
-
-.postBody {
-  margin-left: 2%;
-  margin-right: 2%;
-  margin-bottom: 2%;
-}
-
-.postDate {
-  margin-left: 5%;
-  margin-right: 3%;
-  margin-top: 0px;
-  color: orange;
-  justify-content: right;
-}
-
-.bouncyboi {
-  max-width: 100%;
-  height: auto;
-}
-
-::-webkit-scrollbar {
-  margin-right: 50px;
-}
-
-.siteparent {
-  display: grid;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
-  border-width: 5px;
-  border-spacing: 2px;
-  border-style: outset;
-  border-color: #df7126;
-  border-collapse: separate;
-  background: #41103e url(../assets/background.png) repeat;
-  width: 70%;
-  margin: 0 auto;
-}
-
-#test {
-  border-width: 1px;
-  padding: 1px;
-  border-style: inset;
-  border-color: #df7126;
-}
-
-.div1 {
-  grid-area: 1/1/2/4;
-}
-
-.div2 {
-  grid-area: 1/4/2/5;
-}
-
-.div3 {
-  grid-area: 2/1/3/3;
-}
-
-.div4 {
-  grid-area: 2/3/3/5;
-}
-
-.div5 {
-  grid-area: 3/1/4/5;
-}
-
-.div6 {
-  grid-area: 4/1/5/3;
-}
-
-.div7 {
-  grid-area: 4/3/5/5;
-}
-
-.div8 {
-  grid-area: 5/1/6/5;
+/*---PERSONAL NEWS / SITE UPDATES---*/
+#personalandsite {
+  border: dashed;
+  border-width: 2px;
+  border-color: var(--rotayellow);
+  margin-bottom: 1rem;
+  padding-bottom: 0.2rem;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
 }/*# sourceMappingURL=index.css.map */

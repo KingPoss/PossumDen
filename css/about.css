@@ -1,61 +1,69 @@
-.atext {
+/* Overall about section: text + images side by side, then wrap */
+#aboutholder {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 0px;
-}
-
-.images {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  float: right;
-  margin-left: 1%;
-  margin-right: 1%;
-}
-
-.image-container {
-  display: flex;
   justify-content: center;
 }
 
-.picheader {
-  font-size: 18px;
-  font-weight: bold;
-  color: orange;
-  margin-bottom: 3px;
+h2 {
   text-align: center;
-  margin-top: 0px;
+  line-height: 1.8rem;
 }
 
-.picheader1 {
-  font-size: 25px;
-  font-weight: bold;
-  color: orange;
-  margin-bottom: 3px;
-  text-align: center;
-  margin-top: 0px;
+/* Your big text block */
+.aboutme {
+  flex: 1 1 700px;
+  min-width: 0;
+  justify-content: center;
+  align-content: start;
+}
+
+.aboutme::first-letter {
+  color: var(--rotayellow);
+  font-family: "computerfontregular";
+  font-size: 3rem;
+}
+
+.aboutme::first-line {
+  line-height: 1rem;
+}
+
+/* The right column that holds images + contacts */
+.aboutpics {
+  flex: wrap; /* can shrink too, wants 300px */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-content: end; /* center headings & containers */
+}
+
+/* ------ King images ------ */
+.image-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Each image can shrink to 120px but will share the row equally */
+.image-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ------ Contact icons ------ */
+.contactholder {
+  margin-bottom: 0.5rem;
 }
 
 .contacts {
   display: flex;
-  justify-content: space-evenly;
-  padding-left: 8%;
-  padding-right: 8%;
-  padding-bottom: 2%;
+  flex-wrap: wrap;
+  justify-content: center; /* center rows when wrapped */
+  gap: 0;
 }
 
-.aboutMeText {
-  font-size: 18px;
-  margin-top: 0px;
-  margin-left: 1%;
-}
-
-.holder {
-  max-width: 100%;
-  width: 100%;
-  /* other existing styles */
-}
-
+/* Make each link a flex item that can shrink to 80px */
 /* Full-screen modal overlay */
 .phone_modal {
   display: none; /* Hidden by default */
@@ -84,9 +92,4 @@
   height: 100%;
   -o-object-fit: contain;
      object-fit: contain; /* Keeps aspect ratio */
-}
-
-/* Optional: Style the thumbnail to indicate it's clickable */
-.thumbnail {
-  cursor: pointer;
 }/*# sourceMappingURL=about.css.map */

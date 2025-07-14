@@ -4,99 +4,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="/css/effects.css" rel="stylesheet" type="text/css" media="all" >
-
-<link rel='shortcut icon' type='image/jpg' href ='assets/favicon.ico'/>
-
-<title>The Possum Den</title> <!--Tab Title-->
+<link rel='shortcut icon' type='image/jpg' href ='/assets/favicon.ico'/>
+<title>The Possum Den</title>
 <meta name="description" content="The personal webpage and dwelling of the web's stinkiest opossum!">
-<link href="css/requiredCss.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/mediaQueries.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/index.css" rel="stylesheet" type="text/css" media="all" >
-<link href="css/effects.css" rel="stylesheet" type="text/css" media="all" >
-
+<link href="/css/fontMapping.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/effects.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/base.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/index.css" rel="stylesheet" type="text/css" media="all" >
 </head>
 
-<script src="/JS/jquery-3.6.1.min.js"></script>
-<script src="/JS/radioData.js"></script>
+<!--SCRIPT IMPORTS-->
+<script src="/JS/mobileNav.js"></script> <!--Pops the navbar out on mobile-->
+<script src="/JS/mrp.js"></script> <!--For the Radio-->
+<script src="/JS/jquery-3.6.1.min.js"></script> <!--For the Radio metadata-->
+<script src="/JS/radioData.js"></script> <!--Also for the Radio-->
+<script src="/JS/siteUpdates.js"></script> <!--Populates Site Updates from updates.json-->
 
-<noscript>
-<pre class="header">
 
-88888888888 888    888 8888888888      8888888b.   .d88888b.   .d8888b.   .d8888b.  888     888 888b     d888      8888888b.  8888888888 888b    888
-    888     888    888 888             888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 888     888 8888b   d8888      888  "Y88b 888        8888b   888
-    888     888    888 888             888    888 888     888 Y88b.      Y88b.      888     888 88888b.d88888      888    888 888        88888b  888
-    888     8888888888 8888888         888   d88P 888     888  "Y888b.    "Y888b.   888     888 888Y88888P888      888    888 8888888    888Y88b 888
-    888     888    888 888             8888888P"  888     888     "Y88b.     "Y88b. 888     888 888 Y888P 888      888    888 888        888 Y88b888
-    888     888    888 888             888        888     888       "888       "888 888     888 888  Y8P  888      888    888 888        888  Y88888
-    888     888    888 888             888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888      888  .d88P 888        888   Y8888
-    888     888    888 8888888888      888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888      8888888P"  8888888888 888    Y888</pre>    
-<nav class="buttons">
-<a href="/index.html">
-<img src="/assets/home.gif"></a>
-<a href="/about.html">
-<img src="/assets/aboutme.gif"></a>
-<a href="/art.html">
-<img src="/assets/art.gif"></a>
-<a href="/Thoughts/MainBlogPage.html">
-<img src="/assets/thoughts.gif"></a>
-<a href="/radio.html">
-<img src="/assets/radio.gif"></a>
-<a href="/projects/projects.html">
-<img src="/assets/projects.gif"></a>
-<a href="/programs.html">
-<img src="/assets/programs.gif"></a>
-<a href="/sites.html">
-<img src="/assets/coolsites.gif"></a>
-<a href="/guestbook.html">
-<img src="/assets/guestbook.gif"></a>
+
+
+<body>
+
+<!--SITE HEADER-->
+
+<div class="headerflex">
+<pre class="rainbow" id="siteheader">
+88888888888 888    888 8888888888
+    888     888    888 888       
+    888     888    888 888       
+    888     8888888888 8888888   
+    888     888    888 888       
+    888     888    888 888       
+    888     888    888 888       
+    888     888    888 8888888888
+</pre>
+<pre class="rainbow" id="siteheader">
+8888888b.   .d88888b.   .d8888b.   .d8888b.  888     888 888b     d888
+888   Y88b d88P" "Y88b d88P  Y88b d88P  Y88b 888     888 8888b   d8888
+888    888 888     888 Y88b.      Y88b.      888     888 88888b.d88888
+888   d88P 888     888  "Y888b.    "Y888b.   888     888 888Y88888P888
+8888888P"  888     888     "Y88b.     "Y88b. 888     888 888 Y888P 888
+888        888     888       "888       "888 888     888 888  Y8P  888
+888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888
+888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888
+</pre>
+<pre class="rainbow" id="siteheader">
+8888888b.  8888888888 888b    888
+888  "Y88b 888        8888b   888
+888    888 888        88888b  888
+888    888 8888888    888Y88b 888
+888    888 888        888 Y88b888
+888    888 888        888  Y88888
+888  .d88P 888        888   Y8888
+8888888P"  8888888888 888    Y888
+</pre>
+</div>
+
+<!--MOBILE NAVIGATION BAR-->
+<div class="topnav" id="myTopnav">
+  <a href="/index.html" class="active"><img src="/assets/mobileheader.gif"><div class="rainbow">The Possum Den</div></a>
+
+  <div id="myLinks">
+  <a href="/index.html">Home</a>
+  <a href="/about.html">About Me</a>
+  <a href="/art.html">Art/Media</a>
+  <a href="https://blog.kingposs.com">Blog</a>
+  <a href="/radio.html">Radio</a>
+  <a href="https://kb.kingposs.com">Brain Bank</a>
+  <a href="/sites.html">Cool Sites</a>
+  <a href="/guestbook.html">Guestbook</a>
+  </div>
+
+  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <div class="mobilemenu"></div>
+  </a>
+</div>
+
+<!--NAVIGATION BAR-->
+<nav class="navbar">
+  <a href="/index.html">Home</a>
+  <a href="/about.html">About Me</a>
+  <a href="/art.html">Art/Media</a>
+  <a href="https://blog.kingposs.com">Blog</a>
+  <a href="/radio.html">Radio</a>
+  <a href="https://kb.kingposs.com">Brain Bank</a>
+  <a href="/sites.html">Cool Sites</a>
+  <a href="/guestbook.html">Guestbook</a>
 </nav>
-</noscript>
-<script src="/JS/headerfooter.js"></script>
-<script src="/JS/theme-wizard.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-      var library = {
-        "SubRosa": "/css/subRosaTheme.css",
-        "Glass": "glass.css",
-        "Atlas": "atlas.css"
-      };
-      window.themes.initialize(library);
-    });
-  </script>
 
-<hr class="dividingLine"> 
 
-<div id="stampsleft">
+<!--START OF MAIN SITE BODY-->
+<main>
 
+<h1 class="centerheader">Welcome to my den!</h1>
+<div class="flexholder" id="introductionholder">
+<p class="intro">
+  Hello! Thanks for checkin' my site out! I'm KingPoss, or KP for short. This place has become my home and creative outlet on the net. Outside of messaging platforms like Signal & Discord, you won't find me anywhere else. Like just about everyone else on <a href="https://neocities.org/">Neocities</a>, I've become entirely disillusioned with social media, web 3.0 (and 2.0 for that matter), and the general state of the net in modern times. It feels good to stake a claim and make my corner of the web--take back a bit of landscape in this digital serfdom we're all serving under lol. Here, you'll find my <a href="art.html">art n pictures</a>, <a href="/Thoughts/MainBlogPage.html">writings</a>, <a href="/projects/projects.html">projects</a>, <a href="programs.html">programs</a>, and a <a href="radio.html">radio station</a> I run with scheduled live broadcasts & interviews! I implore you to check out the music, learn a lil <a href="about.html">about me</a>, and check out some of the other <a href="sites.html">awesome sites</a> here on Neocities. Oh, and there's a <a href="guestbook.html">guestbook</a> you can sign too! I hope you have fun lookin around!
+</p>
+<div class="radio">
+<div class="popoutbutton">
+  <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;">
+    <img id="onair" src="assets/autodj.gif">
+    <img src="assets/popout.png">
+  </a>
 </div>
-
-<div id="stampsright">
-
-</div>
-<table class="SITEBODY"> <!--START OF SITEBODY-->
-
-
-<!--NEW SECTION-->
-<tr><td>
-<center class="headertext"><h1 class="rainbowtext">Hello fellow Netizen! Welcome to my den!</h1></center>
-
-<div class="wrapper">
-    <p class="textbox1">
-      Hello! Thanks for checkin' my site out! I'm KingPoss, or KP for short. This place has become my home and creative outlet on the net. Outside of messaging platforms like Signal & Discord, you won't find me anywhere else. Like just about everyone else on <a href="https://neocities.org/">Neocities</a>, I've become entirely disillusioned with social media, web 3.0 (and 2.0 for that matter), and the general state of the net in modern times. It feels good to stake a claim and make my corner of the web--take back a bit of landscape in this digital serfdom we're all serving under lol. Here, you'll find my <a href="art.html">art n pictures</a>, <a href="/Thoughts/MainBlogPage.html">writings</a>, <a href="/projects/projects.html">projects</a>, <a href="programs.html">programs</a>, and a <a href="radio.html">radio station</a> I run with scheduled live broadcasts & interviews! I implore you to check out the music, learn a lil <a href="about.html">about me</a>, and check out some of the other <a href="sites.html">awesome sites</a> here on Neocities. Oh, and there's a <a href="guestbook.html">guestbook</a> you can sign too! I hope you have fun lookin around!
-    </p>
-
-  <!-- Right column grouping radio and theme switcher -->
-  <div class="right-column">
-    <div class="radio">
-      <div class="popoutbutton">
-        <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;">
-          <img id="onair" src="assets/autodj.gif">
-          <img src="assets/popout.png">
-        </a>
-      </div>
-      <script src="/JS/mrp.js"></script>
       <script type="text/javascript">
         MRP.insert({
           'url':'https://radio.kingposs.com:8000/radio.mp3',
@@ -113,43 +124,81 @@
           'height':132
         });
       </script>
+
       <center>
-        <div class="np">
-          <section class="now-playing">
-            <div class="display">Now Playing</div>
-            <div class="display1">Unknown</div>
-          </section>
-          <noscript>Javascript is required to view the "now playing" data.</noscript>
-        </div>
+      <div class="np">
+        <section class="now-playing">
+          <div class="display">Now Playing</div>
+          <div class="display1">Unknown</div>
+        </section>
+      <noscript>Javascript is required</noscript>
+      </div>
       </center>
+
     </div>
-    <div class="theme-switcher-container">
-    Site Theme: <select id="theme-switcher"></select>
-    </div>
+</div>
+
+<hr>
+
+<div class="flexholder">
+<div class="sitenav">
+<ul>
+<li>
+<a href="art.html">About Me</a>
+<span class="desc"> - Contact info, learn about me</span>
+</li>
+<li>
+<a href="art.html">Art & Media</a>
+<span class="desc"> - Where you can find my art, music and other creative ventures!</span>
+</li>
+<li>
+<a href="https://blog.kingposs.com">Blog</a>
+<span class="desc"> - Where I post my rants, writing, and articles.</span>
+</li>
+<li>
+<a href="radio.html">KP Radio</a>
+<span class="desc"> - Tracker Music, Indie Artists, fake ads, and LIVE BROADCASTS!</span>
+</li>
+<li>
+<a href="radiowidget.html" class="popup">Radio Widget</a>
+<span class="desc"> - A pop-out radio widget so you can listen to my tunes as you browse the possum den B)</span>
+</li>
+<li>
+<a href="radiowidget.html" class="popup">Brain Bank</a>
+<span class="desc"> - My knowledge base. Useful resources, howtos, etc.</span>
+</li>
+<li>
+<a href="sites.html">Cool Sites</a>
+<span class="desc"> - My neighbors and friends!</span>
+</li>
+<li>
+<a href="guestbook.html">Guestbook</a>
+<span class="desc"> - Pretty self-explanatory. If you stop by, please sign it :3</span>
+</li>
+</ul> 
+  
+</div>
+
+<div class="bulletin">
+
+  <div class="bulletinpost">
+  <img src="/assets/posterkpradioad.gif" alt="">
+  <div>what's ghappening?</div>
+  </div>
+  <div class="bulletinpost">
+  <img src="/assets/posterdecember7.png" alt="">
+  <div>click to give me acall!</div>
   </div>
 </div>
-            <!-- ENDS: AUTO-GENERATED MUSES RADIO PLAYER CODE -->
 
-<!--NEW SECTION-->
-<tr><td>
+</div>
 
-    <center><h1 class="rainbowtext">!-SITEMAP-!</h1></center>
+<hr>
 
-<nav class="pages">
-<p><b><font size="4.5"><a href="about.html">About Me</font></a></b><font size="4"> - A page about...well, me! You can find my hobbies, interests, history, and contact information.</font></p>
-<p><b><font size="4.5"><a href="art.html">Art & Media</font></a></b><font size="4"> - Where you can find my art, music and other creative ventures!</font></p>
-<p><b><font size="4.5"><a href="/Thoughts/MainBlogPage.html">Thoughts</font></a></b><font size="4"> - Where I post my rants, writing, and horribly written articles.</font></p>
-<p><b><font size="4.5"><a href="radio.html">KP Radio</font></a></b><font size="4"> - Tracker Music, Indie Artists, website and fake ads, and LIVE BROADCASTS! You can't miss this one, folks.</font></p>
-<p><b><font size="4.5"><a href="radiowidget.html" onclick="window.open('radiowidget.html', 'newwindow', 'width=300,height=320');  return false;">Radio Widget</font></a></b><font size="4"> - A popout radio widget so you can listen to my tunez as you browse the possum den B)</font></p>
-<p><b><font size="4.5"><a href="/projects/projects.html">Projects</font></a></b><font size="4"> - Contains my projects (many unfinished) and and their progress, or lack thereof.</font></p>
-<p><b><font size="4.5"><a href="programs.html">Programs</font></a></b><font size="4"> - Here you can find several programs and scripts of mine, as well as useful tools from around the web.</font></p>
-<p><b><font size="4.5"><a href="sites.html">Cool Sites</font></a></b><font size="4"> - A bunch of cool sites I've found on neocities or elsewhere, all organized for your browsing pleasure!</font></p>
-<p><b><font size="4.5"><a href="guestbook.html">Guestbook</font></a></b><font size="4"> - Pretty self-explanatory. It's my guestbook! if you stop by and you feel inclined to, please sign it :3</font></p>
-</nav>
+<div class="flexholder" id="personalandsite">  <!--Holds Personal News and Site Updates-->
 
-<!--NEW SECTION-->
-<tr><td>
-<center><h1 class="rainbowtext">!-SITE & WEBMASTER UPDATES-!</h1></center>
+<div class="updateholder">
+<center><h2>--- Personal News ---</h2></center>
 
 <div class="updates">
     <!--POST SEPERATOR-->
@@ -244,33 +293,38 @@
         </div>
         <p class="postDate">7/24/2021</p>
         </div>
-        <p class="postBody">LET THERE BE CODE!! First, an index page, then, its css...then EVERYTHING ELSE! I've had it with social media, and this is gonna be my way to escape. No more twitter, no more instagram, NOTHING! This is the only place online outside of messaging platforms like telegram & discord that people will be able to find me now.</p>
+        <p class="postBody">LET THERE BE CODE! First, an index page, then, its css...then EVERYTHING ELSE! I've had it with social media, and this is gonna be my way to escape. No more twitter, no more instagram, NOTHING! This is the only place online outside of messaging platforms like telegram & discord that people will be able to find me now.</p>
     </div>
     <!-- POST SEPERATOR-->
 
     </div>  
  
-
-<!--NEW SECTION-->
-<tr><td>
-<center><H1 class="rainbowtext" style="margin-bottom: 5px;">!-KingChat v.1.0-!</H1>
-<iframe src="https://www3.cbox.ws/box/?boxid=3518564&boxtag=RaAzVB" width="100%" height="450" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="padding-left: 10%;padding-right: 10%;"></iframe><p style="margin-top:0px; font-size:20px; color: orange; font-weight:bold; margin-bottom: 5px;">Only rule is be cool and not mean B)</p>
-</center>
-
-<!--NEW SECTION-->
-<tr><td>
-<a href="guestbook.html">
-<font size="5" color="white"><p class="rainbowtext" align="center"><b>PLEASE! SIGN MY GUEST BOOK! UwU</b></p></font>
-<center><img src="assets/bouncyboi.gif" class="bouncyboi"></a></center>
-
-<tr><td>
-<marquee><script>document.write("This page was last updated on" + " " +document.lastModified);</script></marquee>     
-</table>
-
-<center>
-<div id="funky-webring">
-<script type="text/javascript" src="https://rocktype.neocities.org/funky-webring/onionring-variables.js"></script>
-<script type="text/javascript" src="https://rocktype.neocities.org/funky-webring/onionring-widget.js"></script>
 </div>
-</center>
+
+<div class="updateholder">
+  <center><h2>--- Site Updates ---</h2></center>
+  <div class="updates" id="updates">
+    
+    <!-- JS will populate this -->
+  </div>
+</div>
+
+</main>
+
+<footer>
+
+<a href="https://kingposs.com" target="_blank"><img class="h-swing" src="/assets/buttons/PossBadge.gif"></a>
+<a href="https://neocities.org/" target="_blank"><img class="h-swing" src="/assets/buttons/NeoCitiesGreen.gif"></a>
+<a href="https://32bit.cafe/" target="_blank"><img class="h-swing" src="/assets/buttons/32bitty.png"></a>
+<img class="h-swing" src="/assets/buttons/twopaws.png">
+<img class="h-swing" src="/assets/buttons/piracy.png">
+<img class="h-swing" src="/assets/buttons/defund_badge.gif">
+<img class="h-swing" src="/assets/buttons/htmldream.gif">
+<a href="https://archive.org/" target="_blank"><img class="h-swing" src="/assets/buttons/internetarchive.gif"></a>
+<a href="https://modarchive.org/" target="_blank"><img class="h-swing" src="/assets/buttons/modarchive.png"></a>
+<a href="subrosa.html" target="_blank"><img class="h-swing" src="/assets/buttons/PossButtonRosa.gif"></a>
+
+</footer>
+</body>
+
 </html>

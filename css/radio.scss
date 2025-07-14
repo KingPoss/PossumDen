@@ -1,143 +1,106 @@
-/*START OF REQUIRED CSS*/  
-  .pages {
-    margin-left: 14px;
-    margin-top: -15px;
-  }
-  
-  .textheader{
-    font-family: 'pixel_powerlineregular';
-  }
-  
-  .kpbuttons{
-    display: grid;
-    flex-direction: row;
-  }
-  
-  #kpbuttons img{
-    margin: 5px;
-  }
-  
-  
-  
-  .subrosa{
-    display: grid;
-    float: right;
-    padding-right: 15%;
-    padding-bottom: 10px;
-  }
-  
-
-  
-  img { grid-area: 1 / 1 / 4 / 2; }
-  .red { grid-area: 1 / 1 / 2 / 2; }
-  .blue { grid-area: 3 / 1 / 4 / 2; }
-  
-  textarea {
-    width: 240px; height: 72px;
-  }
-  
-  .updates{
-    width: 100%; 
-    height: 400px;
-    max-width: 1050px; 
-    max-height: 490px;
-    margin-left: auto;
-    margin-right: auto;
-    overflow:auto;
-    margin-top: 5px;
-  
-    
-  }
-  
-  .post{
-    width: 100%;
-    max-width: 800px;
-    height: auto;
-    background-color: rgba(57, 19, 94,.5); 
-    margin: 10px;
-    position:relative;
-
-  }
-  .postWrapper{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .postTitle{
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    color: orange;
-    margin-top: auto;
-    margin-left: 20%;
-  }
-
-  .postTitleWrapper {
-    flex: 1; /* Take up remaining space */
-    display: flex;
-    justify-content: center; /* Center the postTitle within this wrapper */
+.mobilecalendar { 
+    display: none;
 }
-  .postBody{
-    margin-left: 1px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-  }
-  
-  .postDate{
-    margin-left: 5%;
-    margin-right: 3%;
-    margin-top: 0px;
-    color:orange;
-    justify-content: right;
-  }
-  ::-webkit-scrollbar {
-  margin-right: 50px;
-  }
 
-  
+.desktopcalendar { 
+    margin-top: -4rem;
+}
 
-  .radio{
-    float: center;
-    position: relative;
-    margin-bottom: 0px;
-    border-width:2px;
-    border-style:solid;
-    border-color:orange;
-    padding: 2px;
-    padding-top:20px;
-    width:214px;
-    height:auto;
-  }
+
+
+
+
+
+
+/*--MEDIA QUERIES--*/
+@media (hover: none) and (pointer: coarse) {
+    .mobilecalendar {
+    display: block;
+    }
+    .desktopcalendar {
+    display: none;
+    }
+}
+.listholder {
+  display: flex;
+  max-width: 90rem;
+  margin: 0 auto;
   
-  .popoutbutton{
-    position: absolute;
-    top: 2px;
-    right: 5PX;
-    pointer-events: all;
-    z-index: 10;
-  }
-  .popoutbutton img{
-    margin: 2px;
-  }
-  .display{
-    font-size: 15px;
-    max-width: 200px;
-    color: orange;
-  }
-  .display1{
-    font-size: 15px;
-    max-width: 200px;
-    color: orange; 
-    font-style: italic;
-  }
-  .intro{
-    margin: 10px;
-    
-  }
-  .onair{
-    
-  }
-  
+  justify-content: center;
+  align-items: center;
+}
+
+.artists {
+  display: flex;
+  flex-wrap: wrap;              /* let items wrap to new rows */
+  justify-content: center;
+  align-content: center;    /* center each row under the one above */
+  gap: 0rem;                    /* space between items */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 60rem;
+}
+
+/* give each item a “column” width, but allow shrink/grow */
+.artists li {
+  flex: 1 1 200px;              /* base width 200px, but can shrink/grow */
+  max-width: 250px;
+}
+
+/* style the links */
+.artists a {
+  display: block;
+  padding: 0.3rem;
+  white-space: normal;
+  word-break: break-word;
+  text-align: center;
+  color: var(--rotalightorange);
+  text-decoration: none;
+  background-color: var(--def-element-background);
+  border-style: inset;
+  border-width: 2px;
+  border-radius: 10px;
+  border-color: var(--def-border-color);
+  margin: 0.3rem;
+
+}
+
+.artists a:hover {
+  color: var(--rotaorange);
+  border-color: var(--rotaorange);
+}
+
+.streamlink{
+  display: flex;
+  font-style: italic;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  border: inset;
+  border-radius: 8px;
+  border-width: 2px;
+  width: 5.5rem;
+  font-size: 0.7rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
+
+
+
+
+audio {
+  border-radius: 20px;
+  background-color: var(--rotaviolet);
+}
+
+audio:hover{
+  color: var(--rotalightorange);
+}
+
+
+
   .wrapper{
     position: relative;
     display: flex;
@@ -168,79 +131,7 @@
   }
   
 
+
+
+
   
-  .radtext{
-    margin-left: 2%;
-    margin-right: 2%;
-    font-size: 18px;
-  }
-  .listholder{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-  .artists{
-    columns: 1;
-    -webkit-columns: 1;
-    -moz-columns: 1;
-    margin-top: -10px;
-    font-size: 18px;
-  }
-
-  .googlecalendar{
-    overflow-x: hidden;
-    overflow-y: hidden;
-    margin-bottom: 10px;
-    margin-left: 10%;
-    margin-right: 10%;
-    height: 585px;
-  }
-  
-  .recording{
-    width: 100%;
-    max-width: 650px;
-  }
-
-
-  /* Full-screen modal overlay */
-.phone_modal {
-  display: none; /* Hidden by default */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Modal content container */
-.phone_modal_content {
-  width: 50%;   /* Adjust as needed */
-  height: 90%;  /* Adjust as needed */
-  max-width: 100%;
-  max-height: 100%;
-}
-
-/* SVG image scales to fill the container */
-.phone_modal_content img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* Keeps aspect ratio */
-}
-
-/* Optional: Style the thumbnail to indicate it's clickable */
-.thumbnail {
-  cursor: pointer;
-}
-
-.rotaryphone{
-  image-rendering: pixelated;
-}
-
-.chatWindow{
-  width: 70%;
-  display: none;
-}
