@@ -500,7 +500,7 @@ hr {
 }
 
 .recording {
-  width: 50rem;
+  width: clamp(10rem, 100%, 45rem);
   margin-bottom: 1rem;
   margin-top: 0rem;
 }
