@@ -1,10 +1,12 @@
 [
-    "3D",
-    "digital",
-    "analog",
-    "fursona",
-    "webmaster",
-    "traditional",
-    "microscope",
-    "nature"
-  ]
+  "3D",
+  "analog",
+  "fursona",
+  "webmaster",
+  "traditional",
+  "microscope",
+  {
+    "name": "nature",
+    "coverPhoto": "/assets/tag_covers/cover_nature_IMG_2879.jpg"
+  }
+]
