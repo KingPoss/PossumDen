@@ -37,12 +37,14 @@
   align-items: center;
   gap: 1rem;
   margin-inline: auto;
+  
 }
 
 .bulletinpost {
-  flex: 1 1 0px;         /* grow/shrink equally, base = 150px */
+  flex: 0 0 295px;         /* grow/shrink equally, base = 150px */
   display: flex;           /* if you want to center img/text inside each post */
   flex-direction: column;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   align-content: center ;
@@ -51,12 +53,16 @@
   border: dotted;
   border-color: var(--rotayellow);
   border-radius: 20px;
-  width: 295px;
-  max-width: 305px;
+  height: auto;
+
+
 }
+.bulletin img {
+  max-width: 100%;
+  height: auto;
+    flex-wrap: wrap;
 
-
-
+}
 
 /*---PERSONAL NEWS / SITE UPDATES---*/
 #personalandsite{

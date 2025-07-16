@@ -459,31 +459,38 @@ hr {
   margin-right: 0.2rem;
 }
 
+/* Add these styles to your base.css or create a new CSS file */
+/* Fix for the post wrapper to handle narrow viewports better */
 .postWrapper {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* align date/time to top of title */
+  align-items: flex-start;
+  flex-wrap: nowrap; /* Don't wrap by default */
 }
 
+/* Ensure post title can shrink and wrap properly */
 .postTitle {
   color: var(--rotayellow);
   font-size: 1.25rem;
   margin-top: 0px;
+  flex: 1 1 0; /* Take available space but can shrink to 0 */
+  min-width: 0; /* Critical: allows text to wrap properly */
+  word-wrap: break-word; /* Break long words if needed */
+  overflow-wrap: break-word; /* Modern property for same purpose */
+  /* Limit max width to ensure date has space */
+  max-width: calc(100% - 100px); /* Reserve ~100px for date + gap */
 }
 
-/* new container for date+time */
-.postDateContainer {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-  margin-left: 1rem;
-}
-
+/* Make date more flexible */
 .postDate {
   color: var(--def-detail-color);
   font-size: 0.9rem;
   margin: 0;
   margin-top: 0.3rem;
+  flex: 0 0 auto; /* Don't grow or shrink */
+  white-space: nowrap; /* Keep date on one line */
+  min-width: -moz-fit-content;
+  min-width: fit-content; /* Ensure date gets its needed space */
 }
 
 /* time styling */
@@ -494,9 +501,33 @@ hr {
   margin-bottom: 0.5rem;
 }
 
+/* Fix for images inside posts */
+.post img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix for multiple images in a row */
+.post center {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Ensure post body text wraps properly */
 .postBody {
   margin-top: -9px;
   margin-bottom: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0; /* Allow shrinking */
+}
+
+/* Fix the updates container itself */
+.updates {
+  min-width: 0; /* Critical: allow the container to shrink */
+  overflow-x: hidden; /* Hide horizontal overflow */
 }
 
 .recording {
@@ -536,5 +567,34 @@ footer {
   }
   .topnav {
     display: flex;
+  }
+}
+/* Optional: only wrap on truly narrow screens */
+@media (max-width: 400px) {
+  .postWrapper {
+    flex-wrap: wrap; /* Now allow wrapping */
+  }
+  .postTitle {
+    max-width: 100%; /* Remove the calc restriction */
+    flex: 1 1 100%; /* Take full width */
+    margin-bottom: 0;
+  }
+  .postDate {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  /* Make images stack vertically on very small screens */
+  .post center {
+    flex-direction: column;
+  }
+  .postDateContainer {
+    text-align: left;
+    margin-left: 0;
+  }
+  .postDateContainer .postDate {
+    margin-bottom: 0;
+  }
+  .postTime {
+    margin-top: 0;
   }
 }/*# sourceMappingURL=base.css.map */
