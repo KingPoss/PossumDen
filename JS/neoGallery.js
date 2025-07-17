@@ -16,7 +16,7 @@ function getRandomImages(imageArray, count) {
   }
   
   function createImages(galleryElement, tags) {
-    fetch("json/media.json")
+    fetch("/json/media.json")
       .then(response => response.json())
       .then(originalImageArray => {
         // Convert the tags string into an array of tags
