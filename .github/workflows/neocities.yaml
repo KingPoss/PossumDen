@@ -82,7 +82,7 @@ jobs:
         uses: bcomnes/deploy-to-neocities@v3
         with:
           api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
-          cleanup: falsegi
+          cleanup: false
           protected_files: "{assets,json,blog,Thoughts,JS}/*"
           
           neocities_supporter: true
