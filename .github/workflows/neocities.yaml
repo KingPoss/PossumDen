@@ -83,7 +83,7 @@ jobs:
         with:
           api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
           cleanup: true
-          protected_files: "{assets,json,blog,Thoughts,JS}/*"
+          protected_files: "assets/**,json/**,blog/**,Thoughts/**,JS/**,tags/**"
           
           neocities_supporter: true
           preview_before_deploy: true
