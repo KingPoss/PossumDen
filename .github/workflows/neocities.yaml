@@ -82,8 +82,8 @@ jobs:
         uses: bcomnes/deploy-to-neocities@v3
         with:
           api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
-          cleanup: false
-          protected_files: assets/**,json/**,blog/**,Thoughts/**,JS/**,tags/**
+          cleanup: falsegi
+          protected_files: "{assets,json,blog,Thoughts,JS}/*"
           
           neocities_supporter: true
           preview_before_deploy: true
