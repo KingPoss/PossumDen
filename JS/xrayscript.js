@@ -799,28 +799,41 @@ document.addEventListener('DOMContentLoaded', function() {
     /******************************************************
      10) Touch Support for Mobile
     ******************************************************/
-    container.addEventListener('touchstart', (evt) => {
-      evt.preventDefault(); // Prevent scrolling
-      const touch = evt.touches[0];
-      const clickEvent = new MouseEvent('click', {
+container.addEventListener('touchstart', (evt) => {
+    // Check if touch is on eye area
+    const touch = evt.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // If touching near the eye, don't prevent default
+    if (element && element.closest('#eyeContainer')) {
+        return; // Let normal scrolling happen
+    }
+    
+    evt.preventDefault(); // Only prevent default for other areas
+    
+    const clickEvent = new MouseEvent('click', {
         clientX: touch.clientX,
         clientY: touch.clientY,
         bubbles: true
-      });
-      container.dispatchEvent(clickEvent);
     });
+    container.dispatchEvent(clickEvent);
+});
 
-    // Handle touch move for hover effects on mobile
-    container.addEventListener('touchmove', (evt) => {
-      evt.preventDefault();
-      const touch = evt.touches[0];
-      const moveEvent = new MouseEvent('mousemove', {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        bubbles: true
-      });
-      container.dispatchEvent(moveEvent);
-    });
+// Handle touch move for hover effects on mobile
+container.addEventListener('touchmove', (evt) => {
+    const touch = evt.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    // Don't prevent scrolling
+    if (element && !element.closest('#eyeContainer')) {
+        const moveEvent = new MouseEvent('mousemove', {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            bubbles: true
+        });
+        container.dispatchEvent(moveEvent);
+    }
+}, { passive: true }); // Note: passive: true for better scroll performance
 
 
 
