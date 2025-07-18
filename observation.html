@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>THE OBSERVATION ROOM</title>
+  <link href="/css/xraystyle.css" rel="stylesheet" type="text/css" media="all" >
+</head>
+
+<body>
+      <h1>WELCOME TO THE OPERATING ROOM</h1>
+
+  <div class="main-wrapper">
+    
+
+      <div class="left-sidebar">
+        <center><h3>PT ASSESMENT</h3></center>
+        <div class="sidebar-item" id="ptinfo">
+          <center>
+          <p><strong>Name:</strong> K.P.</p>
+          <p><strong>Age:</strong> Late 20s</p>
+          <p><i><b>"Peer inside, know me."</b></i></p>
+          </center>
+        </div>
+
+        <div id="organ-list"></div>
+      </div>
+
+    <!-- Main Container for the Stacked Images -->
+    <div class="anatomy-container" id="anatomy-container">
+      <div class="anatomy-content">
+        <!-- Operating table (background) -->
+        
+        <!-- Eye container -->
+  <div class="eye-container" id="eyeContainer">
+    <img src="/assets/xray/eyeball.png" alt="Eyeball" class="eyeball-img" id="eyeballImg">
+    <img src="/assets/xray/iris.png"   alt="Iris"    class="iris-img"    id="irisImg">
+  </div>
+        
+        <!-- Organ layers -->
+  <img src="/assets/xray/brain.png"             alt="brain" class="stacked-image">
+  <img src="/assets/xray/stomach.png"           alt="stomach"          class="stacked-image">
+  <img src="/assets/xray/esophagus.png"         alt="esophagus"          class="stacked-image">
+  <img src="/assets/xray/small_intestine.png"   alt="small_intestine"          class="stacked-image">
+  <img src="/assets/xray/butterflies.png"       alt="butterflies"          class="stacked-image">
+  <img src="/assets/xray/liver.png"             alt="liver"          class="stacked-image">
+  <img src="/assets/xray/digestive_tract.png"   alt="digestive_tract"          class="stacked-image">
+  <img src="/assets/xray/kidneys.png"           alt="kidneys"          class="stacked-image">
+  <img src="/assets/xray/lungs.png"             alt="lungs"          class="stacked-image">
+  <img src="/assets/xray/trachea.png"           alt="trachea"          class="stacked-image">
+  <img src="/assets/xray/miners_lung.png"       alt="miners_lung"          class="stacked-image">
+  <img src="/assets/xray/heart.png"             alt="heart"          class="stacked-image">
+  <img src="/assets/xray/humerus.png"           alt="humerus"          class="stacked-image">
+  <img src="/assets/xray/femur.png"             alt="femur"           class="stacked-image">
+  <img src="/assets/xray/tibia_fibia.png"       alt="tibia_fibia"           class="stacked-image">
+  <img src="/assets/xray/arm_finger_bones.png"  alt="arm_finger_bones"           class="stacked-image">
+  <img src="/assets/xray/median_radial_nerves.png" alt="median_radial_nerves"        class="stacked-image">
+  <img src="/assets/xray/arm_nerves.png"        alt="arm_nerves"           class="stacked-image">
+  <img src="/assets/xray/leg_nerves.png"        alt="leg_nerves"           class="stacked-image">
+  <img src="/assets/xray/foot_nerves.png"       alt="foot_nerves"           class="stacked-image">
+  <img src="/assets/xray/xray_outline.png"      alt="xray_outline"           class="stacked-image">
+  <img src="/assets/xray/ring.png"              alt="ring"          class="stacked-image">
+  <img src="/assets/xray/green_thumb.png"       alt="green_thumb"     class="stacked-image">
+  
+      </div>
+    </div>
+      <!-- Right Sidebar -->
+<div class="right-sidebar">
+    <center><h3>VITAL SIGNS</h3></center>
+    <div class="sidebar-item">
+        <p><strong>ECG Reading:</strong></p>
+        <div class="ecg-container">
+            <div class="ecg-grid"></div>
+            <canvas class="ecg-canvas" id="ecgCanvas"></canvas>
+        </div>
+        <p class="ecg-stats">
+            <span>Heart Rate: <span id="heartRate">72</span> BPM</span>
+            <span>|</span>
+            <span>Rhythm: Normal</span>
+        </p>
+    </div>
+    
+    <div class="sidebar-item">
+        <p style="color: #ffff00;"><strong>SpO2 Monitoring:</strong></p>
+        <div class="o2-container">
+            <div class="monitor-grid"></div>
+            <canvas class="monitor-canvas" id="o2Canvas"></canvas>
+        </div>
+        <p class="o2-stats stats">
+            <span>SpO2: <span id="o2Level">98</span>%</span>
+            <span>|</span>
+            <span>Perfusion: Good</span>
+        </p>
+    </div>
+   
+    <div class="sidebar-item">
+        <p style="color: #00ccff;"><strong>Respiratory Monitoring:</strong></p>
+        <div class="resp-container">
+            <div class="monitor-grid"></div>
+            <canvas class="monitor-canvas" id="respCanvas"></canvas>
+        </div>
+        <p class="resp-stats stats">
+            <span>Resp Rate: <span id="respRate">16</span> /min</span>
+            <span>|</span>
+            <span>Pattern: Normal</span>
+        </p>
+    </div>
+</div>
+
+
+    </div>
+    <div class="footer-link">
+      <a href="#" onclick="alert('Leaving the OR...'); return false;">Leave the OR</a>
+    </div>
+  </div>
+
+  <!-- Info Box -->
+  <div id="info-box">
+    <div id="info-close">×</div>
+    <p id="info-text"></p>
+  </div>
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-wrapper">
+      <span class="close">&times;</span>
+      <div class="loading" id="loadingPlaceholder"></div>
+      <div id="modalDisplay"></div>
+      <div id="title"></div>
+      <div id="caption"></div>
+    </div>
+  </div>
+
+<script src="/JS/xrayscript.js"></script>
+
+</body>
+</html>
