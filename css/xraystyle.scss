@@ -411,195 +411,304 @@ h1 {
 
 
 
-        .ecg-container {
-            width: 100%;
-            height: 120px;
-            background: #000;
-            border: 2px solid #00ff00;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-            margin: 10px 0;
-        }
+/* ======================================
+   PERFORMANCE-OPTIMIZED VITAL MONITORS CSS
+   ====================================== */
 
-        .ecg-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(0, 255, 0, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
+/* CSS Variables for better performance */
+:root {
+    --grid-small: 20px;
+    --grid-large: 100px;
+    --ecg-color: #00ff00;
+    --o2-color: #ffff00;
+    --resp-color: #00ccff;
+}
 
-        .ecg-grid::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(0, 255, 0, 0.3) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 255, 0, 0.3) 1px, transparent 1px);
-            background-size: 100px 100px;
-        }
+/* Base container optimizations */
+.ecg-container,
+.o2-container,
+.resp-container {
+    width: 100%;
+    height: 120px;
+    background: #000;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    margin: 10px 0;
+    
+    /* Critical performance properties */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* Prevent repaints */
+    contain: layout style paint;
+    
+    /* Create stacking context */
+    z-index: 0;
+    
+    /* Optimize border rendering */
+    border: 2px solid;
+    border-image: initial;
+}
 
-        .ecg-canvas {
-            position: flex;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+/* Individual container colors */
+.ecg-container {
+    border-color: var(--ecg-color);
+}
 
-        .ecg-stats {
-            font-size: 0.8rem;
-            color: #00ff00;
-            text-align: center;
-            margin: 5px 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
+.o2-container {
+    border-color: var(--o2-color);
+}
 
-        .ecg-stats span {
-            display: inline-block;
-            animation: pulse 2s ease-in-out infinite;
-        }
+.resp-container {
+    border-color: var(--resp-color);
+}
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
+/* Optimize all grids */
+.ecg-grid,
+.monitor-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Force GPU layer */
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    
+    /* Optimize rendering */
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
 
+/* ECG Grid specific */
+.ecg-grid {
+    background-image:
+        linear-gradient(to right, rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+    background-size: var(--grid-small) var(--grid-small);
+}
 
+.ecg-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(to right, rgba(0, 255, 0, 0.3) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 0, 0.3) 1px, transparent 1px);
+    background-size: var(--grid-large) var(--grid-large);
+    
+    /* GPU optimization for pseudo-elements */
+    will-change: transform;
+    transform: translateZ(0);
+}
 
-        /* O2 Monitor Styles */
-        .o2-container {
-            width: 100%;
-            height: 120px;
-            background: #000;
-            border: 2px solid #ffff00;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-            margin: 10px 0;
-        }
+/* O2 Monitor Grid */
+.o2-container .monitor-grid {
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 0, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 0, 0.15) 1px, transparent 1px);
+    background-size: var(--grid-small) var(--grid-small);
+}
 
-        .o2-container .monitor-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(255, 255, 0, 0.15) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 0, 0.15) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
+.o2-container .monitor-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 0, 0.3) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 0, 0.3) 1px, transparent 1px);
+    background-size: var(--grid-large) var(--grid-large);
+    
+    will-change: transform;
+    transform: translateZ(0);
+}
 
-        .o2-container .monitor-grid::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(255, 255, 0, 0.3) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 0, 0.3) 1px, transparent 1px);
-            background-size: 100px 100px;
-        }
+/* Respiratory Monitor Grid */
+.resp-container .monitor-grid {
+    background-image:
+        linear-gradient(to right, rgba(0, 204, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 204, 255, 0.1) 1px, transparent 1px);
+    background-size: var(--grid-small) var(--grid-small);
+}
 
-        .o2-container > p {
-            color: #ffff00;
-        }
+.resp-container .monitor-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        linear-gradient(to right, rgba(0, 204, 255, 0.3) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 204, 255, 0.3) 1px, transparent 1px);
+    background-size: var(--grid-large) var(--grid-large);
+    
+    will-change: transform;
+    transform: translateZ(0);
+}
 
-        .o2-stats {
-            font-size: 0.8rem;
-            color: #ffff00;
-            text-align: center;
-            margin: 5px 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
+/* Canvas optimizations */
+.ecg-canvas,
+.monitor-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    
+    /* Critical performance properties */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    
+    /* Isolate canvas rendering */
+    isolation: isolate;
+    
+    /* Prevent any unnecessary style recalculations */
+    font-size: 0;
+    line-height: 0;
+    
+    /* Optimize for high-DPI displays */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
 
-        /* Respiratory Monitor Styles */
-        .resp-container {
-            width: 100%;
-            height: 120px;
-            background: #000;
-            border: 2px solid #00ccff;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-            margin: 10px 0;
-        }
+/* Stats optimizations */
+.ecg-stats,
+.o2-stats,
+.resp-stats {
+    font-size: 0.8rem;
+    text-align: center;
+    margin: 5px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    
+    /* Prevent layout shifts */
+    contain: layout;
+    
+    /* Optimize text rendering */
+    text-rendering: optimizeSpeed;
+}
 
-        .resp-container .monitor-grid {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(0, 204, 255, 0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 204, 255, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
+.ecg-stats {
+    color: var(--ecg-color);
+}
 
-        .resp-container .monitor-grid::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(to right, rgba(0, 204, 255, 0.3) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(0, 204, 255, 0.3) 1px, transparent 1px);
-            background-size: 100px 100px;
-        }
+.o2-stats {
+    color: var(--o2-color);
+}
 
-        .resp-container > p {
-            color: #00ccff;
-        }
+.resp-stats {
+    color: var(--resp-color);
+}
 
-        .resp-stats {
-            font-size: 0.8rem;
-            color: #00ccff;
-            text-align: center;
-            margin: 5px 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
+/* Optimized animation for all stats */
+.ecg-stats span,
+.o2-stats span,
+.resp-stats span,
+.stats span {
+    display: inline-block;
+    
+    /* Use transform instead of opacity for better performance */
+    will-change: transform, opacity;
+    animation: pulse-optimized 2s ease-in-out infinite;
+}
 
-        .monitor-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+/* Optimized pulse animation using transforms */
+@keyframes pulse-optimized {
+    0%, 100% { 
+        transform: scale(1) translateZ(0);
+        opacity: 0.8;
+    }
+    50% { 
+        transform: scale(1.02) translateZ(0);
+        opacity: 1;
+    }
+}
 
-        .stats span {
-            display: inline-block;
-            animation: pulse 2s ease-in-out infinite;
-        }
+/* Color optimizations for paragraphs */
+.o2-container > p {
+    color: var(--o2-color);
+}
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
+.resp-container > p {
+    color: var(--resp-color);
+}
 
+/* Additional performance optimizations */
+.ecg-container *,
+.o2-container *,
+.resp-container * {
+    /* Prevent text selection */
+    user-select: none;
+    -webkit-user-select: none;
+    
+    /* Optimize touch interactions */
+    touch-action: none;
+}
 
+/* If monitors are in a sidebar */
+.right-sidebar {
+    /* Isolate the entire sidebar */
+    will-change: contents;
+    contain: layout style;
+}
 
+.sidebar-item {
+    /* Prevent layout thrashing */
+    contain: layout;
+}
+
+/* Disable animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+    .ecg-stats span,
+    .o2-stats span,
+    .resp-stats span,
+    .stats span {
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* Optimize for mobile devices */
+@media (max-width: 768px) {
+    .ecg-container,
+    .o2-container,
+    .resp-container {
+        /* Reduce quality on mobile for better performance */
+        image-rendering: optimizeSpeed;
+    }
+}
+
+/* High performance mode for very low-end devices */
+@media (max-device-memory: 2GB) {
+    .ecg-grid::before,
+    .monitor-grid::before {
+        /* Remove large grid on low-memory devices */
+        display: none;
+    }
+    
+    .ecg-stats span,
+    .o2-stats span,
+    .resp-stats span,
+    .stats span {
+        /* Disable animations on low-memory devices */
+        animation: none !important;
+    }
+}
 
 
 
