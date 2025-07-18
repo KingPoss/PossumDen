@@ -799,42 +799,85 @@ document.addEventListener('DOMContentLoaded', function() {
     /******************************************************
      10) Touch Support for Mobile
     ******************************************************/
-container.addEventListener('touchstart', (evt) => {
-    // Check if touch is on eye area
-    const touch = evt.touches[0];
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    
-    // If touching near the eye, don't prevent default
-    if (element && element.closest('#eyeContainer')) {
-        return; // Let normal scrolling happen
-    }
-    
-    evt.preventDefault(); // Only prevent default for other areas
-    
-    const clickEvent = new MouseEvent('click', {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        bubbles: true
-    });
-    container.dispatchEvent(clickEvent);
-});
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
 
-// Handle touch move for hover effects on mobile
-container.addEventListener('touchmove', (evt) => {
+// Remove the old touchstart that was preventing scrolling
+container.addEventListener('touchstart', (evt) => {
     const touch = evt.touches[0];
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
     
-    // Don't prevent scrolling
-    if (element && !element.closest('#eyeContainer')) {
-        const moveEvent = new MouseEvent('mousemove', {
+    // Store starting position and time
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchStartTime = Date.now();
+    
+    // Don't prevent default - allow scrolling!
+}, { passive: true });
+
+// Detect tap vs scroll on touchend
+container.addEventListener('touchend', (evt) => {
+    const touch = evt.changedTouches[0];
+    
+    // Calculate movement distance
+    const deltaX = Math.abs(touch.clientX - touchStartX);
+    const deltaY = Math.abs(touch.clientY - touchStartY);
+    const deltaTime = Date.now() - touchStartTime;
+    
+    // If it's a tap (minimal movement and quick)
+    if (deltaX < 10 && deltaY < 10 && deltaTime < 300) {
+        // Check what was tapped
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        // Don't process clicks on the eye area
+        if (element && element.closest('#eyeContainer')) {
+            return;
+        }
+        
+        // Simulate click for anatomy interaction
+        const clickEvent = new MouseEvent('click', {
             clientX: touch.clientX,
             clientY: touch.clientY,
             bubbles: true
         });
-        container.dispatchEvent(moveEvent);
+        container.dispatchEvent(clickEvent);
     }
-}, { passive: true }); // Note: passive: true for better scroll performance
+}, { passive: true });
 
+// Handle touch move for hover effects (without preventing scroll)
+container.addEventListener('touchmove', (evt) => {
+    const touch = evt.touches[0];
+    
+    // Calculate movement to detect if user is scrolling
+    const deltaY = Math.abs(touch.clientY - touchStartY);
+    
+    // Only trigger hover effects if not scrolling significantly
+    if (deltaY < 10) {
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        // Don't process hover on eye area
+        if (element && !element.closest('#eyeContainer')) {
+            const moveEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+                bubbles: true
+            });
+            container.dispatchEvent(moveEvent);
+        }
+    }
+}, { passive: true });
+
+// Optional: Clear hover effects when scrolling starts
+container.addEventListener('touchmove', (evt) => {
+    const touch = evt.touches[0];
+    const deltaY = Math.abs(touch.clientY - touchStartY);
+    
+    // If scrolling, clear any hover effects
+    if (deltaY > 10 && lastHoveredImg) {
+        unHighlight(lastHoveredImg);
+        lastHoveredImg = null;
+    }
+}, { passive: true });
 
 
 function populateOrganList() {
