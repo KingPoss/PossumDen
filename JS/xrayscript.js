@@ -413,415 +413,378 @@
     
 
 
-        class ECGMonitor {
-            constructor(canvasId) {
-                this.canvas = document.getElementById(canvasId);
-                this.ctx = this.canvas.getContext('2d');
-                this.sweepX = 5;
-                this.speed = 2;
-                this.heartRate = 72;
-                this.beatInterval = 60000 / this.heartRate;
-                this.time = 0;
-                this.fadeWidth = 5; // Width of the fade effect
-                this.prevY = null; // Store previous Y for smooth drawing
-                
-                // Create persistent canvas for the trace
-                this.traceCanvas = document.createElement('canvas');
-                this.traceCtx = this.traceCanvas.getContext('2d');
-                
-                // Set canvas size
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-                
-                // Start animation
-                this.animate();
-            }
-            
-            resize() {
-                const rect = this.canvas.getBoundingClientRect();
-                this.canvas.width = rect.width;
-                this.canvas.height = rect.height;
-                this.traceCanvas.width = rect.width;
-                this.traceCanvas.height = rect.height;
-                this.baselineY = this.canvas.height / 2 + 10;
-            }
-            
-            generateECGWave(x) {
-                const normalizedX = x % this.beatInterval;
-                const progress = normalizedX / this.beatInterval;
-                
-                let y = this.baselineY;
-                
-                // P wave (atrial depolarization)
-                if (progress < 0.1) {
-                    const pProgress = progress / 0.1;
-                    y -= Math.sin(pProgress * Math.PI) * 10;
-                }
-                // PR segment (flat)
-                else if (progress < 0.2) {
-                    y = this.baselineY;
-                }
-                // QRS complex (ventricular depolarization)
-                else if (progress < 0.3) {
-                    const qrsProgress = (progress - 0.2) / 0.1;
-                    if (qrsProgress < 0.2) {
-                        // Q wave (small dip)
-                        y += Math.sin(qrsProgress * 5 * Math.PI) * 5;
-                    } else if (qrsProgress < 0.5) {
-                        // R wave (large spike)
-                        const rProgress = (qrsProgress - 0.2) / 0.3;
-                        y -= Math.sin(rProgress * Math.PI) * 60;
-                    } else {
-                        // S wave (small dip after R)
-                        const sProgress = (qrsProgress - 0.5) / 0.5;
-                        y += Math.sin(sProgress * Math.PI) * 15;
-                    }
-                }
-                // ST segment (flat)
-                else if (progress < 0.4) {
-                    y = this.baselineY;
-                }
-                // T wave (ventricular repolarization)
-                else if (progress < 0.55) {
-                    const tProgress = (progress - 0.4) / 0.15;
-                    y -= Math.sin(tProgress * Math.PI) * 20;
-                }
-                // Baseline
-                else {
-                    y = this.baselineY;
-                }
-                
-                // Add slight noise for realism
-                y += (Math.random() - 0.2) * 0.2;
-                
-                return y;
-            }
-            
-animate() {
-    // Clear main canvas with transparency (like vital monitors)
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+// ======================================
+// PERFORMANCE-OPTIMIZED VITAL MONITORS
+// ======================================
+
+class MonitorManager {
+    constructor() {
+        this.monitors = [];
+        this.animating = false;
+        this.frameCount = 0;
+        this.fps = 60; // Run at 30fps instead of 60fps
+    }
     
-    // Draw the persistent trace
-    this.ctx.drawImage(this.traceCanvas, 0, 0);
+    addMonitor(monitor) {
+        this.monitors.push(monitor);
+    }
     
-    // Update time
-    this.time += 16; // Assuming 60fps
-    
-    // Calculate current Y position
-    const currentY = this.generateECGWave(this.time);
-    
-    // Draw on the trace canvas (only if we have a previous point)
-    if (this.prevY !== null) {
-        this.traceCtx.strokeStyle = '#00ff00';
-        this.traceCtx.lineWidth = 2;
-        this.traceCtx.shadowBlur = 10;
-        this.traceCtx.shadowColor = '#00ff00';
+    animate() {
+        if (!this.animating) return;
         
-        this.traceCtx.beginPath();
-        this.traceCtx.moveTo(this.sweepX - this.speed, this.prevY);
-        this.traceCtx.lineTo(this.sweepX, currentY);
-        this.traceCtx.stroke();
-    }
-    
-    // Clear immediately ahead of the sweep (matching vital monitors style)
-    this.traceCtx.clearRect(this.sweepX + 2, 0, this.fadeWidth, this.canvas.height);
-    
-    // Draw the bright leading edge dot
-    this.ctx.fillStyle = '#00ff00';
-    this.ctx.shadowBlur = 20;
-    this.ctx.shadowColor = '#00ff00';
-    this.ctx.beginPath();
-    this.ctx.arc(this.sweepX, currentY, 3, 0, Math.PI * 2);
-    this.ctx.fill();
-    
-    // Draw a vertical sweep line
-    this.ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)';
-    this.ctx.lineWidth = 1;
-    this.ctx.shadowBlur = 5;
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.sweepX, 0);
-    this.ctx.lineTo(this.sweepX, this.canvas.height);
-    this.ctx.stroke();
-    
-    // Store current Y for next frame
-    this.prevY = currentY;
-    
-    // Update sweep position
-    this.sweepX += this.speed;
-    
-    // Wrap around when reaching the right edge
-    if (this.sweepX > this.canvas.width) {
-        this.sweepX = 0;
-        this.prevY = null; // Reset to avoid drawing a line across the screen
-    }
-    
-    // Update heart rate display with slight variation
-    if (Math.random() < 0.02) {
-        this.heartRate = 72 + Math.floor(Math.random() * 5 - 2);
-        document.getElementById('heartRate').textContent = this.heartRate;
-        this.beatInterval = 60000 / this.heartRate;
-    }
-    
-    requestAnimationFrame(() => this.animate());
-}}
+        this.frameCount++;
         
-        // Start the ECG monitor
-        const ecg = new ECGMonitor('ecgCanvas');
-
-
-
-
-        class VitalSignMonitor {
-            constructor(canvasId, config) {
-                this.canvas = document.getElementById(canvasId);
-                this.ctx = this.canvas.getContext('2d');
-                this.config = config;
-                this.sweepX = 10;
-                this.speed = 2;
-                this.time = 0;
-                this.fadeWidth = 5;
-                this.prevY = null;
-                this.respPhase = 0; // Continuous phase for smooth respiratory wave
-                
-                // Create persistent canvas for the trace
-                this.traceCanvas = document.createElement('canvas');
-                this.traceCtx = this.traceCanvas.getContext('2d');
-                
-                // Set canvas size
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-                
-                // Start animation
-                this.animate();
-            }
-            
-            resize() {
-                const rect = this.canvas.getBoundingClientRect();
-                this.canvas.width = rect.width;
-                this.canvas.height = rect.height;
-                this.traceCanvas.width = rect.width;
-                this.traceCanvas.height = rect.height;
-                
-                // Add offset for O2 monitor only
-                if (this.config.type === 'o2') {
-                    this.baselineY = this.canvas.height / 2 + 15; // Move down 10 pixels
-                } else {
-                    this.baselineY = this.canvas.height / 2;
-                }
-            }
-            generateWave(x) {
-                if (this.config.type === 'o2') {
-                    return this.generateO2Wave(x);
-                } else if (this.config.type === 'resp') {
-                    return this.generateRespWave(x);
-                }
-            }
-            
-            generateO2Wave(x) {
-                // O2 saturation plethysmography waveform (pulse oximetry)
-                // This waveform represents blood volume changes in the finger
-                const period = 60000 / this.config.pulseRate;
-                const normalizedX = x % period;
-                const progress = normalizedX / period;
-                
-                let y = this.baselineY;
-                
-                // Anacrotic phase (initial upstroke) - blood rushing into finger
-                if (progress < 0.12) {
-                    const upProgress = progress / 0.12;
-                    // Steeper initial rise
-                    y -= Math.pow(upProgress, 1.5) * 35;
-                }
-                // Systolic peak
-                else if (progress < 0.18) {
-                    const peakProgress = (progress - 0.12) / 0.06;
-                    y -= 35 + Math.sin(peakProgress * Math.PI * 0.5) * 5;
-                }
-                // Dicrotic notch (closure of aortic valve)
-                else if (progress < 0.25) {
-                    const notchProgress = (progress - 0.18) / 0.07;
-                    y -= 40 - Math.sin(notchProgress * Math.PI) * 8;
-                }
-                // Diastolic decline
-                else if (progress < 0.8) {
-                    const downProgress = (progress - 0.25) / 0.55;
-                    // More gradual, realistic decline
-                    y -= 32 * Math.exp(-downProgress * 2.5);
-                }
-                
-                // Add respiratory modulation (affects amplitude slightly)
-                const respModulation = Math.sin(x * 0.0003) * 3;
-                y += respModulation;
-                
-                // Minimal noise for stable signal
-                y += (Math.random() - 0.5) * 0.2;
-                
-                return y;
-            }
-            
-            generateRespWave(x) {
-                // For respiratory, use continuous phase to avoid jumps
-                if (this.config.type === 'resp') {
-                    // Increment phase based on respiratory rate
-                    const phaseIncrement = (this.config.respRate / 60) * 0.016 * 2 * Math.PI;
-                    this.respPhase += phaseIncrement;
-                    
-                    let y = this.baselineY;
-                    
-                    // Primary breathing wave - smooth sine
-                    y -= Math.sin(this.respPhase) * 35;
-                    
-                    // Very subtle variation over multiple breaths
-                    const slowVariation = Math.sin(this.respPhase * 0.1) * 3;
-                    y += slowVariation;
-                    
-                    // Tiny physiological variation
-                    const microVariation = Math.sin(this.respPhase * 2.5) * 0.5;
-                    y += microVariation;
-                    
-                    // Minimal noise
-                    y += (Math.random() - 0.5) * 0.1;
-                    
-                    return y;
-                } else {
-                    // Original respiratory wave code for other monitor types
-                    const period = 60000 / this.config.respRate;
-                    const normalizedX = x % period;
-                    const progress = normalizedX / period;
-                    
-                    let y = this.baselineY;
-                    const breathPhase = progress * 2 * Math.PI;
-                    y -= Math.sin(breathPhase) * 35;
-                    const slowVariation = Math.sin(x * 0.00008) * 3;
-                    y += slowVariation;
-                    const microVariation = Math.sin(x * 0.002) * 0.5;
-                    y += microVariation;
-                    y += (Math.random() - 0.5) * 0.1;
-                    
-                    return y;
-                }
-            }
-            
-            animate() {
-                // Clear main canvas with transparency
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                // Draw the persistent trace
-                this.ctx.drawImage(this.traceCanvas, 0, 0);
-                
-                // Update time smoothly
-                this.time += 16; // Assuming 60fps
-                
-                // Calculate current Y position
-                const currentY = this.generateWave(this.time);
-                
-                // Draw on the trace canvas (only if we have a previous point)
-                if (this.prevY !== null) {
-                    this.traceCtx.strokeStyle = this.config.color;
-                    this.traceCtx.lineWidth = 2;
-                    this.traceCtx.shadowBlur = 10;
-                    this.traceCtx.shadowColor = this.config.color;
-                    
-                    this.traceCtx.beginPath();
-                    this.traceCtx.moveTo(this.sweepX - this.speed, this.prevY);
-                    this.traceCtx.lineTo(this.sweepX, currentY);
-                    this.traceCtx.stroke();
-                }
-                
-                // Clear immediately ahead of the sweep with gradient fade
-                const gradient = this.traceCtx.createLinearGradient(
-                    this.sweepX + 2, 0,
-                    this.sweepX + this.fadeWidth, 0
-                );
-                gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-                gradient.addColorStop(1, 'rgba(0, 0, 0, 0.9)'); 
-                
-                this.traceCtx.fillStyle = gradient;
-                // Clear the trace starting 2 pixels ahead of the dot position (this.sweepX)
-                // The clearing wave extends from (sweepX + 2) to (sweepX + 2 + fadeWidth)
-                this.traceCtx.clearRect(this.sweepX + 2, 0, this.fadeWidth, this.canvas.height);
-                
-                // Draw the bright leading edge dot
-                this.ctx.fillStyle = this.config.color;
-                this.ctx.shadowBlur = 20;
-                this.ctx.shadowColor = this.config.color;
-                this.ctx.beginPath();
-                this.ctx.arc(this.sweepX, currentY, 3, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                // Draw a vertical sweep line
-                this.ctx.strokeStyle = this.config.color + '33'; // 20% opacity
-                this.ctx.lineWidth = 1;
-                this.ctx.shadowBlur = 5;
-                this.ctx.beginPath();
-                this.ctx.moveTo(this.sweepX, 0);
-                this.ctx.lineTo(this.sweepX, this.canvas.height);
-                this.ctx.stroke();
-                
-                // Store current Y for next frame
-                this.prevY = currentY;
-                
-                // Update sweep position
-                this.sweepX += this.speed;
-                
-                // Wrap around when reaching the right edge
-                if (this.sweepX > this.canvas.width) {
-                    this.sweepX = 0;
-                    this.prevY = null; // Reset to avoid drawing a line across the screen
-                }
-                
-                // Update display values with slight variation
-                if (Math.random() < 0.02) {
-                    this.config.updateValues();
-                }
-                
-                requestAnimationFrame(() => this.animate());
-            }
+        // Only update based on target FPS (30fps = every other frame)
+        if (this.frameCount % (60 / this.fps) === 0) {
+            this.monitors.forEach(monitor => monitor.update());
         }
         
-        // O2 Monitor configuration
-        const o2Config = {
-            type: 'o2',
-            color: '#ffff00',
-            pulseRate: 72,
-            o2Level: 98,
-            baseO2: 98, // Base SpO2 level
-            lastO2Update: 0,
-            updateValues: function() {
-                // SpO2 should be very stable in healthy individuals
-                // Only update every ~10 seconds for realism
-                const now = Date.now();
-                if (now - this.lastO2Update > 10000) {
-                    // Small variation: 97-99% for healthy individual
-                    this.baseO2 = 97 + Math.floor(Math.random() * 3);
-                    this.lastO2Update = now;
-                }
-                // Very slight flutter (±1) that can happen between base values
-                const flutter = Math.random() < 0.1 ? (Math.random() < 0.5 ? -1 : 0) : 0;
-                this.o2Level = Math.max(96, Math.min(100, this.baseO2 + flutter));
-                document.getElementById('o2Level').textContent = this.o2Level;
-                
-                // Pulse rate syncs with ECG heart rate
-                this.pulseRate = 70 + Math.floor(Math.random() * 1);
-            }
-        };
-        
-        // Respiratory Monitor configuration
-        const respConfig = {
-            type: 'resp',
-            color: '#00ccff',
-            respRate: 16,
-            updateValues: function() {
-                // Resp rate varies between 14-18
-                this.respRate = 14 + Math.floor(Math.random() * 5);
-                document.getElementById('respRate').textContent = this.respRate;
-            }
-        };
-        
-        // Start the monitors
-        const o2Monitor = new VitalSignMonitor('o2Canvas', o2Config);
-        const respMonitor = new VitalSignMonitor('respCanvas', respConfig);
+        requestAnimationFrame(() => this.animate());
+    }
+    
+    start() {
+        this.animating = true;
+        this.animate();
+    }
+    
+    stop() {
+        this.animating = false;
+    }
+}
 
+// Base class for all monitors
+class BaseMonitor {
+    constructor(canvasId, config) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.config = config;
+        this.sweepX = 10;
+        this.speed = 2;
+        this.time = 0;
+        this.fadeWidth = 5;
+        this.prevY = null;
+        this.performanceMode = true; // Enable performance optimizations
+        
+        // Create persistent canvas for the trace
+        this.traceCanvas = document.createElement('canvas');
+        this.traceCtx = this.traceCanvas.getContext('2d');
+        
+        // Disable image smoothing for better performance
+        this.ctx.imageSmoothingEnabled = false;
+        this.traceCtx.imageSmoothingEnabled = false;
+        
+        // Cache dimensions
+        this.width = 0;
+        this.height = 0;
+        this.baselineY = 0;
+        
+        // Set canvas size
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+    }
+    
+    resize() {
+        const rect = this.canvas.getBoundingClientRect();
+        this.width = rect.width;
+        this.height = rect.height;
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+        this.traceCanvas.width = this.width;
+        this.traceCanvas.height = this.height;
+        
+        // Calculate baseline with offset if needed
+        if (this.config && this.config.baselineOffset) {
+            this.baselineY = this.height / 2 + this.config.baselineOffset;
+        } else {
+            this.baselineY = this.height / 2;
+        }
+    }
+    
+    update() {
+        // Clear only the sweep area, not the entire canvas
+        const clearX = Math.max(0, this.sweepX - 10);
+        const clearWidth = this.fadeWidth + 20;
+        this.ctx.clearRect(clearX, 0, clearWidth, this.height);
+        
+        // Draw the persistent trace
+        this.ctx.drawImage(this.traceCanvas, 0, 0);
+        
+        // Update time
+        this.time += 16;
+        
+        // Calculate current Y position (rounded for performance)
+        const currentY = Math.round(this.generateWave(this.time));
+        
+        // Draw on the trace canvas (only if we have a previous point)
+        if (this.prevY !== null) {
+            this.traceCtx.strokeStyle = this.config.color;
+            this.traceCtx.lineWidth = 2;
+            
+            // Skip shadows in performance mode
+            if (!this.performanceMode) {
+                this.traceCtx.shadowBlur = 10;
+                this.traceCtx.shadowColor = this.config.color;
+            } else {
+                this.traceCtx.shadowBlur = 0;
+            }
+            
+            this.traceCtx.beginPath();
+            this.traceCtx.moveTo(Math.round(this.sweepX - this.speed), this.prevY);
+            this.traceCtx.lineTo(Math.round(this.sweepX), currentY);
+            this.traceCtx.stroke();
+        }
+        
+        // Clear ahead of the sweep
+        this.traceCtx.clearRect(this.sweepX + 2, 0, this.fadeWidth, this.height);
+        
+        // Draw the bright leading edge dot
+        this.ctx.fillStyle = this.config.color;
+        
+        if (!this.performanceMode) {
+            this.ctx.shadowBlur = 20;
+            this.ctx.shadowColor = this.config.color;
+        } else {
+            this.ctx.shadowBlur = 0;
+        }
+        
+        this.ctx.beginPath();
+        this.ctx.arc(Math.round(this.sweepX), currentY, 3, 0, Math.PI * 2);
+        this.ctx.fill();
+        
+        // Draw vertical sweep line (skip in performance mode)
+        if (!this.performanceMode) {
+            this.ctx.strokeStyle = this.config.color + '33';
+            this.ctx.lineWidth = 1;
+            this.ctx.shadowBlur = 0;
+            this.ctx.beginPath();
+            this.ctx.moveTo(Math.round(this.sweepX), 0);
+            this.ctx.lineTo(Math.round(this.sweepX), this.height);
+            this.ctx.stroke();
+        }
+        
+        // Store current Y for next frame
+        this.prevY = currentY;
+        
+        // Update sweep position
+        this.sweepX += this.speed;
+        
+        // Wrap around when reaching the right edge
+        if (this.sweepX > this.width) {
+            this.sweepX = 0;
+            this.prevY = null;
+        }
+        
+        // Update display values with slight variation
+        if (Math.random() < 0.02 && this.config.updateValues) {
+            this.config.updateValues();
+        }
+    }
+    
+    generateWave(x) {
+        // Override in subclasses
+        return this.baselineY;
+    }
+}
+
+// ECG Monitor with pre-calculated waveform
+class ECGMonitor extends BaseMonitor {
+    constructor(canvasId) {
+        super(canvasId, {
+            color: '#00ff00',
+            baselineOffset: 10
+        });
+        
+        this.heartRate = 72;
+        this.beatInterval = 60000 / this.heartRate;
+        
+        // Pre-calculate waveform for performance
+        this.waveformSteps = 1000;
+        this.waveformCache = new Float32Array(this.waveformSteps);
+        this.precalculateWaveform();
+    }
+    
+    precalculateWaveform() {
+        for (let i = 0; i < this.waveformSteps; i++) {
+            const progress = i / this.waveformSteps;
+            let y = 0;
+            
+            // P wave (atrial depolarization)
+            if (progress < 0.1) {
+                const pProgress = progress / 0.1;
+                y -= Math.sin(pProgress * Math.PI) * 10;
+            }
+            // QRS complex (ventricular depolarization)
+            else if (progress >= 0.2 && progress < 0.3) {
+                const qrsProgress = (progress - 0.2) / 0.1;
+                if (qrsProgress < 0.2) {
+                    y += Math.sin(qrsProgress * 5 * Math.PI) * 5;
+                } else if (qrsProgress < 0.5) {
+                    const rProgress = (qrsProgress - 0.2) / 0.3;
+                    y -= Math.sin(rProgress * Math.PI) * 60;
+                } else {
+                    const sProgress = (qrsProgress - 0.5) / 0.5;
+                    y += Math.sin(sProgress * Math.PI) * 15;
+                }
+            }
+            // T wave (ventricular repolarization)
+            else if (progress >= 0.4 && progress < 0.55) {
+                const tProgress = (progress - 0.4) / 0.15;
+                y -= Math.sin(tProgress * Math.PI) * 20;
+            }
+            
+            this.waveformCache[i] = y;
+        }
+    }
+    
+    generateWave(x) {
+        const normalizedX = x % this.beatInterval;
+        const progress = normalizedX / this.beatInterval;
+        const index = Math.floor(progress * this.waveformSteps);
+        
+        // Add tiny noise for realism
+        const noise = (Math.random() - 0.5) * 0.2;
+        
+        return this.baselineY + this.waveformCache[index] + noise;
+    }
+    
+    update() {
+        super.update();
+        
+        // Update heart rate occasionally
+        if (Math.random() < 0.02) {
+            this.heartRate = 72 + Math.floor(Math.random() * 5 - 2);
+            document.getElementById('heartRate').textContent = this.heartRate;
+            this.beatInterval = 60000 / this.heartRate;
+        }
+    }
+}
+
+// Vital Sign Monitor for O2 and Respiratory
+class VitalSignMonitor extends BaseMonitor {
+    constructor(canvasId, config) {
+        super(canvasId, config);
+        this.respPhase = 0;
+        
+        // Pre-calculate O2 waveform if needed
+        if (config.type === 'o2') {
+            this.o2WaveformCache = new Float32Array(1000);
+            this.precalculateO2Waveform();
+        }
+    }
+    
+    precalculateO2Waveform() {
+        for (let i = 0; i < 1000; i++) {
+            const progress = i / 1000;
+            let y = 0;
+            
+            if (progress < 0.12) {
+                const upProgress = progress / 0.12;
+                y -= Math.pow(upProgress, 1.5) * 35;
+            }
+            else if (progress < 0.18) {
+                const peakProgress = (progress - 0.12) / 0.06;
+                y -= 35 + Math.sin(peakProgress * Math.PI * 0.5) * 5;
+            }
+            else if (progress < 0.25) {
+                const notchProgress = (progress - 0.18) / 0.07;
+                y -= 40 - Math.sin(notchProgress * Math.PI) * 8;
+            }
+            else if (progress < 0.8) {
+                const downProgress = (progress - 0.25) / 0.55;
+                y -= 32 * Math.exp(-downProgress * 2.5);
+            }
+            
+            this.o2WaveformCache[i] = y;
+        }
+    }
+    
+    generateWave(x) {
+        if (this.config.type === 'o2') {
+            const period = 60000 / this.config.pulseRate;
+            const normalizedX = x % period;
+            const progress = normalizedX / period;
+            const index = Math.floor(progress * 1000);
+            
+            const baseWave = this.o2WaveformCache[index];
+            const respModulation = Math.sin(x * 0.0003) * 3;
+            const noise = (Math.random() - 0.5) * 0.2;
+            
+            return this.baselineY + baseWave + respModulation + noise;
+        } 
+        else if (this.config.type === 'resp') {
+            // Increment phase based on respiratory rate
+            const phaseIncrement = (this.config.respRate / 60) * 0.016 * 2 * Math.PI;
+            this.respPhase += phaseIncrement;
+            
+            let y = this.baselineY;
+            
+            // Primary breathing wave - smooth sine
+            y -= Math.sin(this.respPhase) * 35;
+            
+            // Very subtle variations
+            const slowVariation = Math.sin(this.respPhase * 0.1) * 3;
+            const microVariation = Math.sin(this.respPhase * 2.5) * 0.5;
+            const noise = (Math.random() - 0.5) * 0.1;
+            
+            return y + slowVariation + microVariation + noise;
+        }
+        
+        return this.baselineY;
+    }
+}
+
+// Configuration objects
+const o2Config = {
+    type: 'o2',
+    color: '#ffff00',
+    baselineOffset: 15,
+    pulseRate: 72,
+    o2Level: 98,
+    baseO2: 98,
+    lastO2Update: 0,
+    updateValues: function() {
+        const now = Date.now();
+        if (now - this.lastO2Update > 10000) {
+            this.baseO2 = 97 + Math.floor(Math.random() * 3);
+            this.lastO2Update = now;
+        }
+        const flutter = Math.random() < 0.1 ? (Math.random() < 0.5 ? -1 : 0) : 0;
+        this.o2Level = Math.max(96, Math.min(100, this.baseO2 + flutter));
+        document.getElementById('o2Level').textContent = this.o2Level;
+        this.pulseRate = 70 + Math.floor(Math.random() * 1);
+    }
+};
+
+const respConfig = {
+    type: 'resp',
+    color: '#00ccff',
+    baselineOffset: 0,
+    respRate: 16,
+    updateValues: function() {
+        this.respRate = 14 + Math.floor(Math.random() * 5);
+        document.getElementById('respRate').textContent = this.respRate;
+    }
+};
+
+// Initialize everything with a single animation loop
+document.addEventListener('DOMContentLoaded', function() {
+    const manager = new MonitorManager();
+    
+    // Create monitors
+    const ecg = new ECGMonitor('ecgCanvas');
+    const o2Monitor = new VitalSignMonitor('o2Canvas', o2Config);
+    const respMonitor = new VitalSignMonitor('respCanvas', respConfig);
+    
+    // Add to manager
+    manager.addMonitor(ecg);
+    manager.addMonitor(o2Monitor);
+    manager.addMonitor(respMonitor);
+    
+    // Start single animation loop
+    manager.start();
+    
+    console.log('Performance-optimized monitors initialized!');
+});
 
 
 
