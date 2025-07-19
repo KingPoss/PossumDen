@@ -414,7 +414,7 @@
 
 
 // ======================================
-// PERFORMANCE-OPTIMIZED VITAL MONITORS
+//            VITAL MONITORS
 // ======================================
 
 class MonitorManager {
@@ -783,7 +783,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start single animation loop
     manager.start();
     
-    console.log('Performance-optimized monitors initialized!');
+    console.log('ECG,SPO2, and Resp monitors initialized!');
 });
 
 
@@ -851,6 +851,8 @@ container.addEventListener('touchmove', (evt) => {
 }, { passive: true });
 
 
+
+
 function populateOrganList() {
   const container = document.getElementById('organ-list');
   
@@ -867,4 +869,4 @@ function populateOrganList() {
 document.addEventListener('DOMContentLoaded', populateOrganList);
 
 
-    console.log('Responsive Anatomy Viewer initialized successfully!');
+console.log('The Observation Room is ready for you, Doctor...');
