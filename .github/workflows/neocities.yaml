@@ -133,7 +133,7 @@ jobs:
           
           # Create the new RSS item with proper escaping and indentation
           NEW_ITEM="<item>"
-          NEW_ITEM="$NEW_ITEM<title>Kingposs.com: $TITLE</title>"
+          NEW_ITEM="$NEW_ITEM<title>The Den: $TITLE</title>"
           NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
           NEW_ITEM="$NEW_ITEM<description><![CDATA["
           NEW_ITEM="$NEW_ITEM<p>$MESSAGE</p>"
