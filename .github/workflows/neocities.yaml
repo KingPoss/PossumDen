@@ -72,36 +72,32 @@ jobs:
         env:
           TZ: America/Los_Angeles
         run: |
-          # Try to download current RSS, if it fails, check if we have one locally
-          if ! curl -f -o current-rss.xml https://kingposs.com/rss.xml; then
-            echo "Could not download RSS from site"
-            if [ -f "rss.xml" ]; then
-              echo "Using local rss.xml as base"
-              cp rss.xml current-rss.xml
-            else
-              echo "No RSS found online or locally, creating new one"
-              {
-                echo '<?xml version="1.0" encoding="UTF-8"?>'
-                echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
-                echo '  <channel>'
-                echo '    <title>The Possum Den</title>'
-                echo '    <link>https://kingposs.com</link>'
-                echo '    <description>Combined feed from blog, knowledge base, and main site</description>'
-                echo '    <language>en-us</language>'
-                echo '    <lastBuildDate>Tue, 22 Jul 2025 00:00:00 GMT</lastBuildDate>'
-                echo '    <atom:link href="https://kingposs.com/rss.xml" rel="self" type="application/rss+xml"/>'
-                echo '  </channel>'
-                echo '</rss>'
-              } > current-rss.xml
-            fi
+          # Get the latest commit message to check for !rss flag
+          COMMIT_MSG=$(git log -1 --pretty=format:'%s')
+          
+          # Check if commit message starts with !rss
+          if [[ "$COMMIT_MSG" != "!rss "* ]]; then
+            echo "No !rss flag found in commit message, skipping RSS update"
+            exit 0
           fi
+          
+          # Remove !rss prefix
+          COMMIT_MSG=${COMMIT_MSG#"!rss "}
+          
+          # Try to download current RSS
+          if ! curl -f -o current-rss.xml https://kingposs.com/rss.xml; then
+            echo "WARNING: Could not download RSS from site"
+            echo "Skipping RSS update to prevent data loss"
+            exit 0
+          fi
+          
+          echo "Successfully downloaded current RSS"
           
           # Get the latest commit info
           COMMIT_SHA=$(git rev-parse HEAD)
-          COMMIT_MSG=$(git log -1 --pretty=format:'%s')
           COMMIT_DATE=$(date -R)
           
-          # Extract title and message from commit
+          # Extract title and message from commit (now without !rss prefix)
           if [[ "$COMMIT_MSG" == *"|"* ]]; then
             TITLE=${COMMIT_MSG%%|*}
             MESSAGE=${COMMIT_MSG#*|}
@@ -110,8 +106,8 @@ jobs:
             MESSAGE="$COMMIT_MSG"
           fi
           
-          # Get list of changed files
-          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -v "rss.xml" | head -10)
+          # Get list of changed HTML files only
+          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.html?$' | head -10)
           
           # Create the new RSS item with proper escaping
           NEW_ITEM="<item>"
@@ -119,16 +115,21 @@ jobs:
           NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
           NEW_ITEM="$NEW_ITEM<description><![CDATA["
           NEW_ITEM="$NEW_ITEM<p>$MESSAGE</p>"
-          NEW_ITEM="$NEW_ITEM<p><strong>Updated pages:</strong></p>"
-          NEW_ITEM="$NEW_ITEM<ul>"
           
-          while IFS= read -r file; do
-            if [[ -n "$file" ]]; then
-              NEW_ITEM="$NEW_ITEM<li><a href=\"https://kingposs.com/$file\">$file</a></li>"
-            fi
-          done <<< "$CHANGED_FILES"
+          # Only add the file list if there are HTML files
+          if [[ -n "$CHANGED_FILES" ]]; then
+            NEW_ITEM="$NEW_ITEM<p><strong>Updated pages:</strong></p>"
+            NEW_ITEM="$NEW_ITEM<ul>"
+            
+            while IFS= read -r file; do
+              if [[ -n "$file" ]]; then
+                NEW_ITEM="$NEW_ITEM<li><a href=\"https://kingposs.com/$file\">$file</a></li>"
+              fi
+            done <<< "$CHANGED_FILES"
+            
+            NEW_ITEM="$NEW_ITEM</ul>"
+          fi
           
-          NEW_ITEM="$NEW_ITEM</ul>"
           NEW_ITEM="$NEW_ITEM]]></description>"
           NEW_ITEM="$NEW_ITEM<pubDate>$COMMIT_DATE</pubDate>"
           NEW_ITEM="$NEW_ITEM<guid>https://kingposs.com/update/$COMMIT_SHA</guid>"
@@ -145,7 +146,7 @@ jobs:
           
           # Update lastBuildDate
           sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>$COMMIT_DATE</lastBuildDate>|" rss.xml
-          
+
       # Prepare a deployment folder that excludes .git and .github
       - name: Prepare deployment folder
         run: |
