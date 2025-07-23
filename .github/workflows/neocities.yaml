@@ -84,6 +84,9 @@ jobs:
           # Remove !rss prefix
           COMMIT_MSG=${COMMIT_MSG#"!rss "}
           
+          # Get commit date first (needed for initial RSS creation)
+          COMMIT_DATE=$(date -R)
+          
           # Try to download current RSS
           if ! curl -f -o current-rss.xml https://kingposs.com/rss.xml; then
             echo "WARNING: Could not download RSS from site"
@@ -99,7 +102,7 @@ jobs:
                 echo '    <link>https://kingposs.com</link>'
                 echo '    <description>Combined feed from blog, knowledge base, and main site</description>'
                 echo '    <language>en-us</language>'
-                echo '    <lastBuildDate>'"$COMMIT_DATE"'</lastBuildDate>'
+                echo "    <lastBuildDate>$COMMIT_DATE</lastBuildDate>"
                 echo '    <atom:link href="https://kingposs.com/rss.xml" rel="self" type="application/rss+xml"/>'
                 echo '  </channel>'
                 echo '</rss>'
@@ -110,12 +113,11 @@ jobs:
               exit 0
             fi
           fi
-                    
-          echo "Successfully downloaded current RSS"
+          
+          echo "Successfully downloaded/created RSS base"
           
           # Get the latest commit info
           COMMIT_SHA=$(git rev-parse HEAD)
-          COMMIT_DATE=$(date -R)
           
           # Extract title and message from commit (now without !rss prefix)
           if [[ "$COMMIT_MSG" == *"|"* ]]; then
@@ -129,7 +131,7 @@ jobs:
           # Get list of changed HTML files only
           CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.html?$' | head -10)
           
-          # Create the new RSS item with proper escaping
+          # Create the new RSS item with proper escaping and indentation
           NEW_ITEM="<item>"
           NEW_ITEM="$NEW_ITEM<title>Kingposs.com: $TITLE</title>"
           NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
@@ -155,17 +157,22 @@ jobs:
           NEW_ITEM="$NEW_ITEM<guid>https://kingposs.com/update/$COMMIT_SHA</guid>"
           NEW_ITEM="$NEW_ITEM</item>"
           
-          # Insert new item into RSS
+          # Insert new item into RSS - after the atom:link element
           awk -v new_item="$NEW_ITEM" '
-            /<\/channel>/ && !inserted {
-              print new_item
-              inserted = 1
+            { print }
+            /atom:link.*\/>/ && !done {
+              print "    " new_item
+              done = 1
             }
-            {print}
           ' current-rss.xml > rss.xml
           
           # Update lastBuildDate
           sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>$COMMIT_DATE</lastBuildDate>|" rss.xml
+          
+          # Clean up
+          rm -f current-rss.xml
+          
+          echo "RSS updated successfully"
 
       # Prepare a deployment folder that excludes .git and .github
       - name: Prepare deployment folder
