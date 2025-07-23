@@ -92,9 +92,15 @@ jobs:
           
           # Update the RSS file
           if [ -f "rss.xml" ]; then
-            # Insert the new item after the channel opening tags
-            sed -i '/<channel>/,/<item>/{/<item>/i\'"$NEW_ITEM"'
-            }' rss.xml
+            # Create a temporary file with the new content
+            # Read the file and insert the new item after <channel> and any channel metadata
+            awk -v new_item="$NEW_ITEM" '
+              /<\/channel>/ && !inserted {
+                print new_item
+                inserted = 1
+              }
+              {print}
+            ' rss.xml > rss.tmp && mv rss.tmp rss.xml
             
             # Update lastBuildDate
             sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>$COMMIT_DATE</lastBuildDate>|" rss.xml
