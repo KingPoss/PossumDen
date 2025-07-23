@@ -66,6 +66,7 @@ jobs:
           echo "]" >> updates.json
           echo "Generated updates.json with $i entries, newest #$TOP at ${date_fmt} ${time_fmt}."
         shell: bash
+
       # Download current RSS and update it
       - name: Update RSS feed
         env:
@@ -83,7 +84,7 @@ jobs:
                 echo '<?xml version="1.0" encoding="UTF-8"?>'
                 echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
                 echo '  <channel>'
-                echo '    <title>Your Site Name</title>'
+                echo '    <title>The Possum Den</title>'
                 echo '    <link>https://kingposs.com</link>'
                 echo '    <description>Combined feed from blog, knowledge base, and main site</description>'
                 echo '    <language>en-us</language>'
@@ -114,7 +115,7 @@ jobs:
           
           # Create the new RSS item with proper escaping
           NEW_ITEM="<item>"
-          NEW_ITEM="$NEW_ITEM<title>Main Site: $TITLE</title>"
+          NEW_ITEM="$NEW_ITEM<title>Kingposs.com: $TITLE</title>"
           NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
           NEW_ITEM="$NEW_ITEM<description><![CDATA["
           NEW_ITEM="$NEW_ITEM<p>$MESSAGE</p>"
@@ -144,6 +145,7 @@ jobs:
           
           # Update lastBuildDate
           sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>$COMMIT_DATE</lastBuildDate>|" rss.xml
+          
       # Prepare a deployment folder that excludes .git and .github
       - name: Prepare deployment folder
         run: |
