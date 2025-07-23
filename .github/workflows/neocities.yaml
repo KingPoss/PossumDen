@@ -87,10 +87,30 @@ jobs:
           # Try to download current RSS
           if ! curl -f -o current-rss.xml https://kingposs.com/rss.xml; then
             echo "WARNING: Could not download RSS from site"
-            echo "Skipping RSS update to prevent data loss"
-            exit 0
+            
+            # Check if this might be the first time (no RSS exists yet)
+            if curl -s -o /dev/null -w "%{http_code}" https://kingposs.com/rss.xml | grep -q "404"; then
+              echo "RSS file doesn't exist on site yet, creating initial RSS"
+              {
+                echo '<?xml version="1.0" encoding="UTF-8"?>'
+                echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
+                echo '  <channel>'
+                echo '    <title>The Possum Den</title>'
+                echo '    <link>https://kingposs.com</link>'
+                echo '    <description>Combined feed from blog, knowledge base, and main site</description>'
+                echo '    <language>en-us</language>'
+                echo '    <lastBuildDate>'"$COMMIT_DATE"'</lastBuildDate>'
+                echo '    <atom:link href="https://kingposs.com/rss.xml" rel="self" type="application/rss+xml"/>'
+                echo '  </channel>'
+                echo '</rss>'
+              } > current-rss.xml
+            else
+              echo "Download failed for unknown reason, skipping RSS update"
+              rm -f current-rss.xml
+              exit 0
+            fi
           fi
-          
+                    
           echo "Successfully downloaded current RSS"
           
           # Get the latest commit info
