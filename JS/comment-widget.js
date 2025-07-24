@@ -50,6 +50,164 @@ const s_filteredWords = [ // Add words to filter by putting them in quotes and s
     'nigger','retard','faggot','zoophile','n1gg3r',
 ]
 
+// Enhanced real-time slur detection settings
+const s_realtimeFilterOn = true; // Enable real-time filtering
+const s_warningImageUrl = '/assets/thisisyou.jpg'; // Path to your warning image
+const s_warningAudioUrl = '/assets/audio/bitchitsthecircus.mp3'; // Path to your warning sound
+const s_warningDuration = 3000; // How long to show the warning (in milliseconds)
+const s_persistentBlock = true; // Enable persistent blocking with cookies
+const s_blockDurationHours = 0; // How many hours to block the user (0 = permanent)
+
+// Cookie management functions
+function setCookie(name, value, hours) {
+    let expires = "";
+    if (hours === 0) {
+        // Set cookie to expire in year 2038 (essentially permanent)
+        expires = "; expires=Tue, 19 Jan 2038 03:14:07 UTC";
+    } else if (hours) {
+        const date = new Date();
+        date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+function eraseCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+}
+
+// Comprehensive slur list for real-time detection
+const s_slurList = [
+    'nigger', 'n1gg3r', 'n!gger', 'nigg3r', 'n1gg@',
+    'faggot', 'f4ggot', 'fag', 'f@g',
+    'retard', 'r3tard', 'ret@rd',
+    'kike', 'k1ke', 'k!ke',
+    'spic', 'sp1c', 'sp!c',
+    'chink', 'ch1nk', 'ch!nk',
+    'tranny', 'tr4nny', 'tr@nny',
+    'zoophile', 'z00phile'
+    // Add more variations as needed
+];
+
+
+
+
+// Advanced slur detection with pattern matching
+function createAdvancedSlurDetector() {
+    // Base words to filter (add your terms here)
+    const baseWords = [
+        'nigger',
+        'niggger',
+        'nigggger',
+        'faggot',
+        'retard',
+        'tranny',
+        'troon'
+    ];
+    
+    // Character substitution patterns
+    const substitutions = {
+        'a': ['a', '@', '4', 'á', 'à', 'ä', 'â', 'ā', 'ă', 'ą'],
+        'e': ['e', '3', 'é', 'è', 'ë', 'ê', 'ē', 'ĕ', 'ę', 'ě'],
+        'i': ['i', '1', '!', 'í', 'ì', 'ï', 'î', 'ī', 'ĭ', 'į', 'ı'],
+        'o': ['o', '0', 'ó', 'ò', 'ö', 'ô', 'ō', 'ŏ', 'ő'],
+        's': ['s', '5', '$', 'ś', 'š', 'ş', 'ș'],
+        'g': ['g', '9', '6', 'ğ', 'ġ', 'ģ'],
+        't': ['t', '7', '+', 'ť', 'ţ', 'ț'],
+        'l': ['l', '1', '|', 'ł', 'ľ', 'ļ'],
+        'b': ['b', '8', 'ß'],
+        'c': ['c', 'k', 'ç', 'ć', 'č'],
+        'u': ['u', 'ü', 'ú', 'ù', 'û', 'ū', 'ŭ', 'ů', 'ű', 'ų'],
+        'n': ['n', 'ñ', 'ń', 'ň', 'ņ'],
+        'r': ['r', 'ŕ', 'ř', 'ŗ'],
+        'z': ['z', '2', 'ź', 'ž', 'ż']
+    };
+    
+    // Function to create regex pattern from a word
+    function createPattern(word) {
+        let pattern = '';
+        for (let char of word.toLowerCase()) {
+            if (substitutions[char]) {
+                // Create character class with all variations
+                pattern += '[' + substitutions[char].join('') + ']';
+            } else {
+                // Keep the character as is
+                pattern += char;
+            }
+            // Allow optional special characters between letters
+            pattern += '[\\s\\-_\\.]*';
+        }
+        return pattern;
+    }
+    
+    // Create patterns for all base words
+    const patterns = baseWords.map(word => createPattern(word));
+    
+    // Combine into one big regex
+    const megaPattern = new RegExp(patterns.join('|'), 'gi');
+    
+    // Additional patterns for spacing/concatenation tricks
+    const spacingPatterns = baseWords.map(word => {
+        // Match with spaces, dots, underscores between letters
+        return word.split('').join('[\\s\\-_\\.]+');
+    });
+    
+    const spacingRegex = new RegExp(spacingPatterns.join('|'), 'gi');
+    
+    // Return detection function
+    return function(text) {
+        // Remove excess spaces and normalize
+        const normalizedText = text.replace(/\s+/g, ' ');
+        
+        // Check main pattern
+        if (megaPattern.test(normalizedText)) return true;
+        
+        // Check spacing pattern
+        if (spacingRegex.test(normalizedText)) return true;
+        
+        // Check for reversed text
+        const reversedText = normalizedText.split('').reverse().join('');
+        if (megaPattern.test(reversedText)) return true;
+        
+        // Check for leetspeak without spaces
+        const noSpaces = normalizedText.replace(/[\s\-_\.]/g, '');
+        if (megaPattern.test(noSpaces)) return true;
+        
+        return false;
+    };
+}
+
+// Optional: Add machine learning-like detection for new patterns
+function detectSuspiciousPatterns(text) {
+    // Detect repetitive characters often used to bypass filters
+    if (/(.)\1{4,}/i.test(text)) return true;
+    
+    // Detect excessive special characters
+    const specialCharRatio = (text.match(/[^a-zA-Z0-9\s]/g) || []).length / text.length;
+    if (specialCharRatio > 0.5) return true;
+    
+    // Detect intentional typos (multiple consonants in a row)
+    if (/[bcdfghjklmnpqrstvwxyz]{5,}/i.test(text)) return true;
+    
+    return false;
+}
+
+// Enhanced detection combining both methods
+function enhancedCheckForSlurs(text) {
+    return advancedSlurDetector(text) || detectSuspiciousPatterns(text);
+}
+
 // Text - Change what messages/text appear on the form and in the comments section (Mostly self explanatory)
 const s_widgetTitle = 'Sign My Guestbook!';
 const s_nameFieldLabel = '';
@@ -65,6 +223,7 @@ const s_replyingText = 'Replying to'; // The text that displays while the user i
 const s_expandRepliesText = 'Show Replies';
 const s_leftButtonText = '<<';
 const s_rightButtonText = '>>';
+const advancedSlurDetector = createAdvancedSlurDetector();
 
 /*
     DO NOT edit below this point unless you are confident you know what you're doing!
@@ -112,19 +271,59 @@ const v_formHtml = `
     <input id="c_submitButton" name="c_submitButton" type="submit" value="${s_submitButtonLabel}" disabled>
 `;
 
-// Function to get the number of rows in the Google Sheet
-async function getNumberOfRows() {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${s_sheetId}/values/A:A?key=YOUR_API_KEY`;
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.values.length;
-}
-
 // Insert main HTML to page
 document.getElementById('c_widget').innerHTML = v_mainHtml;
 const c_form = document.getElementById('c_form');
-if (s_commentsOpen) {c_form.innerHTML = v_formHtml} 
-else {c_form.innerHTML = s_closedCommentsText}
+
+// Initialize lock state BEFORE using it
+let isLocked = false;
+
+// Check if user is blocked on page load
+function checkIfBlocked() {
+    if (s_persistentBlock && getCookie('guestbook_blocked') === 'true') {
+        // User is blocked, show warning immediately
+        isLocked = true;
+
+        // Create and show warning
+        createWarningElements();
+        const warningContainer = document.getElementById('c_warningContainer');
+        const warningAudio = document.getElementById('c_warningAudio');
+        warningContainer.style.display = 'block';
+        warningContainer.style.width = '100vw';
+        warningContainer.style.height = '100vh';
+        warningContainer.style.transition = 'none';
+        
+        // Update text to show they're still blocked
+        const warningText = warningContainer.querySelector('p');
+        if (warningText) {
+            warningText.innerHTML = '<strong>STILL HERE?</strong><br>Imagine commenting slurs in a random guestbook, how sad! Go do something productive with your time or go touch grass. Log off.';
+        }
+        warningAudio.currentTime = 0;
+        warningAudio.play().catch(e => console.log('Audio play failed:', e));
+        // Disable page
+        document.body.style.overflow = 'hidden';
+        document.body.style.pointerEvents = 'none';
+        warningContainer.style.pointerEvents = 'auto';
+        
+        // Hide the comment widget entirely
+        const widget = document.getElementById('c_widget');
+        if (widget) widget.style.display = 'none';
+        
+        return true;
+    }
+    return false;
+}
+
+// Check if user is blocked before setting up the form
+if (checkIfBlocked()) {
+    // User is blocked, don't set up the form
+    c_form.innerHTML = '';
+    
+} else if (s_commentsOpen) {
+    c_form.innerHTML = v_formHtml;
+} else {
+    c_form.innerHTML = s_closedCommentsText;
+}
 
 // Initialize misc things
 const c_container = document.getElementById('c_container');
@@ -138,6 +337,12 @@ let v_filteredWords;
 if (s_wordFilterOn) {
     v_filteredWords = s_filteredWords.join('|');
     v_filteredWords = new RegExp(String.raw `\b(${v_filteredWords})\b`, 'ig');
+}
+
+// Create regex pattern for real-time detection
+let v_realtimeFilter;
+if (s_realtimeFilterOn) {
+    v_realtimeFilter = new RegExp(s_slurList.join('|'), 'gi');
 }
 
 // The fake button is just a dummy placeholder for when comments are closed
@@ -179,6 +384,167 @@ function fixFrame() {
     v_submitted = false;
     c_hiddenIframe.srcdoc = '';
     getComments(); // Reload comments after submission
+}
+
+// Create warning elements for real-time filter
+function createWarningElements() {
+    // Create full-screen blocker
+    const warningContainer = document.createElement('div');
+    warningContainer.id = 'c_warningContainer';
+    warningContainer.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: #000000;
+        z-index: 999999;
+        display: none;
+        overflow: hidden;
+        transform: translate(-50%, -50%);
+        transition: none;
+    `;
+    
+    // Create inner content container
+    const contentContainer = document.createElement('div');
+    contentContainer.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    `;
+    
+    // Create warning image
+    const warningImage = document.createElement('img');
+    warningImage.src = s_warningImageUrl;
+    warningImage.style.cssText = `
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    `;
+    
+    // Create warning text
+    const warningText = document.createElement('p');
+    warningText.innerHTML = '<strong>NO LIFE BASEMENT DWELLING LOSER DETECTED!</strong><br>Does this really make you happy?<br>Close the webpage and go outside, you really need it.';
+    warningText.style.cssText = `
+        color: #ffffff;
+        font-size: 24px;
+        margin-top: 20px;
+        font-family: monospace;
+        text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    `;
+    
+    contentContainer.appendChild(warningImage);
+    contentContainer.appendChild(warningText);
+    warningContainer.appendChild(contentContainer);
+    document.body.appendChild(warningContainer);
+    
+    // Create audio element
+    const warningAudio = document.createElement('audio');
+    warningAudio.id = 'c_warningAudio';
+    warningAudio.src = s_warningAudioUrl;
+    warningAudio.preload = 'auto';
+    document.body.appendChild(warningAudio);
+}
+
+// Function to show warning (permanent lockout)
+function showWarning() {
+    if (isLocked) return; // Already locked
+    isLocked = true;
+    
+    // Set blocking cookie
+    if (s_persistentBlock) {
+        setCookie('guestbook_blocked', 'true', s_blockDurationHours);
+    }
+    
+    const warningContainer = document.getElementById('c_warningContainer');
+    const warningAudio = document.getElementById('c_warningAudio');
+    
+    // Show container
+    warningContainer.style.display = 'block';
+    
+    // Play sound
+    warningAudio.currentTime = 0;
+    warningAudio.play().catch(e => console.log('Audio play failed:', e));
+    
+    // Animate to full screen
+    setTimeout(() => {
+        warningContainer.style.transition = 'width 1s cubic-bezier(0.4, 0, 0.2, 1), height 1s cubic-bezier(0.4, 0, 0.2, 1)';
+        warningContainer.style.width = '100vw';
+        warningContainer.style.height = '100vh';
+    }, 10);
+    
+    // Disable all page interactions
+    document.body.style.overflow = 'hidden';
+    document.body.style.pointerEvents = 'none';
+    warningContainer.style.pointerEvents = 'auto';
+    
+    // Prevent any way to close it
+    document.addEventListener('keydown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }, true);
+    
+    // Block right-click
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    }, true);
+}
+
+// Function to check text for slurs
+function checkForSlurs(text) {
+    return advancedSlurDetector(text);
+}
+
+// Enhanced input monitoring
+function setupRealtimeFiltering() {
+    if (!s_realtimeFilterOn || !s_commentsOpen || isLocked) return;
+    
+    // Create warning elements
+    createWarningElements();
+    
+    // Monitor text input
+    const textInput = document.getElementById(`entry.${s_textId}`);
+    const nameInput = document.getElementById(`entry.${s_nameId}`);
+    
+    // Add event listeners for real-time checking
+    [textInput, nameInput].forEach(input => {
+        if (!input) return;
+        
+        // Check on every input
+        input.addEventListener('input', function(e) {
+            if (checkForSlurs(this.value)) {
+                // Clear the input
+                this.value = '';
+                
+                // Show permanent warning
+                showWarning();
+                
+                // Completely disable the form
+                c_form.style.display = 'none';
+            }
+        });
+        
+        // Also check on paste
+        input.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                if (checkForSlurs(this.value)) {
+                    this.value = '';
+                    showWarning();
+                    c_form.style.display = 'none';
+                }
+            }, 10);
+        });
+    });
 }
 
 // Processes comment data with the Google Sheet ID
@@ -244,6 +610,11 @@ function getComments() {
         } else {displayComments(comments)}
         
         c_submitButton.disabled = false // Now that everything is done, re-enable the submit button
+        
+        // Set up real-time filtering after the form is ready
+        if (s_commentsOpen && s_realtimeFilterOn) {
+            setTimeout(setupRealtimeFiltering, 100);
+        }
     })
 }
 
@@ -560,5 +931,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
+// Optional: Function to load slur list from CSV
+async function loadSlurListFromCSV(csvUrl) {
+    try {
+        const response = await fetch(csvUrl);
+        const csvText = await response.text();
+        const slurs = csvText.split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+        
+        // Update the slur list and regex
+        s_slurList.push(...slurs);
+        v_realtimeFilter = new RegExp(s_slurList.join('|'), 'gi');
+    } catch (error) {
+        console.error('Failed to load slur list:', error);
+    }
+}
 
-getComments(); // Run once on page load
+// Check if blocked before initializing
+if (!checkIfBlocked()) {
+    getComments(); // Run once on page load only if not blocked
+}
