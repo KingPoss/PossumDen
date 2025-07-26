@@ -47,7 +47,7 @@ const s_fixRarebitIndexPage = false; // If using Rarebit, change to true to make
 const s_wordFilterOn = true; // True for on, false for off
 const s_filterReplacement = '****'; // Change what filtered words are censored with (**** is the default)
 const s_filteredWords = [ // Add words to filter by putting them in quotes and separating with commas (ie. 'heck', 'dang')
-    'nigger','retard','faggot','zoophile','n1gg3r',
+    'nigger','retard','faggot','n1gg3r',
 ]
 
 // Enhanced real-time slur detection settings
@@ -95,8 +95,7 @@ const s_slurList = [
     'kike', 'k1ke', 'k!ke',
     'spic', 'sp1c', 'sp!c',
     'chink', 'ch1nk', 'ch!nk',
-    'tranny', 'tr4nny', 'tr@nny',
-    'zoophile', 'z00phile'
+    'tranny', 'tr4nny', 'tr@nny'
     // Add more variations as needed
 ];
 
@@ -110,10 +109,7 @@ function createAdvancedSlurDetector() {
         'nigger',
         'niggger',
         'nigggger',
-        'faggot',
-        'retard',
-        'tranny',
-        'troon'
+        'faggot'
     ];
     
     // Character substitution patterns
