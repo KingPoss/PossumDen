@@ -481,8 +481,6 @@ function showWarning() {
     document.body.style.overflow = 'hidden';
     document.body.style.pointerEvents = 'none';
     warningContainer.style.pointerEvents = 'auto';
-    
-    // Prevent any way to close it
     document.addEventListener('keydown', function(e) {
         e.preventDefault();
         e.stopPropagation();
