@@ -25,7 +25,7 @@ function getMetaData(display, display1, image, shouldUpdateTitle) {
            
             // Only update browser title if the initial title was "KP Radio"
             if (shouldUpdateTitle) {
-                document.title = `KP Radio | ${result.now_playing.song.artist} - ${result.now_playing.song.title}`;
+                document.title = `KP Radio ${result.now_playing.song.artist} - ${result.now_playing.song.title}`;
             }
            
             // Update live/autodj image
