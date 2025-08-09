@@ -12,15 +12,7 @@
 
 
 
-/*--MEDIA QUERIES--*/
-@media (hover: none) and (pointer: coarse) {
-    .mobilecalendar {
-    display: block;
-    }
-    .desktopcalendar {
-    display: none;
-    }
-}
+
 .listholder {
   display: flex;
   max-width: 90rem;
@@ -135,5 +127,22 @@ audio:hover{
 
 
 
+.postTitleWrapper { 
+  display: flex;
+  justify-content: center;
+  margin-inline: auto;
+}
 
-  
+.postTitle {
+  max-width: 100%;
+}
+
+/*--MEDIA QUERIES--*/
+@media (hover: none) and (pointer: coarse) {
+    .mobilecalendar {
+    display: block;
+    }
+    .desktopcalendar {
+    display: none;
+    }
+}
