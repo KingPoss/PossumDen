@@ -24,7 +24,7 @@ jobs:
         env:
           TZ: America/Los_Angeles
         run: |
-          MAX=50
+          MAX=50 # Check more commits to ensure we get 20 non-news entries
           updates=()
           entries_written=0
 
@@ -32,24 +32,21 @@ jobs:
             && IFS= read -r -d '' timestamp \
             && IFS= read -r -d '' full_msg
           do
-            # Strip any potential newlines from the SHA
             sha=$(echo -n "$sha" | tr -d '\n')
-
+            
             subject=$(echo "$full_msg" | head -n1)
 
             if [[ "$subject" == "!news "* ]]; then
-              echo "!news flag found, skipping this commit for updates.json"
               continue
             fi
-
+            
             if [[ $entries_written -ge 20 ]]; then
               break
             fi
 
             body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
-
+            
             if [[ "$subject" == "!rss "* ]]; then
-              echo "!rss flag found in commit message, stripping for updates.json"
               subject=${subject#"!rss "}
             fi
 
@@ -69,9 +66,10 @@ jobs:
 
           done < <(git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00')
 
+          # Join all entries with a comma and newline
           printf "%s" "[" > updates.json
-          ( IFS=,; printf "%s" "${updates[*]}" ) >> updates.json
-          printf "%s" "]" >> updates.json
+          ( IFS=$',\n'; printf "%s" "${updates[*]}" ) >> updates.json
+          printf "\n]\n" >> updates.json
           
           echo "Generated updates.json with $entries_written entries."
         shell: bash
@@ -84,36 +82,31 @@ jobs:
           TZ: America/Los_Angeles
         run: |
           MAX=20  # Get last 20 news items
-
-          echo "[" > news.json
+          news_updates=()
           entries_written=0
 
-          # Search through more commits to find news entries, %ct for unix timestamp
-          # Using %x00 as separator to avoid conflicts with newlines in commit messages
-          git log -n 100 --pretty=format:'%h%x00%ct%x00%B%x00' | \
-          while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
-            # Get first line as subject/title
+          while IFS= read -r -d '' sha \
+            && IFS= read -r -d '' timestamp \
+            && IFS= read -r -d '' full_msg
+          do
+            sha=$(echo -n "$sha" | tr -d '\n')
+            
             subject=$(echo "$full_msg" | head -n1)
             
-            # Only process if this is a !news commit
             if [[ "$subject" != "!news "* ]]; then
               continue
             fi
             
-            # Stop if we've written MAX entries
             if [[ $entries_written -ge $MAX ]]; then
               break
             fi
             
             echo "!news flag found, adding to news.json"
             
-            # Strip the !news prefix
             subject=${subject#"!news "}
             
-            # Get remaining lines as body (if any)
             body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
 
-            # Use subject as title, body as message (or subject if no body)
             title="$subject"
             if [[ -n "$body" ]]; then
               message="$body"
@@ -121,24 +114,22 @@ jobs:
               message="$subject"
             fi
 
-            # format date and time separately using unix timestamp
             date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
             time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
-            # Properly escape for JSON:
-            title=$(echo "$title" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
-            message=$(echo "$message" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
+            esc() { printf "%s" "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
+            title_esc=$(esc "$title")
+            message_esc=$(esc "$message")
 
-            entry="{\"sha\":\"$sha\",\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
-
-            if [[ $entries_written -gt 0 ]]; then
-              echo "," >> news.json
-            fi
-            echo "$entry" >> news.json
+            entry="{\"sha\":\"$sha\",\"title\":\"$title_esc\",\"message\":\"$message_esc\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
+            news_updates+=("$entry")
             entries_written=$(( entries_written + 1 ))
-          done
+          done < <(git log -n 100 --pretty=format:'%h%x00%ct%x00%B%x00')
 
-          echo "]" >> news.json
+          printf "%s" "[" > news.json
+          ( IFS=$',\n'; printf "%s" "${news_updates[*]}" ) >> news.json
+          printf "\n]\n" >> news.json
+          
           echo "Generated news.json with $entries_written entries."
         shell: bash
 
