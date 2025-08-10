@@ -29,9 +29,9 @@ jobs:
           echo "[" > updates.json
           entries_written=0
 
-          # Use %B to get full commit message (subject + body)
-          git log -n $MAX --pretty=format:'%h%x1f%B%x1f%ci' | \
-          while IFS=$'\x1f' read -r sha full_msg date_raw; do
+          # Use %B to get full commit message, %ct for unix timestamp
+          git log -n $MAX --pretty=format:'%h%x1f%B%x1f%ct' | \
+          while IFS=$'\x1f' read -r sha full_msg timestamp; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -68,9 +68,9 @@ jobs:
               title="Site Update"
             fi
 
-            # format date and time separately
-            date_fmt=$(date -d "$date_raw" +"%B-%-d-%Y")
-            time_fmt=$(date -d "$date_raw" +"%-l:%M %p")
+            # format date and time separately using unix timestamp
+            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%B-%-d-%Y")
+            time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
             # Properly escape for JSON:
             # 1. First escape backslashes
@@ -102,9 +102,9 @@ jobs:
           echo "[" > news.json
           entries_written=0
 
-          # Search through more commits to find news entries
-          git log -n 100 --pretty=format:'%h%x1f%B%x1f%ci' | \
-          while IFS=$'\x1f' read -r sha full_msg date_raw; do
+          # Search through more commits to find news entries, %ct for unix timestamp
+          git log -n 100 --pretty=format:'%h%x1f%B%x1f%ct' | \
+          while IFS=$'\x1f' read -r sha full_msg timestamp; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -134,9 +134,9 @@ jobs:
               message="$subject"
             fi
 
-            # format date and time separately
-            date_fmt=$(date -d "$date_raw" +"%B-%-d-%Y")
-            time_fmt=$(date -d "$date_raw" +"%-l:%M %p")
+            # format date and time separately using unix timestamp
+            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%B-%-d-%Y")
+            time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
             # Properly escape for JSON:
             title=$(echo "$title" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
