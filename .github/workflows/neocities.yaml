@@ -33,23 +33,33 @@ jobs:
           echo "[" > updates.json
           i=0
 
-          git log -n $MAX --pretty=format:'%h%x1f%s%x1f%ci' | \
-          while IFS=$'\x1f' read -r sha subj date_raw; do
+          # Use %B to get full commit message (subject + body)
+          git log -n $MAX --pretty=format:'%h%x1f%B%x1f%ci' | \
+          while IFS=$'\x1f' read -r sha full_msg date_raw; do
             num=$(( TOP - i ))
 
-            # Check if commit message starts with !rss
-            if [[ "$subj" == "!rss "* ]]; then
+            # Get first line as subject/title
+            subject=$(echo "$full_msg" | head -n1)
+            # Get remaining lines as body (if any)
+            body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
+
+            # Check if subject starts with !rss and strip it
+            if [[ "$subject" == "!rss "* ]]; then
               echo "!rss flag found in commit message, stripping for updates.json"
-              subj=${subj#"!rss "}
+              subject=${subject#"!rss "}
             fi
           
-            # 1) Split on first pipe "|" if present, else fallback to auto-title
-            if [[ "$subj" == *"|"* ]]; then
-              title=${subj%%|*}
-              message=${subj#*|}
+            # Use subject as title, body as message (or subject if no body)
+            title="$subject"
+            if [[ -n "$body" ]]; then
+              message="$body"
             else
+              message="$subject"
+            fi
+
+            # If title is empty somehow, use fallback
+            if [[ -z "$title" ]]; then
               title="Update #$num"
-              message="$subj"
             fi
 
             # format date and time separately
@@ -78,17 +88,30 @@ jobs:
         env:
           TZ: America/Los_Angeles
         run: |
-          # Get the latest commit message to check for !rss flag
-          COMMIT_MSG=$(git log -1 --pretty=format:'%s')
+          # Get the full commit message
+          FULL_COMMIT_MSG=$(git log -1 --pretty=format:'%B')
           
-          # Check if commit message starts with !rss
-          if [[ "$COMMIT_MSG" != "!rss "* ]]; then
+          # Get first line as subject
+          COMMIT_SUBJECT=$(echo "$FULL_COMMIT_MSG" | head -n1)
+          
+          # Check if subject starts with !rss
+          if [[ "$COMMIT_SUBJECT" != "!rss "* ]]; then
             echo "No !rss flag found in commit message, skipping RSS update"
             exit 0
           fi
           
-          # Remove !rss prefix
-          COMMIT_MSG=${COMMIT_MSG#"!rss "}
+          # Remove !rss prefix from subject
+          TITLE=${COMMIT_SUBJECT#"!rss "}
+          
+          # Get body (all lines after the first, excluding empty lines)
+          BODY=$(echo "$FULL_COMMIT_MSG" | tail -n +2 | sed '/^$/d')
+          
+          # If no body provided, use the title as the message
+          if [[ -z "$BODY" ]]; then
+            MESSAGE="$TITLE"
+          else
+            MESSAGE="$BODY"
+          fi
           
           # Get commit date first (needed for initial RSS creation)
           COMMIT_DATE=$(date -R)
@@ -125,15 +148,6 @@ jobs:
           # Get the latest commit info
           COMMIT_SHA=$(git rev-parse HEAD)
           
-          # Extract title and message from commit (now without !rss prefix)
-          if [[ "$COMMIT_MSG" == *"|"* ]]; then
-            TITLE=${COMMIT_MSG%%|*}
-            MESSAGE=${COMMIT_MSG#*|}
-          else
-            TITLE="Site Update"
-            MESSAGE="$COMMIT_MSG"
-          fi
-          
           # Get list of changed HTML files only
           CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.html?$' | head -10)
           
@@ -142,7 +156,10 @@ jobs:
           NEW_ITEM="$NEW_ITEM<title>The Den: $TITLE</title>"
           NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
           NEW_ITEM="$NEW_ITEM<description><![CDATA["
-          NEW_ITEM="$NEW_ITEM<p>$MESSAGE</p>"
+          
+          # Format the body/message - preserve line breaks as <br/> for better RSS rendering
+          FORMATTED_MESSAGE=$(echo "$MESSAGE" | sed 's/$/\<br\/\>/' | tr '\n' ' ')
+          NEW_ITEM="$NEW_ITEM<p>$FORMATTED_MESSAGE</p>"
           
           # Only add the file list if there are HTML files
           if [[ -n "$CHANGED_FILES" ]]; then
