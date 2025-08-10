@@ -29,9 +29,9 @@ jobs:
           echo "[" > updates.json
           entries_written=0
 
-          # Use git log with timestamp first to avoid parsing issues
-          git log -n $MAX --pretty=format:'%ct§%h§%B§§§' | \
-          while IFS='§' read -r timestamp sha full_msg _; do
+          # Use %B to get full commit message, %ct for unix timestamp
+          git log -n $MAX --pretty=format:'%h%x1f%B%x1f%ct' | \
+          while IFS=$'\x1f' read -r sha full_msg timestamp; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -69,7 +69,7 @@ jobs:
             fi
 
             # format date and time separately using unix timestamp
-            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
+            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%B-%-d-%Y")
             time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
             # Properly escape for JSON:
@@ -102,9 +102,9 @@ jobs:
           echo "[" > news.json
           entries_written=0
 
-          # Search through more commits to find news entries
-          git log -n 100 --pretty=format:'%ct§%h§%B§§§' | \
-          while IFS='§' read -r timestamp sha full_msg _; do
+          # Search through more commits to find news entries, %ct for unix timestamp
+          git log -n 100 --pretty=format:'%h%x1f%B%x1f%ct' | \
+          while IFS=$'\x1f' read -r sha full_msg timestamp; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -135,7 +135,7 @@ jobs:
             fi
 
             # format date and time separately using unix timestamp
-            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
+            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%B-%-d-%Y")
             time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
             # Properly escape for JSON:
