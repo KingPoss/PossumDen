@@ -24,18 +24,19 @@ jobs:
         env:
           TZ: America/Los_Angeles
         run: |
-          MAX=50 # Check more commits to ensure we get 20 non-news entries
+          MAX=50
           updates=()
           entries_written=0
 
-          # No pipe → no subshell → no leftover newline bugs
           while IFS= read -r -d '' sha \
             && IFS= read -r -d '' timestamp \
             && IFS= read -r -d '' full_msg
           do
+            # Strip any potential newlines from the SHA
+            sha=$(echo -n "$sha" | tr -d '\n')
+
             subject=$(echo "$full_msg" | head -n1)
 
-            # Skip !news commits
             if [[ "$subject" == "!news "* ]]; then
               echo "!news flag found, skipping this commit for updates.json"
               continue
@@ -45,24 +46,19 @@ jobs:
               break
             fi
 
-            # Body text
             body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
 
-            # Strip !rss if present
             if [[ "$subject" == "!rss "* ]]; then
               echo "!rss flag found in commit message, stripping for updates.json"
               subject=${subject#"!rss "}
             fi
 
-            # Fallbacks
             title="${subject:-Site Update}"
             message="${body:-$subject}"
 
-            # Format date/time
             date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
             time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
-            # Escape JSON
             esc() { printf "%s" "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
             title_esc=$(esc "$title")
             message_esc=$(esc "$message")
@@ -73,7 +69,6 @@ jobs:
 
           done < <(git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00')
 
-          # Join all entries with a comma and wrap in brackets
           printf "%s" "[" > updates.json
           ( IFS=,; printf "%s" "${updates[*]}" ) >> updates.json
           printf "%s" "]" >> updates.json
