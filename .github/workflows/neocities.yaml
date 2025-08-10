@@ -29,13 +29,9 @@ jobs:
           echo "[" > updates.json
           entries_written=0
 
-          # Use %B to get full commit message, %ct for unix timestamp
-          # Using %x00 as separator to avoid conflicts with newlines in commit messages
-          git log -n $MAX --pretty=format:'%h%x00%ct%x00%B' | \
-          while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
-            # Trim any whitespace from sha
-            sha=$(echo "$sha" | tr -d '[:space:]')
-            
+          # Use git log with timestamp first to avoid parsing issues
+          git log -n $MAX --pretty=format:'%ct§%h§%B§§§' | \
+          while IFS='§' read -r timestamp sha full_msg _; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -106,13 +102,9 @@ jobs:
           echo "[" > news.json
           entries_written=0
 
-          # Search through more commits to find news entries, %ct for unix timestamp
-          # Using %x00 as separator to avoid conflicts with newlines in commit messages
-          git log -n 100 --pretty=format:'%h%x00%ct%x00%B' | \
-          while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
-            # Trim any whitespace from sha
-            sha=$(echo "$sha" | tr -d '[:space:]')
-            
+          # Search through more commits to find news entries
+          git log -n 100 --pretty=format:'%ct§%h§%B§§§' | \
+          while IFS='§' read -r timestamp sha full_msg _; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
