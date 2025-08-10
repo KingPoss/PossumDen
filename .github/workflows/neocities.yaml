@@ -19,13 +19,13 @@ jobs:
         with:
           fetch-depth: 0
 
-# Generate fresh updates.json from last 20 commits
+      # Generate fresh updates.json from last 20 commits
       - name: Generate updates.json
         env:
           TZ: America/Los_Angeles
         run: |
-          MAX=50
-          echo "[" > updates.json
+          MAX=50 # Check more commits to ensure we get 20 non-news entries
+          updates=()
           entries_written=0
 
           # No pipe → no subshell → no leftover newline bugs
@@ -63,23 +63,24 @@ jobs:
             time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
             # Escape JSON
-            esc() { echo "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
-            title=$(esc "$title")
-            message=$(esc "$message")
+            esc() { printf "%s" "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
+            title_esc=$(esc "$title")
+            message_esc=$(esc "$message")
 
-            entry="{\"sha\":\"$sha\",\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
-
-            if [[ $entries_written -gt 0 ]]; then
-              echo "," >> updates.json
-            fi
-            echo "$entry" >> updates.json
+            entry="{\"sha\":\"$sha\",\"title\":\"$title_esc\",\"message\":\"$message_esc\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
+            updates+=("$entry")
             entries_written=$(( entries_written + 1 ))
 
           done < <(git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00')
 
-          echo "]" >> updates.json
+          # Join all entries with a comma and wrap in brackets
+          printf "%s" "[" > updates.json
+          ( IFS=,; printf "%s" "${updates[*]}" ) >> updates.json
+          printf "%s" "]" >> updates.json
+          
           echo "Generated updates.json with $entries_written entries."
         shell: bash
+
 
 
       # Generate news.json from commits with !news flag
