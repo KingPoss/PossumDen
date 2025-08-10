@@ -31,8 +31,11 @@ jobs:
 
           # Use %B to get full commit message, %ct for unix timestamp
           # Using %x00 as separator to avoid conflicts with newlines in commit messages
-          git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00' | \
+          git log -n $MAX --pretty=format:'%h%x00%ct%x00%B' | \
           while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
+            # Trim any whitespace from sha
+            sha=$(echo "$sha" | tr -d '[:space:]')
+            
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -105,8 +108,11 @@ jobs:
 
           # Search through more commits to find news entries, %ct for unix timestamp
           # Using %x00 as separator to avoid conflicts with newlines in commit messages
-          git log -n 100 --pretty=format:'%h%x00%ct%x00%B%x00' | \
+          git log -n 100 --pretty=format:'%h%x00%ct%x00%B' | \
           while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
+            # Trim any whitespace from sha
+            sha=$(echo "$sha" | tr -d '[:space:]')
+            
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
