@@ -19,66 +19,53 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Generate fresh updates.json from last 20 commits
+# Generate fresh updates.json from last 20 commits
       - name: Generate updates.json
         env:
           TZ: America/Los_Angeles
         run: |
-          MAX=50         # Check more commits to ensure we get 20 non-news entries
-
+          MAX=50
           echo "[" > updates.json
           entries_written=0
 
-          # Use %B to get full commit message, %ct for unix timestamp
-          # Using %x00 as separator to avoid conflicts with newlines in commit messages
-          git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00' | \
-          while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
-            # Get first line as subject/title
+          # No pipe → no subshell → no leftover newline bugs
+          while IFS= read -r -d '' sha \
+            && IFS= read -r -d '' timestamp \
+            && IFS= read -r -d '' full_msg
+          do
             subject=$(echo "$full_msg" | head -n1)
-            
-            # Skip if this is a !news commit
+
+            # Skip !news commits
             if [[ "$subject" == "!news "* ]]; then
               echo "!news flag found, skipping this commit for updates.json"
               continue
             fi
-            
-            # Stop if we've written 20 entries
+
             if [[ $entries_written -ge 20 ]]; then
               break
             fi
-            
-            # Get remaining lines as body (if any)
+
+            # Body text
             body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
 
-            # Check if subject starts with !rss and strip it
+            # Strip !rss if present
             if [[ "$subject" == "!rss "* ]]; then
               echo "!rss flag found in commit message, stripping for updates.json"
               subject=${subject#"!rss "}
             fi
-          
-            # Use subject as title, body as message (or subject if no body)
-            title="$subject"
-            if [[ -n "$body" ]]; then
-              message="$body"
-            else
-              message="$subject"
-            fi
 
-            # If title is empty somehow, use fallback
-            if [[ -z "$title" ]]; then
-              title="Site Update"
-            fi
+            # Fallbacks
+            title="${subject:-Site Update}"
+            message="${body:-$subject}"
 
-            # format date and time separately using unix timestamp
+            # Format date/time
             date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
             time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
 
-            # Properly escape for JSON:
-            # 1. First escape backslashes
-            # 2. Then escape quotes  
-            # 3. Handle newlines, tabs, and other control characters
-            title=$(echo "$title" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
-            message=$(echo "$message" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
+            # Escape JSON
+            esc() { echo "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
+            title=$(esc "$title")
+            message=$(esc "$message")
 
             entry="{\"sha\":\"$sha\",\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
 
@@ -87,11 +74,13 @@ jobs:
             fi
             echo "$entry" >> updates.json
             entries_written=$(( entries_written + 1 ))
-          done
+
+          done < <(git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00')
 
           echo "]" >> updates.json
           echo "Generated updates.json with $entries_written entries."
         shell: bash
+
 
       # Generate news.json from commits with !news flag
       - name: Generate news.json
