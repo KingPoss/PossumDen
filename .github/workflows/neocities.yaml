@@ -81,7 +81,7 @@ jobs:
         env:
           TZ: America/Los_Angeles
         run: |
-          MAX=20  # Get last 20 news items
+          MAX=150  # Get last 150 news items
           news_updates=()
           entries_written=0
 
