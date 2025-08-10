@@ -30,8 +30,9 @@ jobs:
           entries_written=0
 
           # Use %B to get full commit message, %ct for unix timestamp
-          git log -n $MAX --pretty=format:'%h%x1f%B%x1f%ct' | \
-          while IFS=$'\x1f' read -r sha full_msg timestamp; do
+          # Using %x00 as separator to avoid conflicts with newlines in commit messages
+          git log -n $MAX --pretty=format:'%h%x00%ct%x00%B%x00' | \
+          while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
@@ -103,8 +104,9 @@ jobs:
           entries_written=0
 
           # Search through more commits to find news entries, %ct for unix timestamp
-          git log -n 100 --pretty=format:'%h%x1f%B%x1f%ct' | \
-          while IFS=$'\x1f' read -r sha full_msg timestamp; do
+          # Using %x00 as separator to avoid conflicts with newlines in commit messages
+          git log -n 100 --pretty=format:'%h%x00%ct%x00%B%x00' | \
+          while IFS= read -r -d '' sha && IFS= read -r -d '' timestamp && IFS= read -r -d '' full_msg; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
             
