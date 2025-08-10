@@ -25,21 +25,171 @@ jobs:
           TZ: America/Los_Angeles
         run: |
           BASE=1933      # 2003 total updates − 70 commits
-          MAX=20
+          MAX=50         # Check more commits to ensure we get 20 non-news entries
 
           TOTAL_COMMITS=$(git rev-list --count HEAD)
           TOP=$(( BASE + TOTAL_COMMITS ))
 
           echo "[" > updates.json
           i=0
+          entries_written=0
 
           # Use %B to get full commit message (subject + body)
           git log -n $MAX --pretty=format:'%h%x1f%B%x1f%ci' | \
-          while IFS=$'\x1f' read -r sha full_msg date_raw; do
-            num=$(( TOP - i ))
+          while IFS=
 
+      # Download current RSS and update it
+      - name: Update RSS feed
+        env:
+          TZ: America/Los_Angeles
+        run: |
+          # Get the full commit message
+          FULL_COMMIT_MSG=$(git log -1 --pretty=format:'%B')
+          
+          # Get first line as subject
+          COMMIT_SUBJECT=$(echo "$FULL_COMMIT_MSG" | head -n1)
+          
+          # Check if subject starts with !rss
+          if [[ "$COMMIT_SUBJECT" != "!rss "* ]]; then
+            echo "No !rss flag found in commit message, skipping RSS update"
+            exit 0
+          fi
+          
+          # Remove !rss prefix from subject
+          TITLE=${COMMIT_SUBJECT#"!rss "}
+          
+          # Get body (all lines after the first, excluding empty lines)
+          BODY=$(echo "$FULL_COMMIT_MSG" | tail -n +2 | sed '/^$/d')
+          
+          # If no body provided, use the title as the message
+          if [[ -z "$BODY" ]]; then
+            MESSAGE="$TITLE"
+          else
+            MESSAGE="$BODY"
+          fi
+          
+          # Get commit date first (needed for initial RSS creation)
+          COMMIT_DATE=$(date -R)
+          
+          # Try to download current RSS
+          if ! curl -f -o current-rss.xml https://kingposs.com/rss.xml; then
+            echo "WARNING: Could not download RSS from site"
+            
+            # Check if this might be the first time (no RSS exists yet)
+            if curl -s -o /dev/null -w "%{http_code}" https://kingposs.com/rss.xml | grep -q "404"; then
+              echo "RSS file doesn't exist on site yet, creating initial RSS"
+              {
+                echo '<?xml version="1.0" encoding="UTF-8"?>'
+                echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
+                echo '  <channel>'
+                echo '    <title>The Possum Den</title>'
+                echo '    <link>https://kingposs.com</link>'
+                echo '    <description>Combined feed from blog, knowledge base, and main site</description>'
+                echo '    <language>en-us</language>'
+                echo "    <lastBuildDate>$COMMIT_DATE</lastBuildDate>"
+                echo '    <atom:link href="https://kingposs.com/rss.xml" rel="self" type="application/rss+xml"/>'
+                echo '  </channel>'
+                echo '</rss>'
+              } > current-rss.xml
+            else
+              echo "Download failed for unknown reason, skipping RSS update"
+              rm -f current-rss.xml
+              exit 0
+            fi
+          fi
+          
+          echo "Successfully downloaded/created RSS base"
+          
+          # Get the latest commit info
+          COMMIT_SHA=$(git rev-parse HEAD)
+          
+          # Get list of changed HTML files only
+          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.html?$' | head -10)
+          
+          # Create the new RSS item with proper escaping and indentation
+          NEW_ITEM="<item>"
+          NEW_ITEM="$NEW_ITEM<title>The Den: $TITLE</title>"
+          NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
+          NEW_ITEM="$NEW_ITEM<description><![CDATA["
+          
+          # Format the body/message - preserve line breaks as <br/> for better RSS rendering
+          FORMATTED_MESSAGE=$(echo "$MESSAGE" | sed 's/$/\<br\/\>/' | tr '\n' ' ')
+          NEW_ITEM="$NEW_ITEM<p>$FORMATTED_MESSAGE</p>"
+          
+          # Only add the file list if there are HTML files
+          if [[ -n "$CHANGED_FILES" ]]; then
+            NEW_ITEM="$NEW_ITEM<p><strong>Updated pages:</strong></p>"
+            NEW_ITEM="$NEW_ITEM<ul>"
+            
+            while IFS= read -r file; do
+              if [[ -n "$file" ]]; then
+                NEW_ITEM="$NEW_ITEM<li><a href=\"https://kingposs.com/$file\">$file</a></li>"
+              fi
+            done <<< "$CHANGED_FILES"
+            
+            NEW_ITEM="$NEW_ITEM</ul>"
+          fi
+          
+          NEW_ITEM="$NEW_ITEM]]></description>"
+          NEW_ITEM="$NEW_ITEM<pubDate>$COMMIT_DATE</pubDate>"
+          NEW_ITEM="$NEW_ITEM<guid>https://kingposs.com/update/$COMMIT_SHA</guid>"
+          NEW_ITEM="$NEW_ITEM</item>"
+          
+          # Insert new item into RSS - after the atom:link element
+          awk -v new_item="$NEW_ITEM" '
+            { print }
+            /atom:link.*\/>/ && !done {
+              print "    " new_item
+              done = 1
+            }
+          ' current-rss.xml > rss.xml
+          
+          # Update lastBuildDate
+          sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>$COMMIT_DATE</lastBuildDate>|" rss.xml
+          
+          # Clean up
+          rm -f current-rss.xml
+          
+          echo "RSS updated successfully"
+
+      # Prepare a deployment folder that excludes .git and .github
+      - name: Prepare deployment folder
+        run: |
+          mkdir deploy
+          rsync -av --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='README.md' --exclude='*.scss' ./ deploy/
+
+      # Remove sourcemappingURL comments from all CSS files in the deploy folder
+      - name: Remove sourceMappingURL from CSS files
+        run: |
+          find deploy -type f -name "*.css" -exec sed -i 's/\/\*# sourceMappingURL=[^*]*\*\///g' {} \;
+
+      - name: Deploy to Neocities
+        uses: bcomnes/deploy-to-neocities@v3
+        with:
+          api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
+          cleanup: false
+          protected_files: "{assets,json,blog,Thoughts,JS,tags}/**"
+          
+          neocities_supporter: true
+          preview_before_deploy: true
+          dist_dir: deploy\x1f' read -r sha full_msg date_raw; do
             # Get first line as subject/title
             subject=$(echo "$full_msg" | head -n1)
+            
+            # Skip if this is a !news commit
+            if [[ "$subject" == "!news "* ]]; then
+              echo "!news flag found, skipping this commit for updates.json"
+              i=$(( i + 1 ))
+              continue
+            fi
+            
+            # Stop if we've written 20 entries
+            if [[ $entries_written -ge 20 ]]; then
+              break
+            fi
+            
+            num=$(( TOP - i ))
+            
             # Get remaining lines as body (if any)
             body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
 
@@ -66,21 +216,224 @@ jobs:
             date_fmt=$(date -d "$date_raw" +"%B-%-d-%Y")
             time_fmt=$(date -d "$date_raw" +"%-l:%M %p")
 
-            # escape quotes
-            title=${title//\"/\\\"}
-            message=${message//\"/\\\"}
+            # Properly escape for JSON:
+            # 1. First escape backslashes
+            # 2. Then escape quotes  
+            # 3. Handle newlines, tabs, and other control characters
+            title=$(echo "$title" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
+            message=$(echo "$message" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
 
-            entry="{\"sha\":\"$sha\",\"number\":$num,\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
+            entry="{\"sha\":\"$sha\",\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
 
-            if [[ $i -gt 0 ]]; then
+            if [[ $entries_written -gt 0 ]]; then
               echo "," >> updates.json
             fi
             echo "$entry" >> updates.json
             i=$(( i + 1 ))
+            entries_written=$(( entries_written + 1 ))
           done
 
           echo "]" >> updates.json
-          echo "Generated updates.json with $i entries, newest #$TOP at ${date_fmt} ${time_fmt}."
+          echo "Generated updates.json with $entries_written entries."
+        shell: bash
+
+      # 3) Generate news.json from commits with !news flag
+      - name: Generate news.json
+        env:
+          TZ: America/Los_Angeles
+        run: |
+          MAX=20  # Get last 20 news items
+
+          echo "[" > news.json
+          entries_written=0
+
+          # Search through more commits to find news entries
+          git log -n 100 --pretty=format:'%h%x1f%B%x1f%ci' | \
+          while IFS=
+
+      # Download current RSS and update it
+      - name: Update RSS feed
+        env:
+          TZ: America/Los_Angeles
+        run: |
+          # Get the full commit message
+          FULL_COMMIT_MSG=$(git log -1 --pretty=format:'%B')
+          
+          # Get first line as subject
+          COMMIT_SUBJECT=$(echo "$FULL_COMMIT_MSG" | head -n1)
+          
+          # Check if subject starts with !rss
+          if [[ "$COMMIT_SUBJECT" != "!rss "* ]]; then
+            echo "No !rss flag found in commit message, skipping RSS update"
+            exit 0
+          fi
+          
+          # Remove !rss prefix from subject
+          TITLE=${COMMIT_SUBJECT#"!rss "}
+          
+          # Get body (all lines after the first, excluding empty lines)
+          BODY=$(echo "$FULL_COMMIT_MSG" | tail -n +2 | sed '/^$/d')
+          
+          # If no body provided, use the title as the message
+          if [[ -z "$BODY" ]]; then
+            MESSAGE="$TITLE"
+          else
+            MESSAGE="$BODY"
+          fi
+          
+          # Get commit date first (needed for initial RSS creation)
+          COMMIT_DATE=$(date -R)
+          
+          # Try to download current RSS
+          if ! curl -f -o current-rss.xml https://kingposs.com/rss.xml; then
+            echo "WARNING: Could not download RSS from site"
+            
+            # Check if this might be the first time (no RSS exists yet)
+            if curl -s -o /dev/null -w "%{http_code}" https://kingposs.com/rss.xml | grep -q "404"; then
+              echo "RSS file doesn't exist on site yet, creating initial RSS"
+              {
+                echo '<?xml version="1.0" encoding="UTF-8"?>'
+                echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
+                echo '  <channel>'
+                echo '    <title>The Possum Den</title>'
+                echo '    <link>https://kingposs.com</link>'
+                echo '    <description>Combined feed from blog, knowledge base, and main site</description>'
+                echo '    <language>en-us</language>'
+                echo "    <lastBuildDate>$COMMIT_DATE</lastBuildDate>"
+                echo '    <atom:link href="https://kingposs.com/rss.xml" rel="self" type="application/rss+xml"/>'
+                echo '  </channel>'
+                echo '</rss>'
+              } > current-rss.xml
+            else
+              echo "Download failed for unknown reason, skipping RSS update"
+              rm -f current-rss.xml
+              exit 0
+            fi
+          fi
+          
+          echo "Successfully downloaded/created RSS base"
+          
+          # Get the latest commit info
+          COMMIT_SHA=$(git rev-parse HEAD)
+          
+          # Get list of changed HTML files only
+          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.html?$' | head -10)
+          
+          # Create the new RSS item with proper escaping and indentation
+          NEW_ITEM="<item>"
+          NEW_ITEM="$NEW_ITEM<title>The Den: $TITLE</title>"
+          NEW_ITEM="$NEW_ITEM<link>https://kingposs.com</link>"
+          NEW_ITEM="$NEW_ITEM<description><![CDATA["
+          
+          # Format the body/message - preserve line breaks as <br/> for better RSS rendering
+          FORMATTED_MESSAGE=$(echo "$MESSAGE" | sed 's/$/\<br\/\>/' | tr '\n' ' ')
+          NEW_ITEM="$NEW_ITEM<p>$FORMATTED_MESSAGE</p>"
+          
+          # Only add the file list if there are HTML files
+          if [[ -n "$CHANGED_FILES" ]]; then
+            NEW_ITEM="$NEW_ITEM<p><strong>Updated pages:</strong></p>"
+            NEW_ITEM="$NEW_ITEM<ul>"
+            
+            while IFS= read -r file; do
+              if [[ -n "$file" ]]; then
+                NEW_ITEM="$NEW_ITEM<li><a href=\"https://kingposs.com/$file\">$file</a></li>"
+              fi
+            done <<< "$CHANGED_FILES"
+            
+            NEW_ITEM="$NEW_ITEM</ul>"
+          fi
+          
+          NEW_ITEM="$NEW_ITEM]]></description>"
+          NEW_ITEM="$NEW_ITEM<pubDate>$COMMIT_DATE</pubDate>"
+          NEW_ITEM="$NEW_ITEM<guid>https://kingposs.com/update/$COMMIT_SHA</guid>"
+          NEW_ITEM="$NEW_ITEM</item>"
+          
+          # Insert new item into RSS - after the atom:link element
+          awk -v new_item="$NEW_ITEM" '
+            { print }
+            /atom:link.*\/>/ && !done {
+              print "    " new_item
+              done = 1
+            }
+          ' current-rss.xml > rss.xml
+          
+          # Update lastBuildDate
+          sed -i "s|<lastBuildDate>.*</lastBuildDate>|<lastBuildDate>$COMMIT_DATE</lastBuildDate>|" rss.xml
+          
+          # Clean up
+          rm -f current-rss.xml
+          
+          echo "RSS updated successfully"
+
+      # Prepare a deployment folder that excludes .git and .github
+      - name: Prepare deployment folder
+        run: |
+          mkdir deploy
+          rsync -av --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='README.md' --exclude='*.scss' ./ deploy/
+
+      # Remove sourcemappingURL comments from all CSS files in the deploy folder
+      - name: Remove sourceMappingURL from CSS files
+        run: |
+          find deploy -type f -name "*.css" -exec sed -i 's/\/\*# sourceMappingURL=[^*]*\*\///g' {} \;
+
+      - name: Deploy to Neocities
+        uses: bcomnes/deploy-to-neocities@v3
+        with:
+          api_key: ${{ secrets.NEOCITIES_API_TOKEN }}
+          cleanup: false
+          protected_files: "{assets,json,blog,Thoughts,JS,tags}/**"
+          
+          neocities_supporter: true
+          preview_before_deploy: true
+          dist_dir: deploy\x1f' read -r sha full_msg date_raw; do
+            # Get first line as subject/title
+            subject=$(echo "$full_msg" | head -n1)
+            
+            # Only process if this is a !news commit
+            if [[ "$subject" != "!news "* ]]; then
+              continue
+            fi
+            
+            # Stop if we've written MAX entries
+            if [[ $entries_written -ge $MAX ]]; then
+              break
+            fi
+            
+            echo "!news flag found, adding to news.json"
+            
+            # Strip the !news prefix
+            subject=${subject#"!news "}
+            
+            # Get remaining lines as body (if any)
+            body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
+
+            # Use subject as title, body as message (or subject if no body)
+            title="$subject"
+            if [[ -n "$body" ]]; then
+              message="$body"
+            else
+              message="$subject"
+            fi
+
+            # format date and time separately
+            date_fmt=$(date -d "$date_raw" +"%B-%-d-%Y")
+            time_fmt=$(date -d "$date_raw" +"%-l:%M %p")
+
+            # Properly escape for JSON:
+            title=$(echo "$title" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
+            message=$(echo "$message" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g' | sed 's/\t/\\t/g' | sed 's/\r/\\r/g' | sed 's/\n/\\n/g')
+
+            entry="{\"sha\":\"$sha\",\"title\":\"$title\",\"message\":\"$message\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
+
+            if [[ $entries_written -gt 0 ]]; then
+              echo "," >> news.json
+            fi
+            echo "$entry" >> news.json
+            entries_written=$(( entries_written + 1 ))
+          done
+
+          echo "]" >> news.json
+          echo "Generated news.json with $entries_written entries."
         shell: bash
 
       # Download current RSS and update it
