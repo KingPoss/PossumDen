@@ -31,10 +31,10 @@
       timeEl.textContent = u.time;
       dt.append(dateEl, timeEl);
       wrap.append(titleEl, dt);
-      // Body = commit message
+      // Body = commit message (with HTML support)
       const bodyEl = document.createElement('p');
       bodyEl.className = 'postBody';
-      bodyEl.textContent = u.message.trim();
+      bodyEl.innerHTML = u.message.trim();
       post.append(wrap, bodyEl);
       container.append(post);
     });
@@ -72,10 +72,10 @@
       timeEl.textContent = n.time;
       dt.append(dateEl, timeEl);
       wrap.append(titleEl, dt);
-      // Body = news message
+      // Body = news message (with HTML support)
       const bodyEl = document.createElement('p');
       bodyEl.className = 'postBody';
-      bodyEl.textContent = n.message.trim();
+      bodyEl.innerHTML = n.message.trim();
       post.append(wrap, bodyEl);
       container.append(post);
     });
