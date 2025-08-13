@@ -243,6 +243,7 @@ main {
   /* 3) breathing room on the sides—but capped so it doesn’t explode */
   padding-inline: clamp(1rem, 0vw, 2.5rem);
   display: block;
+  background-color: var(--darkpurple);
   background-image: var(--default-body-background);
   border-style: outset;
   border-width: 3px;
