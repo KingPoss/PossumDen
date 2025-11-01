@@ -187,17 +187,32 @@
 </div>
 
 <div class="bulletin">
-
   <div class="bulletinpost">
-  
-  <img src="/assets/touchgrassad.png" alt="">
-  <div>It's good for you!</div>
+    <!-- Default content for JavaScript-enabled browsers -->
+    <img src="/assets/touchgrassad.png" alt="Touch Grass">
+    <div>It's good for you!</div>
+    
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+      <img src="/assets/touchgrassad.png" alt="Touch Grass">
+      <div>It's good for you!</div>
+    </noscript>
   </div>
+  
   <div class="bulletinpost">
-  <img src="/assets/posterkpradioad.gif" alt="">
-  <div>KP radio!</div>
+    <!-- Default content for JavaScript-enabled browsers -->
+    <img src="" alt="KP Radio">
+    <div>KP radio!</div>
+    
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+      <img src="/assets/posterkpradioad.gif" alt="KP Radio">
+      <div>KP radio!</div>
+    </noscript>
   </div>
 </div>
+
+<script src="/JS/adRotation.js"></script>
 
 </div>
 
