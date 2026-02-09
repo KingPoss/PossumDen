@@ -13,19 +13,20 @@
       "adKey": "live-broadcast"
     },
     {
-      "days": [1, 3, 5],
+      "days": [
+        1,
+        3,
+        5
+      ],
       "timeRange": "12:00-13:00",
       "adKey": "lunch-special"
     }
   ],
-
   "timeBasedSchedule": {
     "9-17": "business-hours"
   },
-
   "ads": {
     "overwrite": [],
-
     "live-broadcast": [
       {
         "src": "/assets/live-now.gif",
@@ -38,7 +39,6 @@
         "caption": "Broadcasting live!"
       }
     ],
-
     "defaults": [
       {
         "src": "/assets/ads/500kv.png",
@@ -71,37 +71,28 @@
         "caption": "Its good for you!"
       }
     ],
-
     "sunday": [
-    {
+      {
         "src": "/assets/ads/KPad.gif",
         "alt": "Give me a call!"
-    } 
+      }
     ],
-
     "monday": [],
-
     "tuesday": [],
-
     "wednesday": [],
-
     "thursday": [],
-
     "friday": [
-    {
+      {
         "src": "/assets/ads/KPad.gif",
         "alt": "Give me a call!"
-    } 
+      }
     ],
-
     "saturday": [
-    {
+      {
         "src": "/assets/ads/KPad.gif",
         "alt": "Give me a call!"
-    }    
+      }
     ],
-
-    "business-hours": [
-    ]
+    "business-hours": []
   }
 }
