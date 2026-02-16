@@ -11,6 +11,7 @@
 <link href="/css/effects.css" rel="stylesheet" type="text/css" media="all" >
 <link href="/css/base.css" rel="stylesheet" type="text/css" media="all" >
 <link href="/css/radio.css" rel="stylesheet" type="text/css" media="all" >
+<link href="/css/calendar.css" rel="stylesheet" type="text/css" media="all" >
 
 </head>
 
@@ -162,6 +163,32 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
 <iframe class="chatWindow" src="https://www3.cbox.ws/box/?boxid=3518564&boxtag=RaAzVB&tid=2&tkey=cd1228a8a537c0b1" width="100%" height="450" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="border-width: 5px; border-color: var(--def-border-color); border-style: double; border-radius: 20px; display: none;"></iframe>	
 </div>
 <hr>
+<div class="cal-window" id="calWidget">
+  <div class="cal-body">
+    <div class="cal-nav">
+      <button class="btn-95" onclick="changeMonth(-1)">&lt; Prev</button>
+      <div class="month-label" id="monthLabel">Loading...</div>
+      <button class="btn-95" onclick="changeMonth(1)">Next &gt;</button>
+
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-agenda" id="calAgenda"></div>
+  </div>
+</div>
+
+<div class="event-popup-overlay" id="popupOverlay" onclick="closePopup(event)">
+  <div class="cal-window event-popup" onclick="event.stopPropagation()">
+    <div class="cal-titlebar">
+      <span class="title-text"><span id="popupTitle">Events</span></span>
+    </div>
+    <div class="cal-body" id="popupBody"></div>
+  </div>
+</div>
+<script src="/JS/calendar.js"></script>
+
+<hr>
+
+
 <center><h2>--- Featured Artists ---</h2></center>
         <div class="listholder">
             <ul class="artists">
@@ -196,13 +223,6 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
                 <li><a href="https://kikhausen.bandcamp.com/" target="_blank">Kikhausen</a></li>
             </ul>
         </div>
-<hr>
-
-
-<center><h2>--- Broadcast Schedule ---</h2></center>
-<div class="desktopcalendar"><div data-tockify-component="calendar" data-tockify-calendar="kpradioschedule"></div></div>
-<div class="mobilecalendar"><div data-tockify-component="mini" data-tockify-calendar="kpradioschedule"></div></div>
-<script data-cfasync="false" data-tockify-script="embed" src="https://public.tockify.com/browser/embed.js"></script>
 
 <hr>
 <center><h2>--- Broadcast Recordings ---</h2></center>
