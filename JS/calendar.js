@@ -1,3 +1,6 @@
+/* ═══════════════════════════════════════════════════
+   CONFIGURATION
+   ═══════════════════════════════════════════════════ */
 
 var ICAL_URL = 'https://calendar.google.com/calendar/ical/97cdb0276a84ba2f8b8e7c72ae3fc32c0695c09a6d866abb25c596cb4572cb1e%40group.calendar.google.com/public/basic.ics';
 var ICAL_PROXY = 'https://cors.kingposs.com/ical/';
@@ -47,7 +50,6 @@ var isFetching = false;
 
 var MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 var DAY_ABBREVS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
-var DAY_MAP = { SU:0, MO:1, TU:2, WE:3, TH:4, FR:5, SA:6 };
 
 var RECUR_HORIZON = new Date();
 RECUR_HORIZON.setFullYear(RECUR_HORIZON.getFullYear() + 2);
@@ -55,274 +57,90 @@ var MAX_RECUR = 500;
 
 
 /* ═══════════════════════════════════════════════════
-   ICS PARSER
-   ═══════════════════════════════════════════════════ */
-
-function unfoldICS(text) {
-  var raw = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  var lines = raw.split('\n');
-  var result = [];
-  for (var i = 0; i < lines.length; i++) {
-    if ((lines[i].charAt(0) === ' ' || lines[i].charAt(0) === '\t') && result.length > 0) {
-      result[result.length - 1] += lines[i].substring(1);
-    } else {
-      result.push(lines[i]);
-    }
-  }
-  return result;
-}
-
-function parseICSDate(str, tzid) {
-  if (/^\d{8}$/.test(str)) {
-    return new Date(parseInt(str.substring(0,4),10), parseInt(str.substring(4,6),10)-1, parseInt(str.substring(6,8),10));
-  }
-  var m = str.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
-  if (!m) return null;
-  var yr=parseInt(m[1],10), mo=parseInt(m[2],10)-1, dy=parseInt(m[3],10);
-  var hh=parseInt(m[4],10), mm=parseInt(m[5],10), ss=parseInt(m[6],10);
-  if (m[7] === 'Z') return new Date(Date.UTC(yr, mo, dy, hh, mm, ss));
-  if (tzid) {
-    try {
-      var utc = new Date(Date.UTC(yr, mo, dy, hh, mm, ss));
-      var inTZ = new Date(utc.toLocaleString('en-US', { timeZone: tzid }));
-      var inUTC = new Date(utc.toLocaleString('en-US', { timeZone: 'UTC' }));
-      return new Date(utc.getTime() + (inUTC.getTime() - inTZ.getTime()));
-    } catch(e) {}
-  }
-  return new Date(yr, mo, dy, hh, mm, ss);
-}
-
-function unescapeICS(s) {
-  return s.replace(/\\n/g,'\n').replace(/\\,/g,',').replace(/\\;/g,';').replace(/\\\\/g,'\\');
-}
-
-
-/* ═══════════════════════════════════════════════════
-   RRULE EXPANSION
-   ═══════════════════════════════════════════════════ */
-
-function parseRRule(str) {
-  var rule = {};
-  var parts = str.split(';');
-  for (var i = 0; i < parts.length; i++) {
-    var kv = parts[i].split('=');
-    if (kv.length === 2) rule[kv[0]] = kv[1];
-  }
-  return rule;
-}
-
-function parseExDates(strs, tzid) {
-  var dates = {};
-  for (var i = 0; i < strs.length; i++) {
-    var vals = strs[i].split(',');
-    for (var j = 0; j < vals.length; j++) {
-      var d = parseICSDate(vals[j].trim(), tzid);
-      if (d) dates[dateMidnight(d).getTime()] = true;
-    }
-  }
-  return dates;
-}
-
-function getNthWeekday(year, month, dow, n) {
-  if (n > 0) {
-    var f = new Date(year, month, 1);
-    var diff = (dow - f.getDay() + 7) % 7;
-    var day = 1 + diff + (n - 1) * 7;
-    if (day > new Date(year, month + 1, 0).getDate()) return null;
-    return new Date(year, month, day);
-  } else if (n < 0) {
-    var l = new Date(year, month + 1, 0);
-    var diff2 = (l.getDay() - dow + 7) % 7;
-    var day2 = l.getDate() - diff2 + (n + 1) * 7;
-    if (day2 < 1) return null;
-    return new Date(year, month, day2);
-  }
-  return null;
-}
-
-function expandRecurrence(start, end, rruleStr, exStrs, isAllDay, tzid) {
-  var rule = parseRRule(rruleStr);
-  var freq = rule.FREQ || '';
-  var interval = parseInt(rule.INTERVAL || '1', 10);
-  var count = rule.COUNT ? parseInt(rule.COUNT, 10) : null;
-  var until = rule.UNTIL ? parseICSDate(rule.UNTIL, tzid) : null;
-  var byDay = (rule.BYDAY || '').split(',').filter(function(s) { return s.length > 0; });
-  var byMonthDay = rule.BYMONTHDAY ? parseInt(rule.BYMONTHDAY, 10) : null;
-  var byMonth = rule.BYMONTH ? parseInt(rule.BYMONTH, 10) : null;
-  var bySetPos = rule.BYSETPOS ? parseInt(rule.BYSETPOS, 10) : null;
-
-  var exDates = parseExDates(exStrs || [], tzid);
-  var dur = end ? (end.getTime() - start.getTime()) : 0;
-  var horizon = until ? new Date(Math.min(until.getTime(), RECUR_HORIZON.getTime())) : RECUR_HORIZON;
-  var instances = [];
-  var gen = 0;
-
-  function makeEnd(s) { return end ? new Date(s.getTime() + dur) : null; }
-  function isExcluded(d) { return !!exDates[dateMidnight(d).getTime()]; }
-  function copyTime(d) { if (!isAllDay) d.setHours(start.getHours(), start.getMinutes(), start.getSeconds()); }
-
-  if (!isExcluded(start)) {
-    instances.push({ start: start, end: makeEnd(start) });
-    gen++;
-  }
-  if (!freq) return instances;
-
-  var cand, cur;
-
-  if (freq === 'DAILY') {
-    cur = new Date(start);
-    for (var s = 0; s < MAX_RECUR * interval + 1; s++) {
-      cur = new Date(cur.getTime() + 86400000 * interval);
-      if (cur > horizon || (count && gen >= count)) break;
-      if (isExcluded(cur)) continue;
-      instances.push({ start: new Date(cur), end: makeEnd(cur) });
-      gen++;
-    }
-  } else if (freq === 'WEEKLY') {
-    var targets = [];
-    if (byDay.length > 0) {
-      for (var b = 0; b < byDay.length; b++) {
-        var dn = DAY_MAP[byDay[b].replace(/[^A-Z]/g, '')];
-        if (dn !== undefined) targets.push(dn);
-      }
-    } else {
-      targets.push(start.getDay());
-    }
-    targets.sort(function(a, b) { return a - b; });
-    var ws = dateMidnight(start);
-    ws = new Date(ws.getTime() - ws.getDay() * 86400000);
-    for (var w = 0; w < MAX_RECUR; w++) {
-      var wd = new Date(ws.getTime() + w * 7 * 86400000 * interval);
-      if (wd > new Date(horizon.getTime() + 7 * 86400000)) break;
-      for (var td = 0; td < targets.length; td++) {
-        cand = new Date(wd.getTime() + targets[td] * 86400000);
-        copyTime(cand);
-        if (cand <= start || cand > horizon || (count && gen >= count)) continue;
-        if (isExcluded(cand)) continue;
-        instances.push({ start: new Date(cand), end: makeEnd(cand) });
-        gen++;
-      }
-      if (count && gen >= count) break;
-    }
-  } else if (freq === 'MONTHLY') {
-    cur = new Date(start);
-    for (var mi = 0; mi < MAX_RECUR; mi++) {
-      var nm = cur.getMonth() + interval;
-      var ny = cur.getFullYear() + Math.floor(nm / 12);
-      nm = nm % 12;
-      var td2 = byMonthDay || start.getDate();
-      if (byDay.length > 0 && bySetPos) {
-        var dn2 = DAY_MAP[byDay[0].replace(/[^A-Z]/g, '')];
-        cand = getNthWeekday(ny, nm, dn2, bySetPos);
-        if (!cand) { cur = new Date(ny, nm, 1); continue; }
-        copyTime(cand);
-      } else if (byDay.length > 0) {
-        var pm = byDay[0].match(/^(-?\d+)([A-Z]{2})$/);
-        if (pm) {
-          cand = getNthWeekday(ny, nm, DAY_MAP[pm[2]], parseInt(pm[1], 10));
-          if (!cand) { cur = new Date(ny, nm, 1); continue; }
-          copyTime(cand);
-        } else {
-          var dim = new Date(ny, nm + 1, 0).getDate();
-          cand = new Date(ny, nm, Math.min(td2, dim));
-          copyTime(cand);
-        }
-      } else {
-        var dim2 = new Date(ny, nm + 1, 0).getDate();
-        cand = new Date(ny, nm, Math.min(td2, dim2));
-        copyTime(cand);
-      }
-      cur = new Date(ny, nm, 1);
-      if (cand <= start) continue;
-      if (cand > horizon || (count && gen >= count)) break;
-      if (isExcluded(cand)) continue;
-      instances.push({ start: new Date(cand), end: makeEnd(cand) });
-      gen++;
-    }
-  } else if (freq === 'YEARLY') {
-    for (var yi = 0; yi < MAX_RECUR; yi++) {
-      var yy = start.getFullYear() + (yi + 1) * interval;
-      var ym = byMonth ? (byMonth - 1) : start.getMonth();
-      var yd = byMonthDay || start.getDate();
-      var ydim = new Date(yy, ym + 1, 0).getDate();
-      cand = new Date(yy, ym, Math.min(yd, ydim));
-      copyTime(cand);
-      if (cand > horizon || (count && gen >= count)) break;
-      if (isExcluded(cand)) continue;
-      instances.push({ start: new Date(cand), end: makeEnd(cand) });
-      gen++;
-    }
-  }
-
-  return instances;
-}
-
-
-/* ═══════════════════════════════════════════════════
-   FULL ICS PARSE
+   ICS PARSER (ical.js)
    ═══════════════════════════════════════════════════ */
 
 function parseICS(icsText) {
-  var lines = unfoldICS(icsText);
-  var cur = null;
-  var rawEvents = [];
+  var jcal = ICAL.parse(icsText);
+  var comp = new ICAL.Component(jcal);
+  var allEvs = [];
 
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i];
-    if (line === 'BEGIN:VEVENT') {
-      cur = { exdates: [] };
-    } else if (line === 'END:VEVENT' && cur) {
-      rawEvents.push(cur);
-      cur = null;
-    } else if (cur) {
-      var ci = line.indexOf(':');
-      if (ci > 0) {
-        var fk = line.substring(0, ci);
-        var val = line.substring(ci + 1);
-        var pts = fk.split(';');
-        var bk = pts[0];
-        var tzid = '';
-        for (var p = 1; p < pts.length; p++) {
-          if (pts[p].indexOf('TZID=') === 0) tzid = pts[p].substring(5);
-        }
-        if (bk === 'EXDATE') {
-          cur.exdates.push(val);
-          if (tzid) cur['EXDATE_TZID'] = tzid;
-        } else {
-          cur[bk] = val;
-          if (tzid) cur[bk + '_TZID'] = tzid;
-        }
-      }
-    }
+  // Register embedded VTIMEZONE data
+  var timezones = comp.getAllSubcomponents('vtimezone');
+  for (var t = 0; t < timezones.length; t++) {
+    var tz = new ICAL.Timezone(timezones[t]);
+    ICAL.TimezoneService.register(tz.tzid, tz);
   }
 
-  var allEvs = [];
-  for (var r = 0; r < rawEvents.length; r++) {
-    var raw = rawEvents[r];
-    var rs = raw['DTSTART'] || '';
-    var re = raw['DTEND'] || '';
-    var stZ = raw['DTSTART_TZID'] || '';
-    var isAD = (rs.length === 8);
-    var sd = parseICSDate(rs, stZ);
-    var ed = re ? parseICSDate(re, raw['DTEND_TZID'] || '') : null;
-    if (!sd) continue;
-    if (isAD && ed) {
-      ed = new Date(ed.getTime() - 86400000);
-      if (ed < sd) ed = new Date(sd.getTime());
-    }
-    var sm = unescapeICS(raw['SUMMARY'] || '(No title)');
-    var ds = unescapeICS(raw['DESCRIPTION'] || '');
-    var lc = unescapeICS(raw['LOCATION'] || '');
+  var vevents = comp.getAllSubcomponents('vevent');
 
-    if (raw['RRULE']) {
-      var inst = expandRecurrence(sd, ed, raw['RRULE'], raw.exdates, isAD, stZ);
-      for (var j = 0; j < inst.length; j++) {
-        allEvs.push({ summary: sm, description: ds, location: lc, start: inst[j].start, end: inst[j].end, isAllDay: isAD });
+  for (var i = 0; i < vevents.length; i++) {
+    var vevent = new ICAL.Event(vevents[i]);
+    var summary = vevent.summary || '(No title)';
+    var description = vevent.description || '';
+    var location = vevent.location || '';
+
+    if (vevent.isRecurring()) {
+      var expand = new ICAL.RecurExpansion({
+        component: vevents[i],
+        dtstart: vevent.startDate
+      });
+
+      var dur = vevent.duration;
+      var safetyLimit = 0;
+
+      while (safetyLimit < MAX_RECUR) {
+        var next = expand.next();
+        if (!next) break;
+
+        var start = next.toJSDate();
+        if (start > RECUR_HORIZON) break;
+
+        var isAD = (next.isDate === true);
+        var end = null;
+
+        if (dur) {
+          var endTime = next.clone();
+          endTime.addDuration(dur);
+          end = endTime.toJSDate();
+        }
+
+        if (isAD && end) {
+          end = new Date(end.getTime() - 86400000);
+          if (end < start) end = new Date(start.getTime());
+        }
+
+        allEvs.push({
+          summary: summary,
+          description: description,
+          location: location,
+          start: start,
+          end: end,
+          isAllDay: isAD
+        });
+        safetyLimit++;
       }
     } else {
-      allEvs.push({ summary: sm, description: ds, location: lc, start: sd, end: ed, isAllDay: isAD });
+      var sd = vevent.startDate.toJSDate();
+      var ed = vevent.endDate ? vevent.endDate.toJSDate() : null;
+      var isAD2 = (vevent.startDate.isDate === true);
+
+      if (isAD2 && ed) {
+        ed = new Date(ed.getTime() - 86400000);
+        if (ed < sd) ed = new Date(sd.getTime());
+      }
+
+      allEvs.push({
+        summary: summary,
+        description: description,
+        location: location,
+        start: sd,
+        end: ed,
+        isAllDay: isAD2
+      });
     }
   }
+
   return allEvs;
 }
 
@@ -492,14 +310,16 @@ function renderCalendar() {
     }
     html += '</div>';
   }
-// Fill trailing empty cells to complete the grid
-var totalCells = firstDay + daysInMonth;
-var remainder = totalCells % 7;
-if (remainder > 0) {
-  for (var e = 0; e < 7 - remainder; e++) {
-    html += '<div class="day-cell empty"></div>';
+
+  // Fill trailing empty cells to complete the grid
+  var totalCells = firstDay + daysInMonth;
+  var remainder = totalCells % 7;
+  if (remainder > 0) {
+    for (var e = 0; e < 7 - remainder; e++) {
+      html += '<div class="day-cell empty"></div>';
+    }
   }
-}
+
   grid.innerHTML = html;
   renderAgenda();
 }
@@ -574,12 +394,12 @@ function changeMonth(delta) {
 function showDayEvents(day) {
   var key = currentYear + '-' + currentMonth + '-' + day;
   var dayEvs = events[key] || [];
-  document.getElementById('popupTitle').textContent = MONTH_NAMES[currentMonth] + ' ' + day + ', ' + currentYear;
-  var body = document.getElementById('popupBody');
   var titleEl = document.getElementById('popupTitle');
   if (titleEl) {
     titleEl.textContent = 'Broadcasts for ' + MONTH_NAMES[currentMonth] + ' ' + day + ', ' + currentYear;
   }
+  var body = document.getElementById('popupBody');
+
   if (dayEvs.length === 0) {
     body.innerHTML = '<div class="no-events">No events on this day.</div>';
   } else {
@@ -621,4 +441,6 @@ document.addEventListener('keydown', function(e) {
    BOOT
    ═══════════════════════════════════════════════════ */
 
-fetchAndRender();
+document.addEventListener('DOMContentLoaded', function() {
+  fetchAndRender();
+});
