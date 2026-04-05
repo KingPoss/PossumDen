@@ -556,8 +556,8 @@ function showKpradioPopup() {
   }
   
   html += '<div class="kpradio-popup-buttons">';
-  html += '<button class="kpradio-popup-close btn-95">Got it!</button>';
   html += '<a class="btn-95 kpradio-popup-gcal" href="https://calendar.google.com/calendar/embed?src=97cdb0276a84ba2f8b8e7c72ae3fc32c0695c09a6d866abb25c596cb4572cb1e%40group.calendar.google.com" target="_blank">Open in Google Calendar</a>';
+  html += '<button class="kpradio-popup-close btn-95">Got it!</button>';
   html += '</div>';
 
   box.innerHTML = html;
