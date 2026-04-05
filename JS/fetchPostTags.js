@@ -12,18 +12,15 @@ function fetchAndDisplayPostTags() {
 
             if (post) {
                 const tagsContainer = document.getElementById('postTags');
-                tagsContainer.innerHTML = ''; // Clear any existing content
-
-                // Iterate through each tag in the PostTags array
+                tagsContainer.innerHTML = '';
                 post.PostTags.forEach((tag, index) => {
                     const tagLink = document.createElement('a');
                     tagLink.href = `/Thoughts/Tag${tag}.html`; // Link to the tag page
                     tagLink.textContent = tag;
-                    tagLink.className = 'post-tag'; // Use 'post-badge' class for styling
+                    tagLink.className = 'post-tag';
 
                     tagsContainer.appendChild(tagLink);
 
-                    // Add a comma after the tag if it's not the last tag
                     if (index < post.PostTags.length - 1) {
                         tagsContainer.appendChild(document.createTextNode(', '));
                     }

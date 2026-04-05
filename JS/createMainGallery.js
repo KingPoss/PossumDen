@@ -19,13 +19,10 @@ function getRandomImages(imageArray, count) {
     fetch('allArt.json')
       .then(response => response.json())
       .then(originalImageArray => {
-        // Convert the tags string into an array of tags
         var tagArray = tags.split(',');
-  
-        // Filter images that include at least one of the tags
         var imageArray = originalImageArray.filter(image => image.tags && image.tags.some(tag => tagArray.includes(tag)));
-  
-        // For the main page, show only 6 random images
+
+        // main page only gets 6 random picks
         if (tagArray.includes("all")) {
           imageArray = getRandomImages(imageArray, 6);
         }
@@ -57,7 +54,6 @@ function getRandomImages(imageArray, count) {
             titleText.innerHTML = this.dataset.title;
             captionText.innerHTML = this.dataset.description;
   
-            // Load the image
             var newImage = new Image();
             newImage.src = this.dataset.fullSrc;
   
@@ -93,13 +89,13 @@ function getRandomImages(imageArray, count) {
   
         span.onclick = function() { 
           modal.style.display = "none";
-          document.body.style.overflow = "auto"; // Reset overflow property
+          document.body.style.overflow = "auto";
         }
   
         window.onclick = function(event) {
           if (event.target == modal) {
             modal.style.display = "none";
-            document.body.style.overflow = "auto"; // Reset overflow property
+            document.body.style.overflow = "auto";
           }
         }
         document.getElementById("galleryLoader").style.display = "none";

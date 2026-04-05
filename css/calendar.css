@@ -584,6 +584,120 @@
   animation: spin-refresh 0.8s linear infinite;
 }
 
+/* ── Next Broadcast Banner ── */
+.next-broadcast-banner {
+  width: 100%;
+  max-width: var(--window-max-width);
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 3vw, 28px);
+  color: var(--text-primary);
+  background: var(--def-element-background);
+  border: 2px solid var(--def-border-color);
+  border-radius: 20px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+.next-broadcast-info {
+  letter-spacing: 0.5px;
+}
+.next-broadcast-info strong {
+  color: var(--rotaorange);
+}
+.next-broadcast-live {
+  color: var(--rotared);
+  animation: live-pulse 1.5s ease-in-out infinite alternate;
+}
+.next-broadcast-live strong {
+  color: #fff;
+}
+.broadcast-live-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: var(--rotared);
+  border-radius: 50%;
+  animation: live-dot-blink 1s ease-in-out infinite;
+}
+@keyframes live-dot-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+@keyframes live-pulse {
+  0% { text-shadow: 0 0 4px var(--rotared); }
+  100% { text-shadow: 0 0 12px var(--rotared), 0 0 24px rgba(255,63,45,0.3); }
+}
+.broadcast-tz {
+  display: block;
+  font-family: var(--font-body);
+  font-size: clamp(11px, 1.5vw, 14px);
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+.next-broadcast-loading,
+.next-broadcast-none {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-faint);
+}
+
+/* ── kpradio.net Referral Popup ── */
+.kpradio-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.kpradio-popup {
+  background-color: var(--lightpurple);
+  background-image: url(../assets/background.png);
+  border: 2px solid var(--def-border-color);
+  border-radius: 20px;
+  padding: 24px 32px;
+  text-align: center;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  max-width: 460px;
+  width: 100%;
+}
+.kpradio-popup-title {
+  font-family: var(--font-heading);
+  font-size: clamp(22px, 4vw, 32px);
+  color: var(--rotaorange);
+  margin-bottom: 8px;
+}
+.kpradio-popup-date {
+  font-size: clamp(16px, 3vw, 22px);
+  color: var(--rotayellow);
+  margin-bottom: 4px;
+}
+.kpradio-popup-event {
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: #fff;
+  margin-bottom: 4px;
+}
+.kpradio-popup-time {
+  font-size: clamp(18px, 3vw, 26px);
+  color: var(--rotaorange);
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.kpradio-popup-tz {
+  font-size: clamp(11px, 1.5vw, 14px);
+  color: var(--text-faint);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.kpradio-popup-close {
+  margin-top: 12px;
+  font-size: 14px;
+  padding: 6px 24px;
+}
+
 @media (max-width: 480px) {
   .cal-body {
     padding: 4px;

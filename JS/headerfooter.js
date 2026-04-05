@@ -1,6 +1,4 @@
-// Wait until the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function() {
-// Define your header HTML as a template string.
 var headerHTML = `
 
 <pre class="header">
@@ -13,7 +11,6 @@ var headerHTML = `
     888     888    888 888             888        Y88b. .d88P Y88b  d88P Y88b  d88P Y88b. .d88P 888   "   888      888  .d88P 888        888   Y8888
     888     888    888 8888888888      888         "Y88888P"   "Y8888P"   "Y8888P"   "Y88888P"  888       888      8888888P"  8888888888 888    Y888</pre>
 
-<!-- Start of navigation buttons -->
 <nav class="buttons">
 
 <a href="/index.html">
@@ -57,13 +54,10 @@ var headerHTML = `
 `;
 ;
         
-// Create a container element for the header
 var headerContainer = document.createElement('div');
 headerContainer.innerHTML = headerHTML;
-
-// Insert the header container as the first child of the body
 document.body.insertBefore(headerContainer, document.body.firstChild);
-// Inject the footer at the very bottom of the page
+
 var footerHTML = `
 <div class="footer">
 <center>

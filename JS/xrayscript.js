@@ -1,17 +1,8 @@
-   /******************************************************
-     1) Responsive Dimensions & Scaling
-    ******************************************************/
+   /* --- Dimensions & Scaling --- */
     const BASE_WIDTH = 520;
     const BASE_HEIGHT = 980;
 
-    /******************************************************
-     2) Organ Data
-     OPTIONS:
-     imageSrc
-     audioSrc
-     VideoSrc
-     link
-    ******************************************************/
+    /* --- Organ Data --- */
     const organData = {
   "brain": {
     title: "Human Brain",
@@ -37,19 +28,16 @@
     };
 
 
-    /******************************************************
-     3) Responsive Setup
-    ******************************************************/
+    /* --- Setup --- */
     const container = document.getElementById('anatomy-container');
     const anatomyContent = container.querySelector('.anatomy-content');
-    
-    // Get all images except eyeball components
+
+    // skip eyeball stuff, those are handled separately
     const allImgs = Array.from(anatomyContent.querySelectorAll('img')).filter(img => {
       const src = img.getAttribute('src') || "";
       return !src.includes("eyeball") && !src.includes("iris");
     });
 
-    // Create responsive image data storage
     const layeredImages = allImgs.map(imgEl => {
       const offCanvas = document.createElement('canvas');
       offCanvas.width = BASE_WIDTH;
@@ -64,7 +52,6 @@
       };
     });
 
-    // Function to get current scale factor
     function getScaleFactor() {
       const containerRect = container.getBoundingClientRect();
       return {
@@ -73,7 +60,6 @@
       };
     }
 
-    // Store image data for pixel detection
     function storeImageData(layer) {
       const { img, ctx, offCanvas } = layer;
       if (!img.complete) return;
@@ -84,7 +70,6 @@
       layer.loaded = true;
     }
 
-    // Initialize image data
     layeredImages.forEach(layer => {
       const { img } = layer;
       if (img.complete) {
@@ -94,9 +79,7 @@
       }
     });
 
-    /******************************************************
-     4) Modal Logic
-    ******************************************************/
+    /* --- Modal --- */
     function showOrganModal(organKey) {
       const modal = document.getElementById("myModal");
       const modalDisplay = document.getElementById("modalDisplay");
@@ -121,7 +104,6 @@
       titleText.innerHTML = organ.title || "Organ Information";
       captionText.innerHTML = organ.description || "No description available.";
 
-      // Handle different content types
       if (organ.imageSrc) {
         const imageElement = document.createElement("img");
         imageElement.className = "modal-content modal-image";
@@ -173,7 +155,6 @@
       }
     }
 
-    // Modal close functionality
     (function setupModalClose() {
       const modal = document.getElementById("myModal");
       const closeBtn = modal.querySelector(".close");
@@ -207,9 +188,7 @@
       });
     })();
 
-    /******************************************************
-     5) Info Box
-    ******************************************************/
+    /* --- Info Box --- */
     const infoBox = document.getElementById('info-box');
     const infoText = document.getElementById('info-text');
     const infoClose = document.getElementById('info-close');
@@ -218,25 +197,20 @@
       infoBox.style.display = 'none';
     };
 
-    /******************************************************
-     6) Responsive Click Handler
-    ******************************************************/
+    /* --- Click Handler --- */
     container.addEventListener('click', (evt) => {
       const containerRect = container.getBoundingClientRect();
       const { scaleX, scaleY } = getScaleFactor();
-      
-      // Convert click position to base coordinates
+
       const clickX = Math.floor((evt.clientX - containerRect.left) / scaleX);
       const clickY = Math.floor((evt.clientY - containerRect.top) / scaleY);
-      
-      // Ensure click is within bounds
+
       if (clickX < 0 || clickX >= BASE_WIDTH || clickY < 0 || clickY >= BASE_HEIGHT) {
         return;
       }
 
       let found = false;
 
-      // Check layers from top to bottom
       for (let i = layeredImages.length - 1; i >= 0; i--) {
         const layer = layeredImages[i];
         if (!layer.loaded || !layer.imageData) continue;
@@ -244,12 +218,10 @@
         const src = layer.img.getAttribute('src') || "";
         const alt = layer.img.getAttribute('alt') || "";
         
-        // Skip certain layers
         if (src.includes("xray_outline") || alt.includes("or_table")) {
           continue;
         }
 
-        // Check pixel alpha at click position
         const index = ((clickY * BASE_WIDTH) + clickX) * 4;
         const alpha = layer.imageData[index + 3];
         
@@ -272,9 +244,7 @@
       }
     });
 
-    /******************************************************
-     7) Hover Effects
-    ******************************************************/
+    /* --- Hover Effects --- */
     let lastHoveredImg = null;
 
     function highlight(imgEl) {
@@ -338,62 +308,45 @@
       }
     });
 
-    /******************************************************
-     8) Responsive Eye Tracking
-    ******************************************************/
+    /* --- Eye Tracking --- */
     const eyeContainer = document.getElementById('eyeContainer');
     const irisImg = document.getElementById('irisImg');
 
     document.addEventListener('mousemove', (e) => {
       if (!eyeContainer || !irisImg) return;
-      
+
       const eyeRect = eyeContainer.getBoundingClientRect();
-      
-      // Calculate eye center in viewport coordinates
       const eyeCenterX = eyeRect.left + eyeRect.width / 2;
       const eyeCenterY = eyeRect.top + eyeRect.height / 2;
-      
-      // Mouse position
       const mouseX = e.clientX;
       const mouseY = e.clientY;
-      
-      // Calculate direction vector from eye center to mouse
+
       const dx = mouseX - eyeCenterX;
       const dy = mouseY - eyeCenterY;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      // Only move iris if mouse is far enough away (prevents weird center movement)
-      if (distance < 10) return; // Don't move if mouse is too close to eye center
-      
-      // Normalize the direction (unit vector)
+
+      if (distance < 10) return; // deadzone near center
+
       const normalizedX = dx / distance;
       const normalizedY = dy / distance;
-      
-      // Fixed maximum movement distance - iris can move 25% of eyeball size in any direction
-      // Since iris is 50% of eyeball size, it can move 25% before hitting the edge
-      const maxMovement = 25; // 25% of eyeball container
-      
-      // Calculate final iris position (always use full movement in mouse direction)
+
+      // iris is 50% of eyeball, so it can shift 25% before clipping
+      const maxMovement = 25;
       const offsetX = normalizedX * maxMovement;
       const offsetY = normalizedY * maxMovement;
-      
-      // Apply the position relative to the center (25%, 25%)
-      const centerX = 25; // Perfect center for 50% width iris
-      const centerY = 25; // Perfect center for 50% height iris
-      
-      // Apply new position
+
+      const centerX = 25;
+      const centerY = 25;
+
       irisImg.style.left = (centerX + offsetX) + '%';
       irisImg.style.top = (centerY + offsetY) + '%';
     });
 
-    /******************************************************
-     9) Responsive Resize Handler
-    ******************************************************/
+    /* --- Resize --- */
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        // Re-store image data if needed for new dimensions
         layeredImages.forEach(layer => {
           if (layer.img.complete) {
             storeImageData(layer);
@@ -407,16 +360,14 @@
 
 
 
-// ======================================
-//            VITAL MONITORS
-// ======================================
+/* --- Vital Monitors --- */
 
 class MonitorManager {
     constructor() {
         this.monitors = [];
         this.animating = false;
         this.frameCount = 0;
-        this.fps = 60; // Run at 30fps instead of 60fps
+        this.fps = 60;
     }
     
     addMonitor(monitor) {
@@ -428,7 +379,6 @@ class MonitorManager {
         
         this.frameCount++;
         
-        // Only update based on target FPS (30fps = every other frame)
         if (this.frameCount % (60 / this.fps) === 0) {
             this.monitors.forEach(monitor => monitor.update());
         }
@@ -446,7 +396,6 @@ class MonitorManager {
     }
 }
 
-// Base class for all monitors
 class BaseMonitor {
     constructor(canvasId, config) {
         this.canvas = document.getElementById(canvasId);
@@ -457,22 +406,16 @@ class BaseMonitor {
         this.time = 0;
         this.fadeWidth = 5;
         this.prevY = null;
-        this.performanceMode = true; // Enable performance optimizations
-        
-        // Create persistent canvas for the trace
+        this.performanceMode = true;
+
         this.traceCanvas = document.createElement('canvas');
         this.traceCtx = this.traceCanvas.getContext('2d');
-        
-        // Disable image smoothing for better performance
         this.ctx.imageSmoothingEnabled = false;
         this.traceCtx.imageSmoothingEnabled = false;
-        
-        // Cache dimensions
+
         this.width = 0;
         this.height = 0;
         this.baselineY = 0;
-        
-        // Set canvas size
         this.resize();
         window.addEventListener('resize', () => this.resize());
     }
@@ -486,7 +429,6 @@ class BaseMonitor {
         this.traceCanvas.width = this.width;
         this.traceCanvas.height = this.height;
         
-        // Calculate baseline with offset if needed
         if (this.config && this.config.baselineOffset) {
             this.baselineY = this.height / 2 + this.config.baselineOffset;
         } else {
@@ -495,26 +437,18 @@ class BaseMonitor {
     }
     
     update() {
-        // Clear only the sweep area, not the entire canvas
         const clearX = Math.max(0, this.sweepX - 10);
         const clearWidth = this.fadeWidth + 20;
         this.ctx.clearRect(clearX, 0, clearWidth, this.height);
-        
-        // Draw the persistent trace
         this.ctx.drawImage(this.traceCanvas, 0, 0);
-        
-        // Update time
+
         this.time += 16;
-        
-        // Calculate current Y position (rounded for performance)
         const currentY = Math.round(this.generateWave(this.time));
-        
-        // Draw on the trace canvas (only if we have a previous point)
+
         if (this.prevY !== null) {
             this.traceCtx.strokeStyle = this.config.color;
             this.traceCtx.lineWidth = 2;
-            
-            // Skip shadows in performance mode
+
             if (!this.performanceMode) {
                 this.traceCtx.shadowBlur = 10;
                 this.traceCtx.shadowColor = this.config.color;
@@ -528,10 +462,9 @@ class BaseMonitor {
             this.traceCtx.stroke();
         }
         
-        // Clear ahead of the sweep
         this.traceCtx.clearRect(this.sweepX + 2, 0, this.fadeWidth, this.height);
-        
-        // Draw the bright leading edge dot
+
+        // leading edge dot
         this.ctx.fillStyle = this.config.color;
         
         if (!this.performanceMode) {
@@ -545,7 +478,6 @@ class BaseMonitor {
         this.ctx.arc(Math.round(this.sweepX), currentY, 3, 0, Math.PI * 2);
         this.ctx.fill();
         
-        // Draw vertical sweep line (skip in performance mode)
         if (!this.performanceMode) {
             this.ctx.strokeStyle = this.config.color + '33';
             this.ctx.lineWidth = 1;
@@ -556,31 +488,24 @@ class BaseMonitor {
             this.ctx.stroke();
         }
         
-        // Store current Y for next frame
         this.prevY = currentY;
-        
-        // Update sweep position
         this.sweepX += this.speed;
-        
-        // Wrap around when reaching the right edge
+
         if (this.sweepX > this.width) {
             this.sweepX = 0;
             this.prevY = null;
         }
         
-        // Update display values with slight variation
         if (Math.random() < 0.02 && this.config.updateValues) {
             this.config.updateValues();
         }
     }
     
     generateWave(x) {
-        // Override in subclasses
         return this.baselineY;
     }
 }
 
-// ECG Monitor with pre-calculated waveform
 class ECGMonitor extends BaseMonitor {
     constructor(canvasId) {
         super(canvasId, {
@@ -591,7 +516,6 @@ class ECGMonitor extends BaseMonitor {
         this.heartRate = 72;
         this.beatInterval = 60000 / this.heartRate;
         
-        // Pre-calculate waveform for performance
         this.waveformSteps = 1000;
         this.waveformCache = new Float32Array(this.waveformSteps);
         this.precalculateWaveform();
@@ -602,13 +526,11 @@ class ECGMonitor extends BaseMonitor {
             const progress = i / this.waveformSteps;
             let y = 0;
             
-            // P wave (atrial depolarization)
-            if (progress < 0.1) {
+            if (progress < 0.1) { // P wave
                 const pProgress = progress / 0.1;
                 y -= Math.sin(pProgress * Math.PI) * 10;
             }
-            // QRS complex (ventricular depolarization)
-            else if (progress >= 0.2 && progress < 0.3) {
+            else if (progress >= 0.2 && progress < 0.3) { // QRS complex
                 const qrsProgress = (progress - 0.2) / 0.1;
                 if (qrsProgress < 0.2) {
                     y += Math.sin(qrsProgress * 5 * Math.PI) * 5;
@@ -620,8 +542,7 @@ class ECGMonitor extends BaseMonitor {
                     y += Math.sin(sProgress * Math.PI) * 15;
                 }
             }
-            // T wave (ventricular repolarization)
-            else if (progress >= 0.4 && progress < 0.55) {
+            else if (progress >= 0.4 && progress < 0.55) { // T wave
                 const tProgress = (progress - 0.4) / 0.15;
                 y -= Math.sin(tProgress * Math.PI) * 20;
             }
@@ -635,7 +556,6 @@ class ECGMonitor extends BaseMonitor {
         const progress = normalizedX / this.beatInterval;
         const index = Math.floor(progress * this.waveformSteps);
         
-        // Add tiny noise for realism
         const noise = (Math.random() - 0.5) * 0.2;
         
         return this.baselineY + this.waveformCache[index] + noise;
@@ -644,7 +564,6 @@ class ECGMonitor extends BaseMonitor {
     update() {
         super.update();
         
-        // Update heart rate occasionally
         if (Math.random() < 0.02) {
             this.heartRate = 72 + Math.floor(Math.random() * 5 - 2);
             document.getElementById('heartRate').textContent = this.heartRate;
@@ -653,13 +572,11 @@ class ECGMonitor extends BaseMonitor {
     }
 }
 
-// Vital Sign Monitor for O2 and Respiratory
 class VitalSignMonitor extends BaseMonitor {
     constructor(canvasId, config) {
         super(canvasId, config);
         this.respPhase = 0;
-        
-        // Pre-calculate O2 waveform if needed
+
         if (config.type === 'o2') {
             this.o2WaveformCache = new Float32Array(1000);
             this.precalculateO2Waveform();
@@ -706,16 +623,12 @@ class VitalSignMonitor extends BaseMonitor {
             return this.baselineY + baseWave + respModulation + noise;
         } 
         else if (this.config.type === 'resp') {
-            // Increment phase based on respiratory rate
             const phaseIncrement = (this.config.respRate / 60) * 0.016 * 2 * Math.PI;
             this.respPhase += phaseIncrement;
-            
+
             let y = this.baselineY;
-            
-            // Primary breathing wave - smooth sine
             y -= Math.sin(this.respPhase) * 35;
-            
-            // Very subtle variations
+
             const slowVariation = Math.sin(this.respPhase * 0.1) * 3;
             const microVariation = Math.sin(this.respPhase * 2.5) * 0.5;
             const noise = (Math.random() - 0.5) * 0.1;
@@ -727,7 +640,6 @@ class VitalSignMonitor extends BaseMonitor {
     }
 }
 
-// Configuration objects
 const o2Config = {
     type: 'o2',
     color: '#ffff00',
@@ -760,21 +672,15 @@ const respConfig = {
     }
 };
 
-// Initialize everything with a single animation loop
 document.addEventListener('DOMContentLoaded', function() {
     const manager = new MonitorManager();
-    
-    // Create monitors
     const ecg = new ECGMonitor('ecgCanvas');
     const o2Monitor = new VitalSignMonitor('o2Canvas', o2Config);
     const respMonitor = new VitalSignMonitor('respCanvas', respConfig);
-    
-    // Add to manager
+
     manager.addMonitor(ecg);
     manager.addMonitor(o2Monitor);
     manager.addMonitor(respMonitor);
-    
-    // Start single animation loop
     manager.start();
     
     console.log('ECG,SPO2, and Resp monitors initialized!');
@@ -790,9 +696,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-    /******************************************************
-     10) Touch Support for Mobile
-    ******************************************************/
+    /* --- Touch Support --- */
 let touchStartX = 0;
 let touchStartY = 0;
 
@@ -805,20 +709,17 @@ container.addEventListener('touchstart', (evt) => {
 container.addEventListener('touchend', (evt) => {
     const touch = evt.changedTouches[0];
     
-    // Calculate movement distance
     const deltaX = Math.abs(touch.clientX - touchStartX);
     const deltaY = Math.abs(touch.clientY - touchStartY);
-    
-    // If it's a tap (minimal movement only)
+
+    // treat as tap only if finger barely moved
     if (deltaX < 10 && deltaY < 10) {
         const element = document.elementFromPoint(touch.clientX, touch.clientY);
-        
-        // Skip eye area
+
         if (element && element.closest('#eyeContainer')) {
             return;
         }
         
-        // Fire click event
         const clickEvent = new MouseEvent('click', {
             clientX: touch.clientX,
             clientY: touch.clientY,
@@ -828,13 +729,11 @@ container.addEventListener('touchend', (evt) => {
     }
 }, { passive: true });
 
-// Handle touch move for hover effects
 container.addEventListener('touchmove', (evt) => {
     const touch = evt.touches[0];
     const deltaY = Math.abs(touch.clientY - touchStartY);
-    
-    // Only do hover if not scrolling
-    if (deltaY < 10) {
+
+    if (deltaY < 10) { // not scrolling, so do hover
         const moveEvent = new MouseEvent('mousemove', {
             clientX: touch.clientX,
             clientY: touch.clientY,

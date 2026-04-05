@@ -19,18 +19,14 @@ function getRandomImages(imageArray, count) {
     fetch("/json/media.json")
       .then(response => response.json())
       .then(originalImageArray => {
-        // Convert the tags string into an array of tags
         var tagArray = tags.split(',');
-
-        // Filter images that include at least one of the tags
         var imageArray = originalImageArray.filter(image => image.tags && image.tags.some(tag => tagArray.includes(tag)));
 
-        // For galleries with "random" tag, show only 6 random images
+        // "random" galleries only get 6 picks
         if (tagArray.includes("random")) {
           imageArray = getRandomImages(imageArray, 6);
         }
 
-        // Clear the specific gallery and hide its loader
         galleryElement.innerHTML = '';
         const loader = galleryElement.querySelector('.gallery-loader');
         if (loader) loader.style.display = 'none';
@@ -44,7 +40,6 @@ function getRandomImages(imageArray, count) {
           var img = document.createElement('img');
           img.src = imgData.thumbnailSrc;
 
-          // Closure to preserve imgData context
           (function(imgData) {
             img.onclick = function() {
               var modal = document.getElementById("myModal");
@@ -61,7 +56,6 @@ function getRandomImages(imageArray, count) {
               titleText.innerHTML = imgData.title;
               captionText.innerHTML = imgData.description;
 
-              // Load the image
               var newImage = new Image();
               newImage.src = imgData.fullSrc;
 
@@ -86,7 +80,6 @@ function getRandomImages(imageArray, count) {
           galleryElement.appendChild(container);
         }
 
-        // Modal close handlers (only needs to be set up once)
         if (!window.modalHandlersInitialized) {
           var modal = document.getElementById("myModal");
           var span = document.getElementsByClassName("close")[0];
@@ -115,7 +108,6 @@ function getRandomImages(imageArray, count) {
     });
 };
   
-  // Reshuffle only the 'random' gallery
   document.getElementById('reshuffle').onclick = function() {
     const allGallery = document.querySelector('.gallery[data-tag="random"]');
     createImages(allGallery, 'random');

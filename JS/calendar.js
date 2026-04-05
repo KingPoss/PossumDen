@@ -1,14 +1,10 @@
-/* ===================================================
-   CONFIGURATION
-   =================================================== */
+/* --- Config --- */
 
 var ICAL_URL = 'https://calendar.google.com/calendar/ical/97cdb0276a84ba2f8b8e7c72ae3fc32c0695c09a6d866abb25c596cb4572cb1e%40group.calendar.google.com/public/basic.ics';
 var ICAL_PROXY = 'https://cors.kingposs.com/ical/';
 
 
-/* ===================================================
-   UTILITIES
-   =================================================== */
+/* --- Utilities --- */
 
 var userLocale = (navigator.languages && navigator.languages[0]) || navigator.language || 'en-US';
 
@@ -38,9 +34,7 @@ var userTZ = '';
 try { userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) {}
 
 
-/* ===================================================
-   STATE
-   =================================================== */
+/* --- State --- */
 
 var currentYear = new Date().getFullYear();
 var currentMonth = new Date().getMonth();
@@ -56,16 +50,13 @@ RECUR_HORIZON.setFullYear(RECUR_HORIZON.getFullYear() + 2);
 var MAX_RECUR = 500;
 
 
-/* ===================================================
-   ICS PARSER (ical.js)
-   =================================================== */
+/* --- ICS Parser (ical.js) --- */
 
 function parseICS(icsText) {
   var jcal = ICAL.parse(icsText);
   var comp = new ICAL.Component(jcal);
   var allEvs = [];
 
-  // Register embedded VTIMEZONE data
   var timezones = comp.getAllSubcomponents('vtimezone');
   for (var t = 0; t < timezones.length; t++) {
     var tz = new ICAL.Timezone(timezones[t]);
@@ -145,9 +136,7 @@ function parseICS(icsText) {
 }
 
 
-/* ===================================================
-   EVENT MAPPING
-   =================================================== */
+/* --- Event Mapping --- */
 
 function sortAndColor(evMap) {
   for (var k in evMap) {
@@ -205,9 +194,7 @@ function filterForMonth(year, month) {
 }
 
 
-/* ===================================================
-   FETCH
-   =================================================== */
+/* --- Fetch --- */
 
 function addCacheBuster(url) {
   var sep = (url.indexOf('?') === -1) ? '?' : '&';
@@ -254,6 +241,7 @@ function fetchAndRender() {
     events = filterForMonth(currentYear, currentMonth);
     renderCalendar();
     updateStatus();
+    updateNextBroadcast();
     setFetchingState(false);
   }).catch(function(e) {
     grid.innerHTML = '<div class="cal-error" style="grid-column:1/-1">Calendar error: ' + escapeHtml(e.message) + '</div>';
@@ -269,9 +257,7 @@ function forceRefresh() {
 }
 
 
-/* ===================================================
-   RENDER
-   =================================================== */
+/* --- Render --- */
 
 function renderCalendar() {
   var grid = document.getElementById('calGrid');
@@ -311,7 +297,7 @@ function renderCalendar() {
     html += '</div>';
   }
 
-  // Fill trailing empty cells to complete the grid
+  // pad out the last row
   var totalCells = firstDay + daysInMonth;
   var remainder = totalCells % 7;
   if (remainder > 0) {
@@ -437,10 +423,153 @@ document.addEventListener('keydown', function(e) {
 });
 
 
-/* ===================================================
-   BOOT
-   =================================================== */
+/* --- Next Broadcast Banner --- */
+
+function formatDateLocale(date) {
+  if (!(date instanceof Date) || isNaN(date.getTime())) return '';
+  try {
+    return new Intl.DateTimeFormat(userLocale, {
+      weekday: 'long', month: 'long', day: 'numeric'
+    }).format(date);
+  } catch(e) {
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return months[date.getMonth()] + ' ' + date.getDate();
+  }
+}
+
+function updateNextBroadcast() {
+  var banner = document.getElementById('nextBroadcast');
+  if (!banner) return;
+
+  var now = new Date();
+  var next = null;
+
+  for (var i = 0; i < allIcalEvents.length; i++) {
+    var ev = allIcalEvents[i];
+    var end = ev.end || ev.start;
+    // skip events that have already ended
+    if (end <= now) continue;
+    // pick the soonest upcoming event
+    if (!next || ev.start < next.start) {
+      next = ev;
+    }
+  }
+
+  if (!next) {
+    banner.innerHTML = '<div class="next-broadcast-none">No upcoming broadcasts scheduled</div>';
+    return;
+  }
+
+  var datePart = formatDateLocale(next.start);
+  var startTime = formatTimeLocale(next.start);
+  var endTime = next.end ? formatTimeLocale(next.end) : '';
+  var timePart = endTime ? (startTime + ' to ' + endTime) : startTime;
+  var tzNote = userTZ ? (' (' + userTZ + ')') : '';
+
+  // check if broadcast is happening right now
+  var isLive = (now >= next.start && next.end && now <= next.end);
+
+  var html = '';
+  if (isLive) {
+    html += '<div class="next-broadcast-live">';
+    html += '<span class="broadcast-live-dot"></span> ';
+    html += 'LIVE NOW: <strong>' + escapeHtml(next.summary) + '</strong>';
+    html += ' &mdash; until ' + escapeHtml(endTime) + '<span class="broadcast-tz">' + escapeHtml(tzNote) + '</span>';
+    html += '</div>';
+  } else {
+    html += '<div class="next-broadcast-info">';
+    html += 'NEXT BROADCAST: <strong>' + escapeHtml(datePart) + '</strong>';
+    html += ' @ <strong>' + escapeHtml(timePart) + '</strong>';
+    html += '<span class="broadcast-tz">' + escapeHtml(tzNote) + '</span>';
+    html += '</div>';
+  }
+
+  banner.innerHTML = html;
+}
+
+
+/* --- kpradio.net Referral Popup --- */
+
+function checkKpradioReferral() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('from') !== 'kpradio') return;
+
+  // clean the URL so it doesn't show the param
+  if (window.history.replaceState) {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
+  // wait for events to be loaded, then show popup
+  var attempts = 0;
+  var check = setInterval(function() {
+    attempts++;
+    if (allIcalEvents.length > 0 || attempts > 30) {
+      clearInterval(check);
+      showKpradioPopup();
+    }
+  }, 500);
+}
+
+function showKpradioPopup() {
+  var now = new Date();
+  var next = null;
+
+  for (var i = 0; i < allIcalEvents.length; i++) {
+    var ev = allIcalEvents[i];
+    var end = ev.end || ev.start;
+    if (end <= now) continue;
+    if (!next || ev.start < next.start) next = ev;
+  }
+
+  // build overlay
+  var overlay = document.createElement('div');
+  overlay.className = 'kpradio-popup-overlay';
+
+  var box = document.createElement('div');
+  box.className = 'kpradio-popup';
+
+  var html = '';
+  if (next) {
+    var isLive = (now >= next.start && next.end && now <= next.end);
+    var datePart = formatDateLocale(next.start);
+    var startTime = formatTimeLocale(next.start);
+    var endTime = next.end ? formatTimeLocale(next.end) : '';
+    var timePart = endTime ? (startTime + ' to ' + endTime) : startTime;
+    var tzLabel = userTZ || '';
+
+    if (isLive) {
+      html += '<div class="kpradio-popup-title">LIVE NOW!</div>';
+      html += '<div class="kpradio-popup-event">' + escapeHtml(next.summary) + '</div>';
+      html += '<div class="kpradio-popup-time">Until ' + escapeHtml(endTime) + '</div>';
+    } else {
+      html += '<div class="kpradio-popup-title">Next Broadcast</div>';
+      html += '<div class="kpradio-popup-date">' + escapeHtml(datePart) + '</div>';
+      html += '<div class="kpradio-popup-event">' + escapeHtml(next.summary) + '</div>';
+      html += '<div class="kpradio-popup-time">' + escapeHtml(timePart) + '</div>';
+    }
+    if (tzLabel) {
+      html += '<div class="kpradio-popup-tz">Your time (' + escapeHtml(tzLabel) + ')</div>';
+    }
+  } else {
+    html += '<div class="kpradio-popup-title">KP Radio</div>';
+    html += '<div class="kpradio-popup-event">No upcoming broadcasts scheduled</div>';
+  }
+  html += '<button class="kpradio-popup-close btn-95">Got it!</button>';
+
+  box.innerHTML = html;
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  // close handlers
+  var closeBtn = box.querySelector('.kpradio-popup-close');
+  closeBtn.onclick = function() { overlay.remove(); };
+  overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+}
+
+
+/* --- Boot --- */
 
 document.addEventListener('DOMContentLoaded', function() {
   fetchAndRender();
+  checkKpradioReferral();
 });
