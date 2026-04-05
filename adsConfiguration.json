@@ -26,7 +26,18 @@
     "9-17": "business-hours"
   },
   "ads": {
-    "overwrite": [],
+    "overwrite": [
+      {
+        "src": "/assets/ads/kpradiorevival.png",
+        "alt": "BROADCASTING: APRIL 11TH",
+        "caption": "Broadcasting: April 11th"
+      },
+            {
+        "src": "/assets/ads/KPad.gif",
+        "alt": "ring ring...",
+        "caption": "Give me a ring!"
+      }
+    ],
     "live-broadcast": [
       {
         "src": "/assets/live-now.gif",
