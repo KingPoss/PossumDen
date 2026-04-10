@@ -19,7 +19,7 @@
 
 <script src="/JS/mobileNav.js"></script>
 <script data-site="RRZKQSF" src="https://analytics.kingposs.com/script.js" defer></script> <!--Populates Site Updates from updates.json-->
-<script src="/JS/possradio.js"></script> <!--For the Radio-->
+<script src="/JS/mrp.js"></script> <!--For the Radio-->
 <script src="/JS/radioData.js"></script> <!--Also for the Radio-->
 
 
@@ -131,37 +131,22 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
     <img src="assets/popout.png">
   </a>
 </div>
-<script type="text/javascript">
-  var SHOW_METADATA = false; // set to true to enable now-playing metadata
-
-  var radioConfig = {
-    url: 'https://radio.kingposs.com/radio.mp3',
-    codec: 'mp3',
-    volume: 40,
-    autoplay: false,
-    buffering: 1,
-    title: 'KPradio.net',
-    skin: '/radioThemes/oldradio/oldradio.xml',
-    width: 205,
-    height: 132
-  };
-
-  if (SHOW_METADATA) {
-    radioConfig.metadataInterval = 3;
-    radioConfig.metadataFetcher = function () {
-      return fetch('https://radio.kingposs.com/api/nowplaying/kpradio')
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          var s = j.now_playing.song;
-          if (!s) return null;
-          if (s.artist && s.title) return s.artist + ' - ' + s.title;
-          return s.title || s.artist || null;
+      <script type="text/javascript">
+        MRP.insert({
+          'url':'https://radio.kingposs.com/radio.mp3',
+          'codec':'mp3',
+          'volume':40,
+          'autoplay':false,
+          'forceHTML5':true,
+          'jsevents':true,
+          'buffering':1,
+          'title':'KPradio.net',
+          'wmode':'transparent',
+          'skin':'/radioThemes/oldradio/oldradio.xml',
+          'width':205,
+          'height':132
         });
-    };
-  }
-
-  MRP.insert(radioConfig);
-</script>
+      </script>
 
       <center>
       <div class="np">
@@ -206,45 +191,39 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
 
 
 <center><h2>--- Featured Artists ---</h2></center>
-<div class="playlist-log">
-  <div class="playlist-header">
-    <span class="pl-col-num">#</span>
-    <span class="pl-col-name">ARTIST</span>
-    <span class="pl-col-genre">GENRE</span>
-    <span class="pl-col-desc">DESCRIPTION</span>
-  </div>
-  <div class="playlist-scroll">
-  <div class="playlist-row"><span class="pl-num">01</span><a href="https://upallnight.wtf/" target="_blank" class="pl-name">Up All Night</a><span class="pl-genre">Indie Rock</span><span class="pl-desc">Late-night vibes & fuzz</span></div>
-  <div class="playlist-row"><span class="pl-num">02</span><a href="https://ksbp.space/" target="_blank" class="pl-name">Kansas Beach Patrol</a><span class="pl-genre">Surf Punk</span><span class="pl-desc">Sun-soaked riffs from the coast</span></div>
-  <div class="playlist-row"><span class="pl-num">03</span><a href="https://chezmonplaisir.bandcamp.com/music" target="_blank" class="pl-name">Loyalty Freak</a><span class="pl-genre">Eclectic</span><span class="pl-desc">Genre-hopping free-use music</span></div>
-  <div class="playlist-row"><span class="pl-num">04</span><a href="https://tomcatz.neocities.org/" target="_blank" class="pl-name">Tom Slack</a><span class="pl-genre">Lo-fi</span><span class="pl-desc">Chill homemade tunes</span></div>
-  <div class="playlist-row"><span class="pl-num">05</span><a href="https://www.nelward.com/" target="_blank" class="pl-name">Nelward</a><span class="pl-genre">Chiptune / Pop</span><span class="pl-desc">8-bit bops & bedroom pop</span></div>
-  <div class="playlist-row"><span class="pl-num">06</span><a href="https://jlehr.neocities.org/" target="_blank" class="pl-name">Jerry Lehr</a><span class="pl-genre">Experimental</span><span class="pl-desc">Sound explorations</span></div>
-  <div class="playlist-row"><span class="pl-num">07</span><a href="https://dot-pitch.neocities.org/" target="_blank" class="pl-name">Dead Mall</a><span class="pl-genre">Vaporwave</span><span class="pl-desc">Echoes of abandoned retail</span></div>
-  <div class="playlist-row"><span class="pl-num">08</span><a href="https://ppaaiinnttkkiilleerr.neocities.org/" target="_blank" class="pl-name">Paintkiller</a><span class="pl-genre">Noise / Punk</span><span class="pl-desc">Abrasive and unapologetic</span></div>
-  <div class="playlist-row"><span class="pl-num">09</span><a href="https://tournament420.bandcamp.com/" target="_blank" class="pl-name">Tournament</a><span class="pl-genre">Rock</span><span class="pl-desc">Heavy-hitting riffs</span></div>
-  <div class="playlist-row"><span class="pl-num">10</span><a href="https://pleasantries.bandcamp.com/music" target="_blank" class="pl-name">Pleasantries</a><span class="pl-genre">Indie Pop</span><span class="pl-desc">Warm melodies & good feelings</span></div>
-  <div class="playlist-row"><span class="pl-num">11</span><a href="https://soopurkul.bandcamp.com/music" target="_blank" class="pl-name">SoopurKul</a><span class="pl-genre">Hip-Hop</span><span class="pl-desc">Beats from the underground</span></div>
-  <div class="playlist-row"><span class="pl-num">12</span><a href="https://linktr.ee/keepittogetherband" target="_blank" class="pl-name">Keep It Together</a><span class="pl-genre">Punk</span><span class="pl-desc">Holding on by a thread</span></div>
-  <div class="playlist-row"><span class="pl-num">13</span><a href="https://glassoforange.neocities.org/" target="_blank" class="pl-name">Glass of Orange</a><span class="pl-genre">Synthwave</span><span class="pl-desc">Neon-tinted synths</span></div>
-  <div class="playlist-row"><span class="pl-num">14</span><a href="https://castlerat.bandcamp.com" target="_blank" class="pl-name">Castle Rat</a><span class="pl-genre">Doom Metal</span><span class="pl-desc">Medieval doom rippers</span></div>
-  <div class="playlist-row"><span class="pl-num">15</span><a href="https://steviasphere.bandcamp.com/" target="_blank" class="pl-name">Stevia Sphere</a><span class="pl-genre">Dream Pop</span><span class="pl-desc">Hazy, sugary soundscapes</span></div>
-  <div class="playlist-row"><span class="pl-num">16</span><a href="https://www.youtube.com/@Aliantos" target="_blank" class="pl-name">Aliantos</a><span class="pl-genre">Ambient</span><span class="pl-desc">Atmospheric textures</span></div>
-  <div class="playlist-row"><span class="pl-num">17</span><a href="https://medscape.bandcamp.com/" target="_blank" class="pl-name">Medscape</a><span class="pl-genre">Electronic</span><span class="pl-desc">Digital frequencies</span></div>
-  <div class="playlist-row"><span class="pl-num">18</span><a href="https://snuffles.bandcamp.com/" target="_blank" class="pl-name">Snuffles</a><span class="pl-genre">Indie</span><span class="pl-desc">Fuzzy indie gems</span></div>
-  <div class="playlist-row"><span class="pl-num">19</span><a href="https://monoculus.bandcamp.com/" target="_blank" class="pl-name">Monoculus Rex Murum</a><span class="pl-genre">Experimental</span><span class="pl-desc">One-eyed wall king</span></div>
-  <div class="playlist-row"><span class="pl-num">20</span><a href="https://thesinkboy.bandcamp.com/" target="_blank" class="pl-name">Sink Boy</a><span class="pl-genre">Emo / Punk</span><span class="pl-desc">Draining feelings into music</span></div>
-  <div class="playlist-row"><span class="pl-num">21</span><a href="https://corporateddreams.bandcamp.com/" target="_blank" class="pl-name">Dream.Corp</a><span class="pl-genre">Vaporwave</span><span class="pl-desc">Corporate dystopia on wax</span></div>
-  <div class="playlist-row"><span class="pl-num">22</span><a href="https://doomvega.bandcamp.com/" target="_blank" class="pl-name">Doomvega</a><span class="pl-genre">Doom / Stoner</span><span class="pl-desc">Low and slow</span></div>
-  <div class="playlist-row"><span class="pl-num">23</span><a href="https://www.toxhards.com/" target="_blank" class="pl-name">The Toxards</a><span class="pl-genre">Garage Rock</span><span class="pl-desc">Raw and unfiltered</span></div>
-  <div class="playlist-row"><span class="pl-num">24</span><a href="https://oppositionjht.bandcamp.com/" target="_blank" class="pl-name">Opposition</a><span class="pl-genre">Hardcore</span><span class="pl-desc">Relentless energy</span></div>
-  <div class="playlist-row"><span class="pl-num">25</span><a href="https://blxxdbvrn.bandcamp.com/" target="_blank" class="pl-name">Blxxd Bvrn</a><span class="pl-genre">Metal</span><span class="pl-desc">Scorched and heavy</span></div>
-  <div class="playlist-row"><span class="pl-num">26</span><a href="https://daltonists.bandcamp.com/" target="_blank" class="pl-name">Daltonists</a><span class="pl-genre">Post-Punk</span><span class="pl-desc">Color-blind intensity</span></div>
-  <div class="playlist-row"><span class="pl-num">27</span><a href="https://mothershiploudspeakerz.bandcamp.com/" target="_blank" class="pl-name">Mthrship Loudspeakrz</a><span class="pl-genre">Electronic</span><span class="pl-desc">Transmissions from the mothership</span></div>
-  <div class="playlist-row"><span class="pl-num">28</span><a href="https://lunite76.carrd.co/" target="_blank" class="pl-name">Lunite76</a><span class="pl-genre">Synth / Indie</span><span class="pl-desc">Moonlit synth explorations</span></div>
-  <div class="playlist-row"><span class="pl-num">29</span><a href="https://kikhausen.bandcamp.com/" target="_blank" class="pl-name">Kikhausen</a><span class="pl-genre">Experimental</span><span class="pl-desc">Unpredictable sonic journeys</span></div>
-  </div>
-</div>
+        <div class="listholder">
+            <ul class="artists">
+                <li><a href="https://upallnight.wtf/" target="_blank">Up All Night</a></li>
+                <li><a href="https://ksbp.space/" target="_blank">Kansas Beach Patrol</a></li>
+                <li><a href="https://chezmonplaisir.bandcamp.com/music" target="_blank">Loyalty Freak</a></li>
+                <li><a href="https://tomcatz.neocities.org/" target="_blank">Tom Slack</a></li>
+                <li><a href="https://www.nelward.com/" target="_blank">Nelward</a></li>
+                <li><a href="https://jlehr.neocities.org/" target="_blank">Jerry Lehr</a></li>
+                <li><a href="https://dot-pitch.neocities.org/" target="_blank">Dead Mall</a></li>
+                <li><a href="https://ppaaiinnttkkiilleerr.neocities.org/" target="_blank">Paintkiller</a></li>
+                <li><a href="https://tournament420.bandcamp.com/" target="_blank">Tournament</a></li>
+                <li><a href="https://pleasantries.bandcamp.com/music" target="_blank">Pleasantries</a></li>
+                <li><a href="https://soopurkul.bandcamp.com/music" target="_blank">SoopurKul</a></li>
+                <li><a href="https://linktr.ee/keepittogetherband" target="_blank">Keep It Together</a></li>
+                <li><a href="https://glassoforange.neocities.org/" target="_blank">Glass of Orange</a></li>
+                <li><a href="https://castlerat.bandcamp.com" target="_blank">Castle Rat</a></li>
+                <li><a href="https://steviasphere.bandcamp.com/" target="_blank">Stevia Sphere</a></li>
+                <li><a href="https://www.youtube.com/@Aliantos" target="_blank">Aliantos</a></li>
+                <li><a href="https://medscape.bandcamp.com/" target="_blank">Medscape</a></li>
+                <li><a href="https://snuffles.bandcamp.com/" target="_blank">Snuffles</a></li>
+                <li><a href="https://monoculus.bandcamp.com/" target="_blank">Monoculus Rex Murum</a></li>
+                <li><a href="https://thesinkboy.bandcamp.com/" target="_blank">Sink Boy</a></li>
+                <li><a href="https://corporateddreams.bandcamp.com/" target="_blank">Dream.Corp</a></li>
+                <li><a href="https://doomvega.bandcamp.com/" target="_blank">Doomvega</a></li>
+                <li><a href="https://www.toxhards.com/" target="_blank">The Toxards</a></li>
+                <li><a href="https://oppositionjht.bandcamp.com/" target="_blank">Opposition</a></li>
+                <li><a href="https://blxxdbvrn.bandcamp.com/" target="_blank">Blxxd Bvrn</a></li>
+                <li><a href="https://daltonists.bandcamp.com/" target="_blank">Daltonists</a></li>
+                <li><a href="https://mothershiploudspeakerz.bandcamp.com/" target="_blank">Mthrship Loudspeakrz</a></li>
+                <li><a href="https://lunite76.carrd.co/" target="_blank">Lunite76</a></li>
+                <li><a href="https://kikhausen.bandcamp.com/" target="_blank">Kikhausen</a></li>
+            </ul>
+        </div>
 
 <hr>
 <center><h2>--- Broadcast Recordings ---</h2></center>
