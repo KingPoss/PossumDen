@@ -11,12 +11,12 @@
 <!-- BEGINS: AUTO-GENERATED MUSES RADIO PLAYER CODE -->
 <td><tr>
 <center>
-    <section class="now-playing"><div class="np"><div class="popouttext">Unknown</div></div></section>
+    <section class="now-playing"><div class="np"><div id="np-status" class="popouttext">Unknown</div></div></section>
     <a title="Pop radio widget out" href="kpradiowidget.html" onclick="window.open('kpradiowidget.html', 'newwindow', 'width=300,height=320');  return false;"><span class="popouttextwidget">[x]</span></a>
 
 <div class="radio">
 <div class="makeunclickable">
-<script type="text/javascript" src="/JS/mrp.js"></script>
+<script type="text/javascript" src="/JS/possradio.js"></script>
 <script type="text/javascript">
 MRP.insert({
 'url':'https://radio.kingposs.com/radio.mp3',
@@ -31,8 +31,13 @@ MRP.insert({
 'skin':'/radioThemes/compact/compact.xml',
 'width':191,
 'height':46,
-'tracking':false
-
+'tracking':false,
+'metadataStation':'kpradio',
+'nowPlayingUI': {
+  'songTitle': '#np-title',
+  'songArtist': '#np-artist',
+  'liveText': '#np-status'
+}
 });
 </script>
 </div>
@@ -40,8 +45,8 @@ MRP.insert({
     <div class="np">
         <section class="now-playing">
             
-            <div class="display">Song name</div>
-            <div class="display1">Artist name</div>
+            <div id="np-title" class="display">Song name</div>
+            <div id="np-artist" class="display1">Artist name</div>
 
         </section>
         <noscript>Javascript is required to view the "now playing" data.</noscript>

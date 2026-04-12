@@ -58,6 +58,22 @@
  *                          or a base URL that accepts ?url=
  *   metadataMount        — for multi-mount Icecast servers, the mount to
  *                          match against /status-json.xsl
+ *   onNowPlaying         — callback(np) fired with the full AzuraCast
+ *                          nowplaying object on every update.
+ *   nowPlayingUI         — optional object to auto-bind external UI
+ *                          elements by ID. All keys are optional:
+ *                            songTitle:  '#np-title'   — song title
+ *                            songArtist: '#np-artist'  — song artist
+ *                            liveImage:  '#onair'       — swaps src
+ *                            liveImageSrc:  '/assets/kplive.gif'
+ *                            offlineImageSrc: '/assets/autodj.gif'
+ *                            liveText:   '#status'     — sets text content
+ *                            liveTextOn: 'KP LIVE!'    — text when live
+ *                            liveTextOff:'Auto-DJ'     — text when offline
+ *                            chatWindow: '#chat'       — shown when live
+ *                            chatCooldown: 300         — seconds to keep
+ *                              chat open after broadcast ends (client-side
+ *                              only, new page loads won't see it)
  *   callbackFunction     — same as setCallbackFunction
  *
  * AzuraCast example:
@@ -908,7 +924,96 @@
     return display || null;
   }
 
-  function MetadataPoller(streamUrl, opts, onTitle) {
+  // ---------------------------------------------------------------------
+  // AzuraCast SSE (Centrifugo) — real-time now-playing updates
+  // ---------------------------------------------------------------------
+
+  function AzuraCastSSE(streamUrl, station, callbacks) {
+    this.station = station;
+    this.callbacks = callbacks; // { onTitle, onNowPlaying }
+    this.lastTitle = null;
+    this.source = null;
+
+    var u;
+    try { u = new URL(streamUrl, location.href); } catch (e) { u = null; }
+    this.origin = u ? u.origin : null;
+  }
+
+  AzuraCastSSE.prototype.start = function () {
+    if (!this.origin || typeof EventSource === 'undefined') {
+      this._fail(); return;
+    }
+    var self = this;
+    var sseBaseUri = this.origin + '/api/live/nowplaying/sse';
+    var subs = {};
+    subs['station:' + this.station] = { 'recover': true };
+    var sseUriParams = new URLSearchParams({
+      'cf_connect': JSON.stringify({ 'subs': subs })
+    });
+    this.source = new EventSource(sseBaseUri + '?' + sseUriParams.toString());
+
+    this.source.onmessage = function (e) {
+      var jsonData = JSON.parse(e.data);
+      if ('connect' in jsonData) {
+        var connectData = jsonData.connect;
+        if ('data' in connectData) {
+          connectData.data.forEach(function (row) { self._handleData(row); });
+        } else {
+          for (var subName in connectData.subs) {
+            var sub = connectData.subs[subName];
+            if ('publications' in sub && sub.publications.length > 0) {
+              sub.publications.forEach(function (row) { self._handleData(row); });
+            }
+          }
+        }
+      } else if ('pub' in jsonData) {
+        self._handleData(jsonData.pub);
+      }
+    };
+
+    this.source.onerror = function () {
+      self.stop();
+      self._fail();
+    };
+
+    // initial fetch so the display isn't blank while waiting for first SSE push
+    var apiUrl = this.origin + '/api/nowplaying/' + encodeURIComponent(this.station);
+    fetch(apiUrl, { cache: 'no-store', credentials: 'omit' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (np) { if (np) self._processNowPlaying(np); })
+      .catch(function () { /* SSE will handle it */ });
+  };
+
+  AzuraCastSSE.prototype.stop = function () {
+    if (this.source) { this.source.close(); this.source = null; }
+  };
+
+  AzuraCastSSE.prototype._handleData = function (ssePayload) {
+    var np = ssePayload && ssePayload.data && ssePayload.data.np;
+    if (np) this._processNowPlaying(np);
+  };
+
+  AzuraCastSSE.prototype._processNowPlaying = function (np) {
+    var title = extractAzuraCastTitle(np, this.station);
+    if (title && title !== this.lastTitle) {
+      this.lastTitle = title;
+      try { this.callbacks.onTitle(title); } catch (e) { /* user code */ }
+    }
+    try { this.callbacks.onNowPlaying(np); } catch (e) { /* user code */ }
+  };
+
+  AzuraCastSSE.prototype._fail = function () {
+    console.warn('[MRP] SSE connection failed, falling back to polling');
+    if (this.callbacks.onFallback) {
+      try { this.callbacks.onFallback(); } catch (e) { /* */ }
+    }
+  };
+
+  // ---------------------------------------------------------------------
+  // Metadata polling (Icecast / Shoutcast / AzuraCast fallback)
+  // ---------------------------------------------------------------------
+
+  function MetadataPoller(streamUrl, opts, onTitle, onNowPlaying) {
     this.streamUrl = streamUrl;
     this.mode = opts.mode || 'icecast';
     this.proxy = opts.proxy || null;
@@ -916,11 +1021,9 @@
     this.mount = opts.mount || null;
     this.station = opts.station || null;
     this.explicitUrl = opts.url || null;
-    // User-supplied fetch function. If set, it overrides ALL of the
-    // built-in URL building / extraction. Must return a Promise that
-    // resolves to a string (the title to show) or null/'' to skip.
     this.customFetcher = typeof opts.fetcher === 'function' ? opts.fetcher : null;
     this.onTitle = onTitle;
+    this.onNowPlaying = onNowPlaying || function () {};
     this.timer = null;
     this.lastTitle = null;
     this.running = false;
@@ -943,10 +1046,13 @@
   MetadataPoller.prototype._tick = function () {
     var self = this;
     this.fetchOnce()
-      .then(function (title) {
-        if (title && title !== self.lastTitle) {
-          self.lastTitle = title;
-          try { self.onTitle(title); } catch (e) { /* user code */ }
+      .then(function (result) {
+        if (result.title && result.title !== self.lastTitle) {
+          self.lastTitle = result.title;
+          try { self.onTitle(result.title); } catch (e) { /* user code */ }
+        }
+        if (result.np) {
+          try { self.onNowPlaying(result.np); } catch (e) { /* user code */ }
         }
       })
       .catch(function (err) {
@@ -963,11 +1069,11 @@
       .then(function () { self._schedule(); });
   };
   MetadataPoller.prototype.fetchOnce = function () {
-    // If the user gave us their own fetcher, just call it. No URL building,
-    // no extractor selection, no surprises — they own the whole pipeline.
     if (this.customFetcher) {
       try {
-        return Promise.resolve(this.customFetcher());
+        return Promise.resolve(this.customFetcher()).then(function (t) {
+          return { title: t, np: null };
+        });
       } catch (e) {
         return Promise.reject(e);
       }
@@ -984,11 +1090,11 @@
       if (!r.ok) throw new Error('metadata http ' + r.status + ' from ' + url);
       return isJson
         ? r.json().then(function (j) {
-            if (mode === 'icecast')   return extractIcecastTitle(j, mount);
-            if (mode === 'azuracast') return extractAzuraCastTitle(j, station);
-            return extractShoutcastV2Title(j);
+            if (mode === 'icecast')   return { title: extractIcecastTitle(j, mount), np: null };
+            if (mode === 'azuracast') return { title: extractAzuraCastTitle(j, station), np: j };
+            return { title: extractShoutcastV2Title(j), np: null };
           })
-        : r.text().then(extract7HtmlTitle);
+        : r.text().then(function (t) { return { title: extract7HtmlTitle(t), np: null }; });
     });
   };
 
@@ -1041,46 +1147,75 @@
     this._updateDisplay();
 
     this.poller = null;
+    this.sse = null;
+    this._onNowPlayingFn = typeof opts.onNowPlaying === 'function'
+      ? opts.onNowPlaying : null;
+    this._nowPlayingUI = opts.nowPlayingUI || null;
+
     if (opts.metadataMode !== 'none' && opts.metadataMode !== false) {
       var self = this;
-      // Auto-select azuracast if the user passed a station shortcode but
-      // didn't explicitly name a mode. If they passed a custom fetcher,
-      // mode is irrelevant — the fetcher owns everything.
       var mode = opts.metadataMode;
       if (!mode && (opts.metadataStation || opts.metadataUrl)) mode = 'azuracast';
       if (!mode) mode = 'icecast';
-      this.poller = new MetadataPoller(this.url, {
-        mode: mode,
-        proxy: opts.metadataProxy || null,
-        interval: opts.metadataInterval || 10,
-        mount: opts.metadataMount || null,
-        station: opts.metadataStation || null,
-        url: opts.metadataUrl || null,
-        fetcher: opts.metadataFetcher || null
-      }, function (title) {
+
+      var station = opts.metadataStation || null;
+
+      function onTitle(title) {
         self.currentMetadata = title;
         self._updateDisplay();
         emit(self, 'metadata', title);
-      });
-      // One-shot diagnostic so it's obvious from the console exactly what
-      // the player is trying to fetch. Saves a lot of "is it CORS or a
-      // typo?" debugging.
-      try {
-        var diagUrl = opts.metadataFetcher
-          ? '(custom metadataFetcher function)'
-          : (opts.metadataUrl ||
-             buildMetadataUrl(this.url, mode, opts.metadataStation || null));
-        console.info(
-          '[MRP] metadata source:', diagUrl,
-          '(mode=' + mode + ', every ' + (opts.metadataInterval || 10) + 's)'
-        );
-      } catch (e) { /* noop */ }
-      // Start polling immediately so the display updates even before play.
-      this.poller.start();
+      }
+
+      function onNowPlaying(np) {
+        if (self._onNowPlayingFn) self._onNowPlayingFn(np);
+        if (self._nowPlayingUI) self._applyNowPlayingUI(np);
+      }
+
+      // Use SSE for azuracast when we have a station shortcode and no
+      // custom fetcher — it's real-time and avoids polling entirely.
+      if (mode === 'azuracast' && station && !opts.metadataFetcher) {
+        this.sse = new AzuraCastSSE(this.url, station, {
+          onTitle: onTitle,
+          onNowPlaying: onNowPlaying,
+          onFallback: function () {
+            // SSE failed, fall back to polling
+            self.sse = null;
+            self.poller = self._createPoller(opts, mode, onTitle, onNowPlaying);
+            self.poller.start();
+          }
+        });
+        console.info('[MRP] metadata source: SSE (station:' + station + ')');
+        this.sse.start();
+      } else {
+        this.poller = this._createPoller(opts, mode, onTitle, onNowPlaying);
+        try {
+          var diagUrl = opts.metadataFetcher
+            ? '(custom metadataFetcher function)'
+            : (opts.metadataUrl ||
+               buildMetadataUrl(this.url, mode, station));
+          console.info(
+            '[MRP] metadata source:', diagUrl,
+            '(mode=' + mode + ', every ' + (opts.metadataInterval || 10) + 's)'
+          );
+        } catch (e) { /* noop */ }
+        this.poller.start();
+      }
     }
 
     if (opts.autoplay) this.play();
   }
+
+  MusesPlayer.prototype._createPoller = function (opts, mode, onTitle, onNowPlaying) {
+    return new MetadataPoller(this.url, {
+      mode: mode,
+      proxy: opts.metadataProxy || null,
+      interval: opts.metadataInterval || 10,
+      mount: opts.metadataMount || null,
+      station: opts.metadataStation || null,
+      url: opts.metadataUrl || null,
+      fetcher: opts.metadataFetcher || null
+    }, onTitle, onNowPlaying);
+  };
 
   MusesPlayer.prototype._bindAudio = function () {
     var self = this;
@@ -1292,6 +1427,113 @@
       line = this.customTitle || '';
     }
     this.ui.setText(line);
+  };
+
+  MusesPlayer.prototype._applyNowPlayingUI = function (np) {
+    var ui = this._nowPlayingUI;
+    if (!ui) return;
+    var song = np.now_playing && np.now_playing.song;
+    var isLive = np.live && np.live.is_live;
+
+    if (ui.songTitle && song) {
+      var el = document.querySelector(ui.songTitle);
+      if (el) el.textContent = song.title || '';
+    }
+    if (ui.songArtist && song) {
+      var el = document.querySelector(ui.songArtist);
+      if (el) el.textContent = song.artist || '';
+    }
+    if (ui.liveImage) {
+      var el = document.querySelector(ui.liveImage);
+      if (el) el.src = isLive
+        ? (ui.liveImageSrc || '/assets/kplive.gif')
+        : (ui.offlineImageSrc || '/assets/autodj.gif');
+    }
+    if (ui.liveText) {
+      var el = document.querySelector(ui.liveText);
+      if (el) el.textContent = isLive
+        ? (ui.liveTextOn || 'KP LIVE!')
+        : (ui.liveTextOff || 'Auto-DJ');
+    }
+    if (ui.chatWindow) {
+      var el = document.querySelector(ui.chatWindow);
+      if (el) this._applyChatWindow(el, ui, isLive);
+    }
+  };
+
+  MusesPlayer.prototype._applyChatWindow = function (el, ui, isLive) {
+    var cooldown = (ui.chatCooldown || 0) * 1000;
+
+    if (isLive) {
+      // going live — show chat, cancel any pending cooldown
+      this._chatWasLive = true;
+      if (this._chatCooldownTimer) {
+        clearInterval(this._chatCooldownTimer);
+        this._chatCooldownTimer = null;
+      }
+      var banner = document.getElementById('mrp-chat-cooldown');
+      if (banner) banner.remove();
+      el.style.display = '';
+      return;
+    }
+
+    // not live — only run cooldown if we were live during this page session
+    if (!this._chatWasLive) {
+      el.style.display = 'none';
+      return;
+    }
+
+    // already cooling down, let the existing timer finish
+    if (this._chatCooldownTimer) return;
+
+    // no cooldown configured, hide immediately
+    if (!cooldown) {
+      el.style.display = 'none';
+      this._chatWasLive = false;
+      return;
+    }
+
+    // start cooldown
+    var deadline = Date.now() + cooldown;
+    var wrapper = el.parentElement;
+
+    // wrap chat in a positioned container if not already
+    if (!wrapper || !wrapper.classList.contains('mrp-chat-wrap')) {
+      wrapper = document.createElement('div');
+      wrapper.className = 'mrp-chat-wrap';
+      wrapper.style.position = 'relative';
+      el.parentNode.insertBefore(wrapper, el);
+      wrapper.appendChild(el);
+    }
+
+    var banner = document.createElement('div');
+    banner.id = 'mrp-chat-cooldown';
+    banner.style.cssText =
+      'position:absolute;top:0;left:0;right:0;' +
+      'background:rgba(0,0,0,0.75);color:#fff;' +
+      'text-align:center;padding:8px;font-size:14px;' +
+      'z-index:10;border-radius:18px 18px 0 0;';
+    wrapper.insertBefore(banner, el);
+
+    var self = this;
+    function tick() {
+      var remaining = Math.max(0, deadline - Date.now());
+      var min = Math.floor(remaining / 60000);
+      var sec = Math.floor((remaining % 60000) / 1000);
+      banner.textContent = 'Broadcast over, chat closing in: ' +
+        min + ':' + (sec < 10 ? '0' : '') + sec + '...';
+
+      if (remaining <= 0) {
+        clearInterval(self._chatCooldownTimer);
+        self._chatCooldownTimer = null;
+        self._chatWasLive = false;
+        banner.remove();
+        el.style.display = 'none';
+      }
+    }
+
+    tick();
+    this._chatCooldownTimer = setInterval(tick, 1000);
   };
 
   // ---------------------------------------------------------------------

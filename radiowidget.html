@@ -11,7 +11,6 @@
 </head>
 
 <script src="/JS/jquery-3.6.1.min.js"></script>
-<script src="/JS/radioData.js"></script>
 
 <pre class="header">
     888    d8P  8888888b.       8888888b.         d8888 8888888b. 8888888 .d88888b.  
@@ -32,7 +31,7 @@
     <center>
         <div class="radio">
             <div class="popoutbutton"><img id="onair" src="assets/autodj.gif"></div>
-            <script src="/JS/mrp.js"></script>
+            <script src="/JS/possradio.js"></script>
             <script type="text/javascript">
             MRP.insert({
             'url':'https://radio.kingposs.com/radio.mp3',
@@ -46,15 +45,21 @@
             'wmode':'transparent',
             'skin':'/radioThemes/oldradio/oldradio.xml',
             'width':205,
-            'height':132
+            'height':132,
+            'metadataStation':'kpradio',
+            'nowPlayingUI': {
+              'songTitle': '#np-title',
+              'songArtist': '#np-artist',
+              'liveImage': '#onair'
+            }
             });
             </script>
             <center>
             <div class="np">
                 <section class="now-playing">
                     
-                    <div class="display">Now Playing</div>
-                    <div class="display1">Unknown</div>
+                    <div id="np-title" class="display">Now Playing</div>
+                    <div id="np-artist" class="display1">Unknown</div>
                 </section>
                 <noscript>Javascript is required to view the "now playing" data.</noscript>
               </div>

@@ -20,7 +20,6 @@
 <script src="/JS/mobileNav.js"></script>
 <script data-site="RRZKQSF" src="https://analytics.kingposs.com/script.js" defer></script> <!--Populates Site Updates from updates.json-->
 <script src="/JS/possradio.js"></script> <!--For the Radio-->
-<script src="/JS/radioData.js"></script> <!--Also for the Radio-->
 
 
 
@@ -132,9 +131,7 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
   </a>
 </div>
 <script type="text/javascript">
-  var SHOW_METADATA = false; // set to true to enable now-playing metadata
-
-  var radioConfig = {
+  MRP.insert({
     url: 'https://radio.kingposs.com/radio.mp3',
     codec: 'mp3',
     volume: 40,
@@ -143,31 +140,23 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
     title: 'KPradio.net',
     skin: '/radioThemes/oldradio/oldradio.xml',
     width: 205,
-    height: 132
-  };
-
-  if (SHOW_METADATA) {
-    radioConfig.metadataInterval = 3;
-    radioConfig.metadataFetcher = function () {
-      return fetch('https://radio.kingposs.com/api/nowplaying/kpradio')
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          var s = j.now_playing.song;
-          if (!s) return null;
-          if (s.artist && s.title) return s.artist + ' - ' + s.title;
-          return s.title || s.artist || null;
-        });
-    };
-  }
-
-  MRP.insert(radioConfig);
+    height: 132,
+    metadataStation: 'kpradio',
+    nowPlayingUI: {
+      songTitle: '#np-title',
+      songArtist: '#np-artist',
+      liveImage: '#onair',
+      chatWindow: '#chatWindow',
+      chatCooldown: 300
+    }
+  });
 </script>
 
       <center>
       <div class="np">
         <section class="now-playing">
-          <div class="display">Now Playing</div>
-          <div class="display1">Unknown</div>
+          <div id="np-title" class="display">Now Playing</div>
+          <div id="np-artist" class="display1">Unknown</div>
         </section>
       <noscript>Javascript is required</noscript>
       </div>
@@ -175,7 +164,7 @@ I'd love to hear from you! If you're in the U.S. or dont mind international rate
     <a class="streamlink" href="https://radio.kingposs.com/radio.mp3">Stream Link</a>
     </div>
 </div>
-<iframe class="chatWindow" src="https://www3.cbox.ws/box/?boxid=3518564&boxtag=RaAzVB&tid=2&tkey=cd1228a8a537c0b1" width="100%" height="450" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="border-width: 5px; border-color: var(--def-border-color); border-style: double; border-radius: 20px; display: none;"></iframe>	
+<iframe id="chatWindow" src="https://www3.cbox.ws/box/?boxid=3518564&boxtag=RaAzVB&tid=2&tkey=cd1228a8a537c0b1" width="100%" height="450" allowtransparency="yes" allow="autoplay" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto" style="border-width: 5px; border-color: var(--def-border-color); border-style: double; border-radius: 20px; display: none;"></iframe>	
 </div>
 <hr>
 <div class="cal-window" id="calWidget">
