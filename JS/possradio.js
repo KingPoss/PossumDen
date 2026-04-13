@@ -924,9 +924,8 @@
     this.callbacks = callbacks; // { onTitle, onNowPlaying, onFallback }
     this.lastTitle = null;
     this.source = null;
-    this.retries = 0;
-    this.maxRetries = 5;
-    this.retryTimer = null;
+    this.connected = false;
+    this.errorCount = 0;
 
     var u;
     try { u = new URL(streamUrl, location.href); } catch (e) { u = null; }
@@ -937,18 +936,7 @@
     if (!this.origin || typeof EventSource === 'undefined') {
       this._fail(); return;
     }
-    this._connect();
 
-    // initial fetch so the display isn't blank while waiting for first SSE push
-    var self = this;
-    var apiUrl = this.origin + '/api/nowplaying/' + encodeURIComponent(this.station);
-    fetch(apiUrl, { cache: 'no-store', credentials: 'omit' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (np) { if (np) self._processNowPlaying(np); })
-      .catch(function () { /* SSE will handle it */ });
-  };
-
-  AzuraCastSSE.prototype._connect = function () {
     var self = this;
     var sseBaseUri = this.origin + '/api/live/nowplaying/sse';
     var subs = {};
@@ -959,7 +947,9 @@
     this.source = new EventSource(sseBaseUri + '?' + sseUriParams.toString());
 
     this.source.onmessage = function (e) {
-      self.retries = 0; // successful message resets retry count
+      // any successful message means SSE is working
+      self.connected = true;
+      self.errorCount = 0;
       var jsonData = JSON.parse(e.data);
       if ('connect' in jsonData) {
         var connectData = jsonData.connect;
@@ -978,23 +968,32 @@
       }
     };
 
+    // Let EventSource handle reconnection natively. It auto-retries on
+    // network errors. We only bail if it has never connected and errors
+    // pile up, meaning the endpoint is genuinely unreachable.
     this.source.onerror = function () {
-      self.stop();
-      self.retries++;
-      if (self.retries > self.maxRetries) {
-        console.warn('[KPR] SSE failed after ' + self.maxRetries + ' retries, falling back to polling');
+      if (self.connected) {
+        // was working before, let EventSource auto-reconnect
+        return;
+      }
+      self.errorCount++;
+      if (self.errorCount >= 3) {
+        console.warn('[KPR] SSE could not connect, falling back to polling');
+        self.stop();
         self._fail();
-      } else {
-        var delay = Math.min(1000 * self.retries, 5000);
-        console.info('[KPR] SSE connection lost, retrying in ' + (delay / 1000) + 's (' + self.retries + '/' + self.maxRetries + ')');
-        self.retryTimer = setTimeout(function () { self._connect(); }, delay);
       }
     };
+
+    // initial fetch so the display isn't blank while waiting for first SSE push
+    var apiUrl = this.origin + '/api/nowplaying/' + encodeURIComponent(this.station);
+    fetch(apiUrl, { cache: 'no-store', credentials: 'omit' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (np) { if (np) self._processNowPlaying(np); })
+      .catch(function () { /* SSE will handle it */ });
   };
 
   AzuraCastSSE.prototype.stop = function () {
     if (this.source) { this.source.close(); this.source = null; }
-    if (this.retryTimer) { clearTimeout(this.retryTimer); this.retryTimer = null; }
   };
 
   AzuraCastSSE.prototype._handleData = function (ssePayload) {
