@@ -1,31 +1,26 @@
 /*
- * mrp.clean.js — clean HTML5-only Muses Radio Player replacement
- * ----------------------------------------------------------------
- * Drop-in replacement for the old compiled mrp.js (Muses 2.4.4).
- *
  *   - No Flash.
- *   - No telemetry, no cookies, no calls to muses.org.
+ *   - No telemetry, no cookies
  *   - No remote script loading.
  *   - Plain HTML5 <audio>, event-driven (no 500ms polling).
- *   - Muses FFMP3 XML skins supported directly (same format as oldradio.xml,
- *     tweety.xml, etc).
+
  *   - Hand-written HTML/CSS skins also supported — pass a {html, css} object
- *     as the `skin` option, or call MRP.dumpSkinAsHtml(url) in the console
+ *     as the `skin` option, or call KPR.dumpSkinAsHtml(url) in the console
  *     to generate CSS/HTML from an existing XML skin so you can migrate.
  *   - Scrolling marquee for "now playing" metadata (Icecast / Shoutcast).
  *
- * Public API (drop-in compatible with the legacy MRP):
- *   MRP.insert(opts)            — create a player instance
- *   MRP.play() / MRP.stop()
- *   MRP.setVolume(0..100)
- *   MRP.setUrl(url)             — swap stream URL
- *   MRP.setFallbackUrl(url)     — used if the primary URL errors past retry
- *   MRP.setTitle(str)           — static title shown when no metadata
- *   MRP.showInfo(str)           — push an arbitrary string to the display
- *   MRP.setCallbackFunction(fn) — fn(objectId, event, data); events: play,
+ * Public API (drop-in compatible with the legacy KPR):
+ *   KPR.insert(opts)            — create a player instance
+ *   KPR.play() / KPR.stop()
+ *   KPR.setVolume(0..100)
+ *   KPR.setUrl(url)             — swap stream URL
+ *   KPR.setFallbackUrl(url)     — used if the primary URL errors past retry
+ *   KPR.setTitle(str)           — static title shown when no metadata
+ *   KPR.showInfo(str)           — push an arbitrary string to the display
+ *   KPR.setCallbackFunction(fn) — fn(objectId, event, data); events: play,
  *                                 stop, metadata, error
- *   MRP.setObjectId(id) / MRP.setElementId(id)
- *   MRP.dumpSkinAsHtml(xmlUrl)  — logs equivalent standalone HTML+CSS
+ *   KPR.setObjectId(id) / KPR.setElementId(id)
+ *   KPR.dumpSkinAsHtml(xmlUrl)  — logs equivalent standalone HTML+CSS
  *
  * insert() options:
  *   url, codec, volume, autoplay, title, width, height, elementId, id,
@@ -77,7 +72,7 @@
  *   callbackFunction     — same as setCallbackFunction
  *
  * AzuraCast example:
- *   MRP.insert({
+ *   KPR.insert({
  *     url: 'https://radio.kingposs.com/radio.mp3',
  *     codec: 'mp3', autoplay: false, volume: 40,
  *     title: 'KPradio.net',
@@ -134,9 +129,7 @@
     return s.trim();
   }
 
-  // ---------------------------------------------------------------------
-  // Skin loader — parses Muses FFMP3 XML into a plain JS descriptor
-  // ---------------------------------------------------------------------
+  // Skin loader
   //
   // Example input (oldradio.xml):
   //   <ffmp3-skin folder="ffmp3-oldradio">
@@ -206,7 +199,6 @@
         x: num(bg, 'x', 0),
         y: num(bg, 'y', 0)
       },
-      // Three-state buttons, matching the original Muses Flash skin model:
       //   bgimage    → rest state (often absent — button is invisible
       //                until hovered, and the player's main <bg> shows
       //                through where the cutout would be)
@@ -284,14 +276,14 @@
   function ensureMarqueeStyles() {
     if (marqueeStyleInjected) return;
     var style = document.createElement('style');
-    style.setAttribute('data-mrp-clean', 'marquee');
+    style.setAttribute('data-KPR-clean', 'marquee');
     // translate3d() forces a GPU layer so the scroll stays smooth even when
     // the rest of the page is doing layout work. The keyframe distance is
     // driven by a CSS variable that setText() updates per-string.
     style.textContent =
-      '@keyframes mrpCleanMarquee {' +
+      '@keyframes KPRCleanMarquee {' +
       '  from { transform: translate3d(0, 0, 0); }' +
-      '  to   { transform: translate3d(calc(-1 * var(--mrp-scroll-dist, 0px)), 0, 0); }' +
+      '  to   { transform: translate3d(calc(-1 * var(--KPR-scroll-dist, 0px)), 0, 0); }' +
       '}';
     document.head.appendChild(style);
     marqueeStyleInjected = true;
@@ -360,13 +352,13 @@
         ensureMarqueeStyles();
         var distance = contentWidth; // one full copy + its gap
         var duration = Math.max(6, distance / MARQUEE_PX_PER_SEC);
-        track.style.setProperty('--mrp-scroll-dist', distance + 'px');
+        track.style.setProperty('--KPR-scroll-dist', distance + 'px');
         // Start on the *next* frame so the new layout commits cleanly
         // before the animation kicks in.
         requestAnimationFrame(function () {
           if (first.parentNode !== track) return;
           track.style.animation =
-            'mrpCleanMarquee ' + duration.toFixed(2) + 's linear infinite';
+            'KPRCleanMarquee ' + duration.toFixed(2) + 's linear infinite';
         });
       });
     });
@@ -381,20 +373,20 @@
     var normalized = (str == null ? '' : String(str))
       .replace(/\s+/g, ' ')
       .trim();
-    if (track._mrpCurrent === normalized) return;
-    var wasEmpty = !track._mrpCurrent;
-    track._mrpCurrent = normalized;
+    if (track._KPRCurrent === normalized) return;
+    var wasEmpty = !track._KPRCurrent;
+    track._KPRCurrent = normalized;
 
-    if (track._mrpFadeTimer) {
-      clearTimeout(track._mrpFadeTimer);
-      track._mrpFadeTimer = null;
+    if (track._KPRFadeTimer) {
+      clearTimeout(track._KPRFadeTimer);
+      track._KPRFadeTimer = null;
     }
 
     // Lazily wire up the fade transition on the host.
-    if (!host._mrpFadeWired) {
+    if (!host._KPRFadeWired) {
       host.style.transition = 'opacity ' + MARQUEE_FADE_MS + 'ms linear';
       host.style.opacity = '1';
-      host._mrpFadeWired = true;
+      host._KPRFadeWired = true;
     }
 
     if (wasEmpty) {
@@ -405,8 +397,8 @@
     }
 
     host.style.opacity = '0';
-    track._mrpFadeTimer = setTimeout(function () {
-      track._mrpFadeTimer = null;
+    track._KPRFadeTimer = setTimeout(function () {
+      track._KPRFadeTimer = null;
       installMarqueeContent(host, track, normalized);
       host.style.opacity = '1';
     }, MARQUEE_FADE_MS);
@@ -414,7 +406,7 @@
 
   function renderXmlSkin(skin, width, height) {
     var root = document.createElement('div');
-    root.className = 'mrp-clean mrp-clean-xml';
+    root.className = 'KPR-clean KPR-clean-xml';
     root.style.cssText = [
       'position:relative',
       'display:inline-block',
@@ -449,7 +441,6 @@
 
     // --- three-state pressable-image button factory ---------------------
     //
-    // Matches the original Muses Flash skin: every button has up to three
     // images that get cross-faded via opacity:
     //
     //   bgImage    → rest        (often missing — invisible at rest)
@@ -575,7 +566,7 @@
     var textHost = null, textTrack = null;
     if (skin.text) {
       textHost = document.createElement('div');
-      textHost.className = 'mrp-clean-text';
+      textHost.className = 'KPR-clean-text';
       textHost.style.cssText = [
         'position:absolute',
         'left:' + skin.text.x + 'px',
@@ -600,7 +591,7 @@
     var volTrack = null, volHolder = null;
     if (skin.volume) {
       volTrack = document.createElement('div');
-      volTrack.className = 'mrp-clean-vol';
+      volTrack.className = 'KPR-clean-vol';
       volTrack.style.cssText = [
         'position:absolute',
         'left:' + skin.volume.x + 'px',
@@ -684,8 +675,8 @@
   var htmlSkinCounter = 0;
   function renderHtmlSkin(skin, width, height) {
     var root = document.createElement('div');
-    root.className = 'mrp-clean mrp-clean-html';
-    var scopeId = 'mrp-clean-html-' + (++htmlSkinCounter);
+    root.className = 'KPR-clean KPR-clean-html';
+    var scopeId = 'KPR-clean-html-' + (++htmlSkinCounter);
     root.id = scopeId;
     root.style.cssText = [
       'position:relative',
@@ -723,12 +714,12 @@
     var hooks = skin.hooks || {};
     function pick(sel) { return sel ? root.querySelector(sel) : null; }
 
-    var playBtn  = pick(hooks.play)   || root.querySelector('[data-mrp="play"]');
-    var stopBtn  = pick(hooks.stop)   || root.querySelector('[data-mrp="stop"]');
-    var volTrack = pick(hooks.volume) || root.querySelector('[data-mrp="volume"]');
-    var volHolder = volTrack ? (volTrack.querySelector('[data-mrp="volume-holder"]') || volTrack.firstElementChild) : null;
-    var textEl  = pick(hooks.text)    || root.querySelector('[data-mrp="text"]');
-    var statusEl = pick(hooks.status) || root.querySelector('[data-mrp="status"]');
+    var playBtn  = pick(hooks.play)   || root.querySelector('[data-KPR="play"]');
+    var stopBtn  = pick(hooks.stop)   || root.querySelector('[data-KPR="stop"]');
+    var volTrack = pick(hooks.volume) || root.querySelector('[data-KPR="volume"]');
+    var volHolder = volTrack ? (volTrack.querySelector('[data-KPR="volume-holder"]') || volTrack.firstElementChild) : null;
+    var textEl  = pick(hooks.text)    || root.querySelector('[data-KPR="text"]');
+    var statusEl = pick(hooks.status) || root.querySelector('[data-KPR="status"]');
 
     // Set up a marquee wrapper inside textEl if present.
     var textTrack = null;
@@ -752,7 +743,7 @@
 
     function setVolumeVisual(pct) {
       if (!volTrack) return;
-      volTrack.setAttribute('data-mrp-pct', String(Math.round(pct)));
+      volTrack.setAttribute('data-KPR-pct', String(Math.round(pct)));
       if (volHolder && volHolder !== volTrack) {
         var trackW = volTrack.clientWidth;
         var holderW = volHolder.offsetWidth || 0;
@@ -765,9 +756,9 @@
     function setStatus(state) {
       if (!statusEl) return;
       var on = state === 'playing' || state === true;
-      statusEl.setAttribute('data-mrp-state', on ? 'playing' : 'stopped');
-      statusEl.classList.toggle('mrp-playing', !!on);
-      statusEl.classList.toggle('mrp-stopped', !on);
+      statusEl.setAttribute('data-KPR-state', on ? 'playing' : 'stopped');
+      statusEl.classList.toggle('KPR-playing', !!on);
+      statusEl.classList.toggle('KPR-stopped', !on);
     }
 
     return {
@@ -1003,7 +994,7 @@
   };
 
   AzuraCastSSE.prototype._fail = function () {
-    console.warn('[MRP] SSE connection failed, falling back to polling');
+    console.warn('[KPR] SSE connection failed, falling back to polling');
     if (this.callbacks.onFallback) {
       try { this.callbacks.onFallback(); } catch (e) { /* */ }
     }
@@ -1059,7 +1050,7 @@
         if (!self.corsWarned) {
           self.corsWarned = true;
           console.warn(
-            '[MRP] metadata fetch failed (this is usually CORS). ' +
+            '[KPR] metadata fetch failed (this is usually CORS). ' +
             'Either enable Access-Control-Allow-Origin on your stream server, ' +
             'or set metadataProxy to a small server-side proxy. Error:',
             err && err.message ? err.message : err
@@ -1102,14 +1093,14 @@
   // Player core
   // ---------------------------------------------------------------------
 
-  var musesCallbackRef = null;
+  var _callbackRef = null;
   function emit(inst, event, data) {
-    if (!musesCallbackRef) return;
-    try { musesCallbackRef(inst.id, event, data); }
+    if (!_callbackRef) return;
+    try { _callbackRef(inst.id, event, data); }
     catch (e) { /* swallow user errors */ }
   }
 
-  function MusesPlayer(opts, ui) {
+  function KPRadioPlayer(opts, ui) {
     this.id = opts.id;
     this.opts = opts;
     this.ui = ui;
@@ -1127,7 +1118,6 @@
     this._volumePct = opts.volume != null ? opts.volume : 100;
     this.audio.volume = this._volumePct / 100;
 
-    // Buffering gate. Same idea as the original Muses player: when a stream
     // starts (or restarts on reconnect) we mute the audio element, let the
     // browser actually decode `bufferSeconds` worth of audio, then restore
     // the listener's volume. Gives the player a real warm-up cushion before
@@ -1184,7 +1174,7 @@
             self.poller.start();
           }
         });
-        console.info('[MRP] metadata source: SSE (station:' + station + ')');
+        console.info('[KPR] metadata source: SSE (station:' + station + ')');
         this.sse.start();
       } else {
         this.poller = this._createPoller(opts, mode, onTitle, onNowPlaying);
@@ -1194,7 +1184,7 @@
             : (opts.metadataUrl ||
                buildMetadataUrl(this.url, mode, station));
           console.info(
-            '[MRP] metadata source:', diagUrl,
+            '[KPR] metadata source:', diagUrl,
             '(mode=' + mode + ', every ' + (opts.metadataInterval || 10) + 's)'
           );
         } catch (e) { /* noop */ }
@@ -1205,7 +1195,7 @@
     if (opts.autoplay) this.play();
   }
 
-  MusesPlayer.prototype._createPoller = function (opts, mode, onTitle, onNowPlaying) {
+  KPRadioPlayer.prototype._createPoller = function (opts, mode, onTitle, onNowPlaying) {
     return new MetadataPoller(this.url, {
       mode: mode,
       proxy: opts.metadataProxy || null,
@@ -1217,7 +1207,7 @@
     }, onTitle, onNowPlaying);
   };
 
-  MusesPlayer.prototype._bindAudio = function () {
+  KPRadioPlayer.prototype._bindAudio = function () {
     var self = this;
     this.audio.addEventListener('playing', function () {
       self.retryCount = 0;
@@ -1229,7 +1219,6 @@
     });
     this.audio.addEventListener('waiting', function () {
       // buffering — leave visual alone or set a buffering state if the skin
-      // has one. The classic Muses skins only have play/stop, so do nothing.
     });
     this.audio.addEventListener('timeupdate', function () {
       self._maybeReleaseBufferGate();
@@ -1249,7 +1238,7 @@
   };
 
   // Buffer gate helpers ---------------------------------------------------
-  MusesPlayer.prototype._beginBufferGate = function () {
+  KPRadioPlayer.prototype._beginBufferGate = function () {
     if (this.bufferSeconds <= 0) return;
     this._bufferActive = true;
     this.audio.volume = 0;
@@ -1264,13 +1253,13 @@
       self._releaseBufferGate();
     }, (this.bufferSeconds * 4 + 5) * 1000);
   };
-  MusesPlayer.prototype._maybeReleaseBufferGate = function () {
+  KPRadioPlayer.prototype._maybeReleaseBufferGate = function () {
     if (!this._bufferActive) return;
     if (this.audio.currentTime >= this.bufferSeconds) {
       this._releaseBufferGate();
     }
   };
-  MusesPlayer.prototype._releaseBufferGate = function () {
+  KPRadioPlayer.prototype._releaseBufferGate = function () {
     if (!this._bufferActive) return;
     this._bufferActive = false;
     if (this._bufferSafetyTimer) {
@@ -1279,7 +1268,7 @@
     }
     this.audio.volume = this._volumePct / 100;
   };
-  MusesPlayer.prototype._cancelBufferGate = function () {
+  KPRadioPlayer.prototype._cancelBufferGate = function () {
     if (this._bufferSafetyTimer) {
       clearTimeout(this._bufferSafetyTimer);
       this._bufferSafetyTimer = null;
@@ -1287,7 +1276,7 @@
     this._bufferActive = false;
   };
 
-  MusesPlayer.prototype._bindUi = function () {
+  KPRadioPlayer.prototype._bindUi = function () {
     var self = this;
     if (this.ui.playBtn) {
       this.ui.playBtn.addEventListener('click', function () { self.play(); });
@@ -1329,7 +1318,7 @@
     }
   };
 
-  MusesPlayer.prototype.play = function () {
+  KPRadioPlayer.prototype.play = function () {
     this.desired = 'play';
     this.retryCount = 0;
     try { this.audio.src = cacheBust(this.url); } catch (e) {}
@@ -1343,7 +1332,7 @@
     }
   };
 
-  MusesPlayer.prototype.stop = function () {
+  KPRadioPlayer.prototype.stop = function () {
     this.desired = 'stop';
     this._cancelBufferGate();
     try { this.audio.pause(); } catch (e) {}
@@ -1356,7 +1345,7 @@
     emit(this, 'stop', null);
   };
 
-  MusesPlayer.prototype._reconnect = function () {
+  KPRadioPlayer.prototype._reconnect = function () {
     if (this.desired !== 'play') return;
     if (this.retryCount >= this.retryMax) {
       if (this.fallbackUrl) {
@@ -1380,7 +1369,7 @@
     }, delay);
   };
 
-  MusesPlayer.prototype.setVolume = function (pct) {
+  KPRadioPlayer.prototype.setVolume = function (pct) {
     if (pct < 0) pct = 0; if (pct > 100) pct = 100;
     this._volumePct = pct;
     // While the buffer gate is active the audio element stays muted; only
@@ -1391,7 +1380,7 @@
     this.ui.setVolumeVisual(pct);
   };
 
-  MusesPlayer.prototype.setUrl = function (url) {
+  KPRadioPlayer.prototype.setUrl = function (url) {
     this.url = url;
     if (this.poller) {
       this.poller.stop();
@@ -1402,20 +1391,20 @@
     if (this.desired === 'play') this.play();
   };
 
-  MusesPlayer.prototype.setFallbackUrl = function (url) {
+  KPRadioPlayer.prototype.setFallbackUrl = function (url) {
     this.fallbackUrl = url;
   };
 
-  MusesPlayer.prototype.setTitle = function (t) {
+  KPRadioPlayer.prototype.setTitle = function (t) {
     this.customTitle = t || '';
     this._updateDisplay();
   };
 
-  MusesPlayer.prototype.showInfo = function (str) {
+  KPRadioPlayer.prototype.showInfo = function (str) {
     this.ui.setText(str == null ? '' : String(str));
   };
 
-  MusesPlayer.prototype._updateDisplay = function () {
+  KPRadioPlayer.prototype._updateDisplay = function () {
     // While the user wants the stream playing, show "now playing" metadata.
     // When stopped/paused, show the static station title instead so the
     // marquee falls back to "KPradio.net" (or whatever opts.title is) until
@@ -1429,7 +1418,7 @@
     this.ui.setText(line);
   };
 
-  MusesPlayer.prototype._applyNowPlayingUI = function (np) {
+  KPRadioPlayer.prototype._applyNowPlayingUI = function (np) {
     var ui = this._nowPlayingUI;
     if (!ui) return;
     var song = np.now_playing && np.now_playing.song;
@@ -1461,7 +1450,7 @@
     }
   };
 
-  MusesPlayer.prototype._applyChatWindow = function (el, ui, isLive) {
+  KPRadioPlayer.prototype._applyChatWindow = function (el, ui, isLive) {
     var cooldown = (ui.chatCooldown || 0) * 1000;
 
     if (isLive) {
@@ -1471,7 +1460,7 @@
         clearInterval(this._chatCooldownTimer);
         this._chatCooldownTimer = null;
       }
-      var banner = document.getElementById('mrp-chat-cooldown');
+      var banner = document.getElementById('KPR-chat-cooldown');
       if (banner) banner.remove();
       el.style.display = '';
       return;
@@ -1498,19 +1487,19 @@
     var wrapper = el.parentElement;
 
     // wrap chat in a positioned container if not already
-    if (!wrapper || !wrapper.classList.contains('mrp-chat-wrap')) {
+    if (!wrapper || !wrapper.classList.contains('KPR-chat-wrap')) {
       wrapper = document.createElement('div');
-      wrapper.className = 'mrp-chat-wrap';
+      wrapper.className = 'KPR-chat-wrap';
       wrapper.style.position = 'relative';
       el.parentNode.insertBefore(wrapper, el);
       wrapper.appendChild(el);
     }
 
     var banner = document.createElement('div');
-    banner.id = 'mrp-chat-cooldown';
+    banner.id = 'KPR-chat-cooldown';
     banner.style.cssText =
       'position:absolute;top:0;left:0;right:0;' +
-      'background:rgba(0,0,0,0.75);color:#fff;' +
+      'background:var(--def-element-background);color:#fff;' +
       'text-align:center;padding:8px;font-size:14px;' +
       'z-index:10;border-radius:18px 18px 0 0;';
     wrapper.insertBefore(banner, el);
@@ -1549,7 +1538,7 @@
       var lines = [];
       var css = [];
       var id = 'my-radio';
-      lines.push('<div id="' + id + '" class="mrp-skin">');
+      lines.push('<div id="' + id + '" class="KPR-skin">');
       css.push('#' + id + ' {');
       css.push('  position:relative; display:inline-block; overflow:hidden;');
       css.push('  user-select:none; font-family:sans-serif;');
@@ -1561,7 +1550,7 @@
           skin.bg.x + 'px; top:' + skin.bg.y + 'px; pointer-events:none; }');
       }
       if (skin.play && skin.play.image) {
-        lines.push('  <img class="play" data-mrp="play" src="' +
+        lines.push('  <img class="play" data-KPR="play" src="' +
           skin.play.image + '" alt="Play">');
         css.push('#' + id + ' .play { position:absolute; left:' +
           skin.play.x + 'px; top:' + skin.play.y + 'px; cursor:pointer; }');
@@ -1571,7 +1560,7 @@
         }
       }
       if (skin.stop && skin.stop.image) {
-        lines.push('  <img class="stop" data-mrp="stop" src="' +
+        lines.push('  <img class="stop" data-KPR="stop" src="' +
           skin.stop.image + '" alt="Stop">');
         css.push('#' + id + ' .stop { position:absolute; left:' +
           skin.stop.x + 'px; top:' + skin.stop.y + 'px; cursor:pointer; }');
@@ -1581,14 +1570,14 @@
         }
       }
       if (skin.status && (skin.status.imagePlay || skin.status.imageStop)) {
-        lines.push('  <img class="status" data-mrp="status" src="' +
+        lines.push('  <img class="status" data-KPR="status" src="' +
           (skin.status.imageStop || skin.status.imagePlay) + '" alt="">');
         css.push('#' + id + ' .status { position:absolute; left:' +
           skin.status.x + 'px; top:' + skin.status.y +
           'px; pointer-events:none; }');
       }
       if (skin.text) {
-        lines.push('  <div class="text" data-mrp="text"></div>');
+        lines.push('  <div class="text" data-KPR="text"></div>');
         css.push('#' + id + ' .text {');
         css.push('  position:absolute;');
         css.push('  left:' + skin.text.x + 'px; top:' + skin.text.y + 'px;');
@@ -1603,9 +1592,9 @@
         css.push('}');
       }
       if (skin.volume) {
-        lines.push('  <div class="volume" data-mrp="volume">');
+        lines.push('  <div class="volume" data-KPR="volume">');
         if (skin.volume.holderImage) {
-          lines.push('    <img class="volume-holder" data-mrp="volume-holder" src="' +
+          lines.push('    <img class="volume-holder" data-KPR="volume-holder" src="' +
             skin.volume.holderImage + '" alt="">');
         }
         lines.push('  </div>');
@@ -1626,20 +1615,20 @@
   }
 
   // ---------------------------------------------------------------------
-  // Public MRP API (drop-in compatible)
+  // Public KPR API (drop-in compatible)
   // ---------------------------------------------------------------------
 
   var instances = {};
   var containerCounter = 0;
 
-  var MRP = {
+  var KPR = {
     elementId: null,
-    objectId: 'MRPObject',
+    objectId: 'KPRObject',
 
     setElementId: function (id) { this.elementId = id; },
     setObjectId:  function (id) { this.objectId  = id; },
 
-    setCallbackFunction: function (fn) { musesCallbackRef = fn; },
+    setCallbackFunction: function (fn) { _callbackRef = fn; },
 
     insert: function (opts) {
       opts = assign({}, opts);
@@ -1648,13 +1637,13 @@
 
       if (opts.callbackFunction) this.setCallbackFunction(opts.callbackFunction);
 
-      var containerId = 'mrp-clean-container-' + (++containerCounter);
+      var containerId = 'KPR-clean-container-' + (++containerCounter);
       var mountHtml = '<div id="' + containerId + '" style="display:inline-block;"></div>';
 
       if (opts.elementId) {
         var host = document.getElementById(opts.elementId);
         if (!host) {
-          console.error('[MRP] insert: elementId not found:', opts.elementId);
+          console.error('[KPR] insert: elementId not found:', opts.elementId);
           return;
         }
         host.innerHTML = mountHtml;
@@ -1671,9 +1660,9 @@
         var mountPoint = document.getElementById(containerId);
         if (!mountPoint) return;
         mountPoint.appendChild(ui.root);
-        instances[id] = new MusesPlayer(opts, ui);
+        instances[id] = new KPRadioPlayer(opts, ui);
       }).catch(function (err) {
-        console.error('[MRP] skin load failed:', err);
+        console.error('[KPR] skin load failed:', err);
         var mountPoint = document.getElementById(containerId);
         if (mountPoint) {
           mountPoint.textContent = '[player skin failed to load: ' +
@@ -1699,19 +1688,19 @@
     _parseSkinXml: parseSkinXml
   };
 
-  global.MRP = MRP;
+  global.KPR = KPR;
 
-  // Preserve the legacy global `musesCallback` binding. Pages that assign
-  // `window.musesCallback = function(...)` keep working without needing
-  // MRP.setCallbackFunction.
-  if (typeof global.musesCallback === 'function') {
-    musesCallbackRef = global.musesCallback;
+  // Preserve the legacy global `kprCallback` binding. Pages that assign
+  // `window.kprCallback = function(...)` keep working without needing
+  // KPR.setCallbackFunction.
+  if (typeof global.kprCallback === 'function') {
+    _callbackRef = global.kprCallback;
   }
   try {
-    Object.defineProperty(global, 'musesCallback', {
+    Object.defineProperty(global, 'kprCallback', {
       configurable: true,
-      get: function () { return musesCallbackRef; },
-      set: function (v) { musesCallbackRef = v; }
+      get: function () { return _callbackRef; },
+      set: function (v) { _callbackRef = v; }
     });
   } catch (e) { /* some environments disallow redefining globals */ }
 
