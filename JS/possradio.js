@@ -33,6 +33,11 @@
  *   metadataUrl          -- explicit full URL to poll, overriding the
  *                          auto-built one (still uses the extractor chosen
  *                          by metadataMode).
+ *   metadataDisplay      -- 'always' (default) | 'on-play'
+ *                          'always'  = marquee shows metadata as soon as
+ *                                      SSE/fetch delivers it, even while stopped.
+ *                          'on-play' = marquee shows the static title until
+ *                                      play is pressed, then switches to metadata.
  *   metadataFetcher      -- escape hatch: a function returning a Promise
  *                          that resolves to the title string. Bypasses
  *                          ALL of the built-in URL building / extraction.
@@ -663,7 +668,7 @@
   }
 
   // ---------------------------------------------------------------------
-  // HTML/CSS skin support
+  // HTML/CSS skin support (toggleBtn N/A for XML skins)
   // ---------------------------------------------------------------------
   // A user can pass `skin: { html: '...', css: '...', hooks?: {...} }`
   // where `hooks` is an object of CSS selectors (or element IDs):
@@ -716,6 +721,7 @@
 
     var playBtn  = pick(hooks.play)   || root.querySelector('[data-KPR="play"]');
     var stopBtn  = pick(hooks.stop)   || root.querySelector('[data-KPR="stop"]');
+    var toggleBtn = pick(hooks.toggle) || root.querySelector('[data-KPR="toggle"]');
     var volTrack = pick(hooks.volume) || root.querySelector('[data-KPR="volume"]');
     var volHolder = volTrack ? (volTrack.querySelector('[data-KPR="volume-holder"]') || volTrack.firstElementChild) : null;
     var textEl  = pick(hooks.text)    || root.querySelector('[data-KPR="text"]');
@@ -745,11 +751,18 @@
       if (!volTrack) return;
       volTrack.setAttribute('data-KPR-pct', String(Math.round(pct)));
       if (volHolder && volHolder !== volTrack) {
-        var trackW = volTrack.clientWidth;
-        var holderW = volHolder.offsetWidth || 0;
-        var maxLeft = Math.max(0, trackW - holderW);
-        volHolder.style.position = 'absolute';
-        volHolder.style.left = Math.round(maxLeft * (pct / 100)) + 'px';
+        if (volTrack.hasAttribute('data-kpr-dial')) {
+          // Rotary knob: sweep 270° from 7-o'clock (0%) to 5-o'clock (100%)
+          var deg = -135 + (pct / 100) * 270;
+          volHolder.style.transform = 'translateX(-50%) rotate(' + deg + 'deg)';
+          volHolder.style.transformOrigin = '50% ' + (volTrack.clientHeight / 2) + 'px';
+        } else {
+          var trackW = volTrack.clientWidth;
+          var holderW = volHolder.offsetWidth || 0;
+          var maxLeft = Math.max(0, trackW - holderW);
+          volHolder.style.position = 'absolute';
+          volHolder.style.left = Math.round(maxLeft * (pct / 100)) + 'px';
+        }
       }
     }
 
@@ -765,6 +778,7 @@
       root: root,
       playBtn: playBtn,
       stopBtn: stopBtn,
+      toggleBtn: toggleBtn,
       volTrack: volTrack,
       setText: setText,
       setVolumeVisual: setVolumeVisual,
@@ -1125,6 +1139,7 @@
     this.fallbackUrl = opts.fallbackUrl || null;
     this.customTitle = opts.title || '';
     this.currentMetadata = '';
+    this.metadataDisplay = opts.metadataDisplay === 'on-play' ? 'on-play' : 'always';
     this.desired = 'stop';
     this.retryCount = 0;
     this.retryMax = 5;
@@ -1311,27 +1326,59 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); self.stop(); }
       });
     }
+    if (this.ui.toggleBtn) {
+      var _updateToggleLabel = function () {
+        self.ui.toggleBtn.innerHTML = self.desired === 'play' ? '&#9632;' : '&#9654;';
+      };
+      _updateToggleLabel();
+      this._updateToggleLabel = _updateToggleLabel;
+      this.ui.toggleBtn.addEventListener('click', function () {
+        if (self.desired === 'play') self.stop(); else self.play();
+      });
+      this.ui.toggleBtn.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (self.desired === 'play') self.stop(); else self.play();
+        }
+      });
+    }
     if (this.ui.volTrack) {
       var dragging = false;
+      var isDial = self.ui.volTrack.hasAttribute('data-kpr-dial');
+      var lastX = 0;
       var applyFromEvent = function (ev) {
-        var rect = self.ui.volTrack.getBoundingClientRect();
         var clientX = ev.touches && ev.touches[0]
           ? ev.touches[0].clientX : ev.clientX;
-        var pct = ((clientX - rect.left) / rect.width) * 100;
-        if (pct < 0) pct = 0;
-        if (pct > 100) pct = 100;
-        self.setVolume(pct);
+        if (isDial) {
+          // Relative drag: horizontal mouse movement adjusts volume
+          var dx = clientX - lastX;
+          lastX = clientX;
+          var pct = self._volumePct + dx * 0.5;
+          if (pct < 0) pct = 0;
+          if (pct > 100) pct = 100;
+          self.setVolume(pct);
+        } else {
+          var rect = self.ui.volTrack.getBoundingClientRect();
+          var pct = ((clientX - rect.left) / rect.width) * 100;
+          if (pct < 0) pct = 0;
+          if (pct > 100) pct = 100;
+          self.setVolume(pct);
+        }
       };
-      this.ui.volTrack.addEventListener('mousedown', function (ev) {
-        dragging = true; applyFromEvent(ev); ev.preventDefault();
-      });
+      var startDrag = function (ev) {
+        dragging = true;
+        var clientX = ev.touches && ev.touches[0]
+          ? ev.touches[0].clientX : ev.clientX;
+        lastX = clientX;
+        if (!isDial) applyFromEvent(ev);
+        if (ev.preventDefault) ev.preventDefault();
+      };
+      this.ui.volTrack.addEventListener('mousedown', startDrag);
       window.addEventListener('mousemove', function (ev) {
         if (dragging) applyFromEvent(ev);
       });
       window.addEventListener('mouseup', function () { dragging = false; });
-      this.ui.volTrack.addEventListener('touchstart', function (ev) {
-        dragging = true; applyFromEvent(ev);
-      }, { passive: true });
+      this.ui.volTrack.addEventListener('touchstart', startDrag, { passive: false });
       this.ui.volTrack.addEventListener('touchmove', function (ev) {
         if (dragging) applyFromEvent(ev);
       }, { passive: true });
@@ -1345,6 +1392,7 @@
     try { this.audio.src = cacheBust(this.url); } catch (e) {}
     this._beginBufferGate();
     this._updateDisplay(); // switch from static title to metadata
+    if (this._updateToggleLabel) this._updateToggleLabel();
     var p = this.audio.play();
     if (p && typeof p.catch === 'function') {
       p.catch(function () {
@@ -1363,6 +1411,7 @@
     this.audio.volume = this._volumePct / 100;
     this.ui.setStatus('stopped');
     this._updateDisplay(); // switch from metadata back to static title
+    if (this._updateToggleLabel) this._updateToggleLabel();
     emit(this, 'stop', null);
   };
 
@@ -1426,12 +1475,10 @@
   };
 
   KPRadioPlayer.prototype._updateDisplay = function () {
-    // While the user wants the stream playing, show "now playing" metadata.
-    // When stopped/paused, show the static station title instead so the
-    // marquee falls back to "KPradio.net" (or whatever opts.title is) until
-    // playback resumes.
     var line;
-    if (this.desired === 'play' && this.currentMetadata) {
+    var showMeta = this.metadataDisplay === 'always'
+      || this.desired === 'play';
+    if (showMeta && this.currentMetadata) {
       line = this.currentMetadata;
     } else {
       line = this.customTitle || '';
@@ -1461,9 +1508,12 @@
     }
     if (ui.liveText) {
       var el = document.querySelector(ui.liveText);
-      if (el) el.textContent = isLive
-        ? (ui.liveTextOn || 'KP LIVE!')
-        : (ui.liveTextOff || 'Auto-DJ');
+      if (el) {
+        el.textContent = isLive
+          ? (ui.liveTextOn || 'KP LIVE!')
+          : (ui.liveTextOff || 'Auto-DJ');
+        el.setAttribute('data-live', isLive ? 'true' : 'false');
+      }
     }
     if (ui.chatWindow) {
       var el = document.querySelector(ui.chatWindow);
