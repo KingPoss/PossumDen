@@ -4,36 +4,36 @@
  *   - No remote script loading.
  *   - Plain HTML5 <audio>, event-driven (no 500ms polling).
 
- *   - Hand-written HTML/CSS skins also supported — pass a {html, css} object
+ *   - Hand-written HTML/CSS skins also supported -- pass a {html, css} object
  *     as the `skin` option, or call KPR.dumpSkinAsHtml(url) in the console
  *     to generate CSS/HTML from an existing XML skin so you can migrate.
  *   - Scrolling marquee for "now playing" metadata (Icecast / Shoutcast).
  *
  * Public API (drop-in compatible with the legacy KPR):
- *   KPR.insert(opts)            — create a player instance
+ *   KPR.insert(opts)            -- create a player instance
  *   KPR.play() / KPR.stop()
  *   KPR.setVolume(0..100)
- *   KPR.setUrl(url)             — swap stream URL
- *   KPR.setFallbackUrl(url)     — used if the primary URL errors past retry
- *   KPR.setTitle(str)           — static title shown when no metadata
- *   KPR.showInfo(str)           — push an arbitrary string to the display
- *   KPR.setCallbackFunction(fn) — fn(objectId, event, data); events: play,
+ *   KPR.setUrl(url)             -- swap stream URL
+ *   KPR.setFallbackUrl(url)     -- used if the primary URL errors past retry
+ *   KPR.setTitle(str)           -- static title shown when no metadata
+ *   KPR.showInfo(str)           -- push an arbitrary string to the display
+ *   KPR.setCallbackFunction(fn) -- fn(objectId, event, data); events: play,
  *                                 stop, metadata, error
  *   KPR.setObjectId(id) / KPR.setElementId(id)
- *   KPR.dumpSkinAsHtml(xmlUrl)  — logs equivalent standalone HTML+CSS
+ *   KPR.dumpSkinAsHtml(xmlUrl)  -- logs equivalent standalone HTML+CSS
  *
  * insert() options:
  *   url, codec, volume, autoplay, title, width, height, elementId, id,
- *   skin                 — '/path/to/skin.xml'  or  {html, css}
- *   metadataMode         — 'azuracast' | 'icecast' (default) | 'icecast-csv' |
+ *   skin                 -- '/path/to/skin.xml'  or  {html, css}
+ *   metadataMode         -- 'azuracast' | 'icecast' (default) | 'icecast-csv' |
  *                          'shoutcast-v1' | 'shoutcast-v2' | 'none'
- *   metadataStation      — AzuraCast station shortcode, e.g. 'kpradio'.
+ *   metadataStation      -- AzuraCast station shortcode, e.g. 'kpradio'.
  *                          If set and metadataMode is unspecified, mode
  *                          defaults to 'azuracast'.
- *   metadataUrl          — explicit full URL to poll, overriding the
+ *   metadataUrl          -- explicit full URL to poll, overriding the
  *                          auto-built one (still uses the extractor chosen
  *                          by metadataMode).
- *   metadataFetcher      — escape hatch: a function returning a Promise
+ *   metadataFetcher      -- escape hatch: a function returning a Promise
  *                          that resolves to the title string. Bypasses
  *                          ALL of the built-in URL building / extraction.
  *                          Use this if you already have a working metadata
@@ -48,28 +48,28 @@
  *                                return s.artist + ' - ' + s.title;
  *                              });
  *                          }
- *   metadataInterval     — seconds between polls (default 10, min 3)
- *   metadataProxy        — optional CORS proxy. Either a template with {url}
+ *   metadataInterval     -- seconds between polls (default 10, min 3)
+ *   metadataProxy        -- optional CORS proxy. Either a template with {url}
  *                          or a base URL that accepts ?url=
- *   metadataMount        — for multi-mount Icecast servers, the mount to
+ *   metadataMount        -- for multi-mount Icecast servers, the mount to
  *                          match against /status-json.xsl
- *   onNowPlaying         — callback(np) fired with the full AzuraCast
+ *   onNowPlaying         -- callback(np) fired with the full AzuraCast
  *                          nowplaying object on every update.
- *   nowPlayingUI         — optional object to auto-bind external UI
+ *   nowPlayingUI         -- optional object to auto-bind external UI
  *                          elements by ID. All keys are optional:
- *                            songTitle:  '#np-title'   — song title
- *                            songArtist: '#np-artist'  — song artist
- *                            liveImage:  '#onair'       — swaps src
+ *                            songTitle:  '#np-title'   -- song title
+ *                            songArtist: '#np-artist'  -- song artist
+ *                            liveImage:  '#onair'       -- swaps src
  *                            liveImageSrc:  '/assets/kplive.gif'
  *                            offlineImageSrc: '/assets/autodj.gif'
- *                            liveText:   '#status'     — sets text content
- *                            liveTextOn: 'KP LIVE!'    — text when live
- *                            liveTextOff:'Auto-DJ'     — text when offline
- *                            chatWindow: '#chat'       — shown when live
- *                            chatCooldown: 300         — seconds to keep
+ *                            liveText:   '#status'     -- sets text content
+ *                            liveTextOn: 'KP LIVE!'    -- text when live
+ *                            liveTextOff:'Auto-DJ'     -- text when offline
+ *                            chatWindow: '#chat'       -- shown when live
+ *                            chatCooldown: 300         -- seconds to keep
  *                              chat open after broadcast ends (client-side
  *                              only, new page loads won't see it)
- *   callbackFunction     — same as setCallbackFunction
+ *   callbackFunction     -- same as setCallbackFunction
  *
  * AzuraCast example:
  *   KPR.insert({
@@ -118,14 +118,14 @@
   // Normalize a "now playing" string from a stream source. Trims
   // whitespace, collapses runs of spaces, and strips dangling dashes that
   // appear when an "artist - title" template is rendered with a missing
-  // artist (or title) — e.g. " - Song Name" becomes "Song Name".
+  // artist (or title) -- e.g. " - Song Name" becomes "Song Name".
   function cleanTitleText(s) {
     if (s == null) return '';
     s = String(s).replace(/\s+/g, ' ').trim();
     // Leading dash with optional spacing: "- song", "-song", "– song".
-    s = s.replace(/^[-–—]+\s*/, '');
+    s = s.replace(/^[-\u2013\u2014]+\s*/, '');
     // Trailing dash with optional spacing: "song -", "song –".
-    s = s.replace(/\s*[-–—]+$/, '');
+    s = s.replace(/\s*[-\u2013\u2014]+$/, '');
     return s.trim();
   }
 
@@ -199,7 +199,7 @@
         x: num(bg, 'x', 0),
         y: num(bg, 'y', 0)
       },
-      //   bgimage    → rest state (often absent — button is invisible
+      //   bgimage    → rest state (often absent -- button is invisible
       //                until hovered, and the player's main <bg> shows
       //                through where the cutout would be)
       //   image      → hover state
@@ -258,7 +258,7 @@
     if (!skin) return Promise.reject(new Error('No skin specified'));
     if (typeof skin === 'string') return loadSkinXml(skin);
     if (typeof skin === 'object') {
-      // Pre-built skin object — either an XML descriptor we produced, or a
+      // Pre-built skin object -- either an XML descriptor we produced, or a
       // user-supplied {html, css} bundle.
       if (skin.html || skin.css) {
         return Promise.resolve(assign({ type: 'html' }, skin));
@@ -269,7 +269,7 @@
   }
 
   // ---------------------------------------------------------------------
-  // Skin renderer — builds DOM from a parsed skin descriptor
+  // Skin renderer -- builds DOM from a parsed skin descriptor
   // ---------------------------------------------------------------------
 
   var marqueeStyleInjected = false;
@@ -283,7 +283,7 @@
     style.textContent =
       '@keyframes KPRCleanMarquee {' +
       '  from { transform: translate3d(0, 0, 0); }' +
-      '  to   { transform: translate3d(calc(-1 * var(--KPR-scroll-dist, 0px)), 0, 0); }' +
+      '  to   { transform: translate3d(calc(-1 * var(--kpr-scroll-dist, 0px)), 0, 0); }' +
       '}';
     document.head.appendChild(style);
     marqueeStyleInjected = true;
@@ -331,7 +331,7 @@
     // "first frame is wrong, then jumps" effect entirely.
     fontsReady().then(function () {
       requestAnimationFrame(function () {
-        // Bail out if setText was called again in the meantime — track will
+        // Bail out if setText was called again in the meantime -- track will
         // have been wiped and `first` will no longer be its child.
         if (first.parentNode !== track) return;
 
@@ -352,7 +352,7 @@
         ensureMarqueeStyles();
         var distance = contentWidth; // one full copy + its gap
         var duration = Math.max(6, distance / MARQUEE_PX_PER_SEC);
-        track.style.setProperty('--KPR-scroll-dist', distance + 'px');
+        track.style.setProperty('--kpr-scroll-dist', distance + 'px');
         // Start on the *next* frame so the new layout commits cleanly
         // before the animation kicks in.
         requestAnimationFrame(function () {
@@ -390,7 +390,7 @@
     }
 
     if (wasEmpty) {
-      // First render — skip the fade-out so the marquee shows immediately.
+      // First render -- skip the fade-out so the marquee shows immediately.
       installMarqueeContent(host, track, normalized);
       host.style.opacity = '1';
       return;
@@ -443,7 +443,7 @@
     //
     // images that get cross-faded via opacity:
     //
-    //   bgImage    → rest        (often missing — invisible at rest)
+    //   bgImage    → rest        (often missing -- invisible at rest)
     //   image      → hover       (also: rest fallback, click release)
     //   clickImage → pressed
     //
@@ -833,7 +833,7 @@
 
   function extract7HtmlTitle(html) {
     // Shoutcast/Icecast 7.html: body is "listeners,status,peak,max,unique,
-    //                                    bitrate,title" — title may contain commas.
+    //                                    bitrate,title" -- title may contain commas.
     var m = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
     var body = (m ? m[1] : html).replace(/<[^>]*>/g, '').trim();
     var parts = body.split(',');
@@ -890,7 +890,7 @@
     if (title && artist) {
       var lcTitle = title.toLowerCase();
       var lcArtist = artist.toLowerCase();
-      var alreadyHasSeparator = / [-–—] /.test(title);
+      var alreadyHasSeparator = / [-\u2013\u2014] /.test(title);
       var alreadyHasArtist = lcTitle.indexOf(lcArtist) !== -1;
       if (alreadyHasArtist || alreadyHasSeparator) {
         display = title;
@@ -910,20 +910,23 @@
     var live = entry.live;
     if (live && live.is_live && live.streamer_name) {
       display = '[LIVE] ' + live.streamer_name +
-                (display ? ' — ' + display : '');
+                (display ? ' \u2014 ' + display : '');
     }
     return display || null;
   }
 
   // ---------------------------------------------------------------------
-  // AzuraCast SSE (Centrifugo) — real-time now-playing updates
+  // AzuraCast SSE (Centrifugo) -- real-time now-playing updates
   // ---------------------------------------------------------------------
 
   function AzuraCastSSE(streamUrl, station, callbacks) {
     this.station = station;
-    this.callbacks = callbacks; // { onTitle, onNowPlaying }
+    this.callbacks = callbacks; // { onTitle, onNowPlaying, onFallback }
     this.lastTitle = null;
     this.source = null;
+    this.retries = 0;
+    this.maxRetries = 5;
+    this.retryTimer = null;
 
     var u;
     try { u = new URL(streamUrl, location.href); } catch (e) { u = null; }
@@ -934,6 +937,18 @@
     if (!this.origin || typeof EventSource === 'undefined') {
       this._fail(); return;
     }
+    this._connect();
+
+    // initial fetch so the display isn't blank while waiting for first SSE push
+    var self = this;
+    var apiUrl = this.origin + '/api/nowplaying/' + encodeURIComponent(this.station);
+    fetch(apiUrl, { cache: 'no-store', credentials: 'omit' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (np) { if (np) self._processNowPlaying(np); })
+      .catch(function () { /* SSE will handle it */ });
+  };
+
+  AzuraCastSSE.prototype._connect = function () {
     var self = this;
     var sseBaseUri = this.origin + '/api/live/nowplaying/sse';
     var subs = {};
@@ -944,6 +959,7 @@
     this.source = new EventSource(sseBaseUri + '?' + sseUriParams.toString());
 
     this.source.onmessage = function (e) {
+      self.retries = 0; // successful message resets retry count
       var jsonData = JSON.parse(e.data);
       if ('connect' in jsonData) {
         var connectData = jsonData.connect;
@@ -964,19 +980,21 @@
 
     this.source.onerror = function () {
       self.stop();
-      self._fail();
+      self.retries++;
+      if (self.retries > self.maxRetries) {
+        console.warn('[KPR] SSE failed after ' + self.maxRetries + ' retries, falling back to polling');
+        self._fail();
+      } else {
+        var delay = Math.min(1000 * self.retries, 5000);
+        console.info('[KPR] SSE connection lost, retrying in ' + (delay / 1000) + 's (' + self.retries + '/' + self.maxRetries + ')');
+        self.retryTimer = setTimeout(function () { self._connect(); }, delay);
+      }
     };
-
-    // initial fetch so the display isn't blank while waiting for first SSE push
-    var apiUrl = this.origin + '/api/nowplaying/' + encodeURIComponent(this.station);
-    fetch(apiUrl, { cache: 'no-store', credentials: 'omit' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (np) { if (np) self._processNowPlaying(np); })
-      .catch(function () { /* SSE will handle it */ });
   };
 
   AzuraCastSSE.prototype.stop = function () {
     if (this.source) { this.source.close(); this.source = null; }
+    if (this.retryTimer) { clearTimeout(this.retryTimer); this.retryTimer = null; }
   };
 
   AzuraCastSSE.prototype._handleData = function (ssePayload) {
@@ -1162,15 +1180,19 @@
       }
 
       // Use SSE for azuracast when we have a station shortcode and no
-      // custom fetcher — it's real-time and avoids polling entirely.
+      // custom fetcher -- it's real-time and avoids polling entirely.
       if (mode === 'azuracast' && station && !opts.metadataFetcher) {
         this.sse = new AzuraCastSSE(this.url, station, {
           onTitle: onTitle,
           onNowPlaying: onNowPlaying,
           onFallback: function () {
-            // SSE failed, fall back to polling
+            // SSE failed, fall back to polling at 3s
             self.sse = null;
-            self.poller = self._createPoller(opts, mode, onTitle, onNowPlaying);
+            var fallbackOpts = {};
+            for (var k in opts) fallbackOpts[k] = opts[k];
+            if (!fallbackOpts.metadataInterval) fallbackOpts.metadataInterval = 3;
+            self.poller = self._createPoller(fallbackOpts, mode, onTitle, onNowPlaying);
+            console.info('[KPR] polling fallback active (every ' + fallbackOpts.metadataInterval + 's)');
             self.poller.start();
           }
         });
@@ -1218,7 +1240,7 @@
       if (self.desired === 'stop') self.ui.setStatus('stopped');
     });
     this.audio.addEventListener('waiting', function () {
-      // buffering — leave visual alone or set a buffering state if the skin
+      // buffering -- leave visual alone or set a buffering state if the skin
     });
     this.audio.addEventListener('timeupdate', function () {
       self._maybeReleaseBufferGate();
@@ -1454,7 +1476,7 @@
     var cooldown = (ui.chatCooldown || 0) * 1000;
 
     if (isLive) {
-      // going live — show chat, cancel any pending cooldown
+      // going live -- show chat, cancel any pending cooldown
       this._chatWasLive = true;
       if (this._chatCooldownTimer) {
         clearInterval(this._chatCooldownTimer);
@@ -1466,7 +1488,7 @@
       return;
     }
 
-    // not live — only run cooldown if we were live during this page session
+    // not live -- only run cooldown if we were live during this page session
     if (!this._chatWasLive) {
       el.style.display = 'none';
       return;
@@ -1648,7 +1670,7 @@
         }
         host.innerHTML = mountHtml;
       } else {
-        // Matches the legacy behavior — inline document.write during parse.
+        // Matches the legacy behavior -- inline document.write during parse.
         document.write(mountHtml);
       }
 
