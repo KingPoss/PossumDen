@@ -34,88 +34,6 @@
     });
   }
 
-  function renderSpan(span) {
-    const parts = (span.text || '').split('\n');
-    const frag = document.createDocumentFragment();
-    parts.forEach((part, i) => {
-      if (i > 0) frag.appendChild(document.createElement('br'));
-      if (!part) return;
-      let node = document.createTextNode(part);
-      if (span.code) {
-        const el = document.createElement('code');
-        el.appendChild(node);
-        node = el;
-      }
-      if (span.italic) {
-        const el = document.createElement('em');
-        el.appendChild(node);
-        node = el;
-      }
-      if (span.bold) {
-        const el = document.createElement('strong');
-        el.appendChild(node);
-        node = el;
-      }
-      if (span.underline) {
-        const el = document.createElement('u');
-        el.appendChild(node);
-        node = el;
-      }
-      if (span.strike) {
-        const el = document.createElement('s');
-        el.appendChild(node);
-        node = el;
-      }
-      if (span.link) {
-        const a = document.createElement('a');
-        a.href = span.link;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.appendChild(node);
-        node = a;
-      }
-      frag.appendChild(node);
-    });
-    return frag;
-  }
-
-  function renderBlock(block) {
-    switch (block.type) {
-      case 'heading': {
-        const level = Math.min(Math.max(block.level || 2, 1), 6);
-        const el = document.createElement('h' + level);
-        (block.spans || []).forEach(s => el.appendChild(renderSpan(s)));
-        return el;
-      }
-      case 'quote': {
-        const el = document.createElement('blockquote');
-        (block.spans || []).forEach(s => el.appendChild(renderSpan(s)));
-        return el;
-      }
-      case 'image': {
-        const el = document.createElement('img');
-        el.src = block.src || '';
-        if (block.alt) el.alt = block.alt;
-        return el;
-      }
-      case 'list': {
-        const el = document.createElement(block.ordered ? 'ol' : 'ul');
-        (block.items || []).forEach(item => {
-          const li = document.createElement('li');
-          (item.spans || []).forEach(s => li.appendChild(renderSpan(s)));
-          el.appendChild(li);
-        });
-        return el;
-      }
-      case 'paragraph':
-      default: {
-        const el = document.createElement('p');
-        (block.spans || []).forEach(s => el.appendChild(renderSpan(s)));
-        return el;
-      }
-    }
-  }
-
   async function loadNews() {
     const resp = await fetch('news.json');
     if (!resp.ok) {
@@ -125,7 +43,14 @@
     const doc = await resp.json();
     const container = document.getElementById('news');
     container.innerHTML = '';
-    doc.posts.forEach(p => {
+    const posts = (Array.isArray(doc) ? doc : (doc && Array.isArray(doc.posts) ? doc.posts : []))
+      .filter(p => !p.deleted)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const PAGE = 10;
+    let rendered = 0;
+
+    function renderPost(p) {
       const post = document.createElement('div');
       post.className = 'post newsPost';
 
@@ -137,15 +62,32 @@
       dateEl.textContent = d.toLocaleDateString();
       const timeEl = document.createElement('p');
       timeEl.className = 'postTime';
-      timeEl.textContent = d.toLocaleTimeString();
+      timeEl.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       dt.append(dateEl, timeEl);
 
       const bodyEl = document.createElement('div');
       bodyEl.className = 'postBody';
-      p.blocks.forEach(block => bodyEl.appendChild(renderBlock(block)));
+      const md = (p.title ? '# ' + p.title + '\n\n' : '') + (p.markdown || '');
+      bodyEl.innerHTML = marked.parse(md, { breaks: true });
 
       post.append(bodyEl, dt);
       container.append(post);
+    }
+
+    function loadMore() {
+      const next = posts.slice(rendered, rendered + PAGE);
+      next.forEach(renderPost);
+      rendered += next.length;
+    }
+
+    loadMore();
+    container.scrollTop = 0;
+
+    container.addEventListener('scroll', () => {
+      if (rendered >= posts.length) return;
+      if (container.scrollTop + container.clientHeight >= container.scrollHeight - 50) {
+        loadMore();
+      }
     });
   }
 
