@@ -1,0 +1,37 @@
+{
+  "updated": "2026-04-15T07:47:01.370Z",
+  "posts": [
+    {
+      "id": "f63e34157c491616",
+      "date": "2026-04-15T07:44:20.104Z",
+      "modified": "2026-04-15T07:47:01.328Z",
+      "markdown": "Here I am!\n\nCURIOUS if pushing the photo down does anything\n![](/assets/possThoughts/DSC_0141.jpg)\n\n## WITNESS ME!\n#pretty \n# pretty \ncool!\n\nlong line as a TEST ASETASDJFADFJISDFG HISDFHIASDIF SADOFIHUSDFOIHASFIAS KAFKSDFSKDFSJDFojsdfoasdfjdf"
+    },
+    {
+      "id": "c52dfd9450abf181",
+      "date": "2026-04-15T07:41:12.124Z",
+      "modified": "2026-04-15T07:41:19.882Z",
+      "markdown": "another test\n"
+    },
+    {
+      "id": "11e26b3f250a45e5",
+      "date": "2026-04-15T07:32:13.943Z",
+      "modified": "2026-04-15T07:32:52.231Z",
+      "markdown": "ugh lets see if this works"
+    },
+    {
+      "id": "3a9b93f293a9b7f1",
+      "title": "photo test",
+      "date": "2026-04-15T07:27:43.206Z",
+      "modified": "2026-04-15T07:43:07.819Z",
+      "markdown": "photo tester!asdasd\n![](/assets/possThoughts/pipe.png)"
+    },
+    {
+      "id": "697b533e04432c85",
+      "title": "Neocities API post feed",
+      "date": "2026-04-15T02:30:06.229Z",
+      "modified": "2026-04-15T02:31:20.794Z",
+      "markdown": "New post feed, I'm writing these posts in obsidian! I made an obsidian plugin that uploads my posts to a json file, marked.js then converts the markdown to HTML and splits up each post. pretty cool! I can even update this from my phone!"
+    }
+  ]
+}

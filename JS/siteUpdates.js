@@ -54,6 +54,13 @@
       const post = document.createElement('div');
       post.className = 'post newsPost';
 
+      const wrap = document.createElement('div');
+      wrap.className = 'postWrapper';
+
+      const titleEl = document.createElement('p');
+      titleEl.className = 'postTitle';
+      titleEl.textContent = p.title || '';
+
       const dt = document.createElement('div');
       dt.className = 'postDateContainer';
       const d = new Date(p.date);
@@ -65,19 +72,13 @@
       timeEl.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       dt.append(dateEl, timeEl);
 
+      wrap.append(titleEl, dt);
+
       const bodyEl = document.createElement('div');
       bodyEl.className = 'postBody';
-      if (p.title) {
-        const titleEl = document.createElement('p');
-        titleEl.className = 'postTitle';
-        titleEl.textContent = p.title;
-        bodyEl.append(titleEl);
-      }
-      const mdEl = document.createElement('div');
-      mdEl.innerHTML = marked.parse(p.markdown || '', { breaks: true });
-      bodyEl.append(mdEl);
+      bodyEl.innerHTML = marked.parse(p.markdown || '', { breaks: true });
 
-      post.append(bodyEl, dt);
+      post.append(wrap, bodyEl);
       container.append(post);
     }
 
