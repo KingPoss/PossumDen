@@ -481,7 +481,9 @@ hr{
 
 
 .updateholder {
-  flex: 1 1 300px;       /* same “breakpoint” as before */
+  flex: 1 1 0;
+  width: 50%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
