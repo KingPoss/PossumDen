@@ -494,6 +494,7 @@ hr {
   white-space: nowrap; /* Keep date on one line */
   min-width: -moz-fit-content;
   min-width: fit-content; /* Ensure date gets its needed space */
+  text-align: right;
 }
 
 /* time styling */
@@ -502,6 +503,7 @@ hr {
   font-size: 0.8rem;
   margin: 0;
   margin-bottom: 0.5rem;
+  text-align: right;
 }
 
 /* Fix for images inside posts */

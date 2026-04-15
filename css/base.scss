@@ -549,7 +549,7 @@ hr{
   flex: 0 0 auto; /* Don't grow or shrink */
   white-space: nowrap; /* Keep date on one line */
   min-width: fit-content; /* Ensure date gets its needed space */
-  
+  text-align: right;
 }
 /* time styling */
 .postTime {
@@ -557,6 +557,7 @@ hr{
   font-size: 0.8rem;
   margin: 0;
   margin-bottom: 0.5rem;
+  text-align: right;
 }
 
 /* Fix for images inside posts */
@@ -580,6 +581,7 @@ hr{
   word-wrap: break-word;
   overflow-wrap: break-word;
   min-width: 0; /* Allow shrinking */
+
 }
 
 /* Fix the updates container itself */

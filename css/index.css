@@ -65,4 +65,33 @@
   padding-right: 0.4rem;
 }
 
-/* News posts share the site-updates layout — see .post/.postWrapper/etc. in base.scss *//*# sourceMappingURL=index.css.map */
+/* News posts share the site-updates layout — see .post/.postWrapper/etc. in base.scss */
+/* Markdown renders to block elements (<p>, <h2>, etc.) whose default vertical
+   margins create extra space that site updates (plain inline HTML) doesn't have.
+   Collapse the first/last child's outer margins so vertical footprint matches. */
+.newsPost .postBody > *:first-child {
+  margin-top: 0;
+}
+
+.newsPost .postBody > *:last-child {
+  margin-bottom: 0;
+}
+
+.newsPost .postBody {
+  padding-top: 0px;
+}
+
+.newsPost.noTitle .postBody {
+  padding-top: 10px;
+}
+
+/* No-title posts: float the date so the body's first line sits beside it
+   at the top (where the title would have been) instead of below. */
+.newsPost.noTitle {
+  display: flow-root;
+}
+
+.newsPost.noTitle .postDateContainer {
+  float: right;
+  margin-left: 0.75rem;
+}/*# sourceMappingURL=index.css.map */
