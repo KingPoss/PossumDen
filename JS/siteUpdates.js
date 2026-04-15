@@ -67,7 +67,7 @@
 
       const bodyEl = document.createElement('div');
       bodyEl.className = 'postBody';
-      const md = (p.title ? '# ' + p.title + '\n\n' : '') + (p.markdown || '');
+      const md = (p.title ? '## ' + p.title + '\n\n' : '') + (p.markdown || '');
       bodyEl.innerHTML = marked.parse(md, { breaks: true });
 
       post.append(bodyEl, dt);
