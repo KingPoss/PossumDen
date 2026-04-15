@@ -67,8 +67,15 @@
 
       const bodyEl = document.createElement('div');
       bodyEl.className = 'postBody';
-      const md = (p.title ? '## ' + p.title + '\n\n' : '') + (p.markdown || '');
-      bodyEl.innerHTML = marked.parse(md, { breaks: true });
+      if (p.title) {
+        const titleEl = document.createElement('p');
+        titleEl.className = 'postTitle';
+        titleEl.textContent = p.title;
+        bodyEl.append(titleEl);
+      }
+      const mdEl = document.createElement('div');
+      mdEl.innerHTML = marked.parse(p.markdown || '', { breaks: true });
+      bodyEl.append(mdEl);
 
       post.append(bodyEl, dt);
       container.append(post);
