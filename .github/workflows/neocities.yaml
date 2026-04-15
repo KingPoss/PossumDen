@@ -76,62 +76,47 @@ jobs:
 
 
 
-      # Generate news.json from commits with !news flag
-      - name: Generate news.json
-        env:
-          TZ: America/Los_Angeles
-        run: |
-          MAX=150  # Get last 150 news items
-          news_updates=()
-          entries_written=0
-
-          while IFS= read -r -d '' sha \
-            && IFS= read -r -d '' timestamp \
-            && IFS= read -r -d '' full_msg
-          do
-            sha=$(echo -n "$sha" | tr -d '\n')
-            
-            subject=$(echo "$full_msg" | head -n1)
-            
-            if [[ "$subject" != "!news "* ]]; then
-              continue
-            fi
-            
-            if [[ $entries_written -ge $MAX ]]; then
-              break
-            fi
-            
-            echo "!news flag found, adding to news.json"
-            
-            subject=${subject#"!news "}
-            
-            body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
-
-            title="$subject"
-            if [[ -n "$body" ]]; then
-              message="$body"
-            else
-              message="$subject"
-            fi
-
-            date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
-            time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
-
-            esc() { printf "%s" "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
-            title_esc=$(esc "$title")
-            message_esc=$(esc "$message")
-
-            entry="{\"sha\":\"$sha\",\"title\":\"$title_esc\",\"message\":\"$message_esc\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
-            news_updates+=("$entry")
-            entries_written=$(( entries_written + 1 ))
-          done < <(git log -n 100 --pretty=format:'%h%x00%ct%x00%B%x00')
-
-          printf "%s" "[" > news.json
-          ( IFS=$',\n'; printf "%s" "${news_updates[*]}" ) >> news.json
-          printf "\n]\n" >> news.json
-          
-          echo "Generated news.json with $entries_written entries."
-        shell: bash
+      # LEGACY: This step generated news.json from git commits prefixed with "!news".
+      # Each commit with subject "!news <title>" and optional body became a news post
+      # rendered on the homepage via siteUpdates.js. The old schema used flat arrays
+      # with sha/title/message/date/time fields.
+      # Replaced by a direct Neocities API upload from a note-taking app that pushes
+      # a markdown-based news.json (schema: {updated, posts:[{id,title,date,modified,markdown}]}).
+      # Kept here as reference in case the old system is ever needed again.
+      #
+      # - name: Generate news.json
+      #   env:
+      #     TZ: America/Los_Angeles
+      #   run: |
+      #     MAX=150
+      #     news_updates=()
+      #     entries_written=0
+      #     while IFS= read -r -d '' sha \
+      #       && IFS= read -r -d '' timestamp \
+      #       && IFS= read -r -d '' full_msg
+      #     do
+      #       sha=$(echo -n "$sha" | tr -d '\n')
+      #       subject=$(echo "$full_msg" | head -n1)
+      #       if [[ "$subject" != "!news "* ]]; then continue; fi
+      #       if [[ $entries_written -ge $MAX ]]; then break; fi
+      #       subject=${subject#"!news "}
+      #       body=$(echo "$full_msg" | tail -n +2 | sed '/^$/d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
+      #       title="$subject"
+      #       if [[ -n "$body" ]]; then message="$body"; else message="$subject"; fi
+      #       date_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-m/%-d/%Y")
+      #       time_fmt=$(TZ="America/Los_Angeles" date -d "@$timestamp" +"%-l:%M %p")
+      #       esc() { printf "%s" "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g; s/\n/\\n/g'; }
+      #       title_esc=$(esc "$title")
+      #       message_esc=$(esc "$message")
+      #       entry="{\"sha\":\"$sha\",\"title\":\"$title_esc\",\"message\":\"$message_esc\",\"date\":\"$date_fmt\",\"time\":\"$time_fmt\"}"
+      #       news_updates+=("$entry")
+      #       entries_written=$(( entries_written + 1 ))
+      #     done < <(git log -n 100 --pretty=format:'%h%x00%ct%x00%B%x00')
+      #     printf "%s" "[" > news.json
+      #     ( IFS=$',\n'; printf "%s" "${news_updates[*]}" ) >> news.json
+      #     printf "\n]\n" >> news.json
+      #     echo "Generated news.json with $entries_written entries."
+      #   shell: bash
 
       # Update RSS feed
       - name: Update RSS feed
@@ -248,7 +233,7 @@ jobs:
       - name: Prepare deployment folder
         run: |
           mkdir deploy
-          rsync -av --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='README.md' --exclude='*.scss' ./ deploy/
+          rsync -av --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='README.md' --exclude='*.scss' --exclude='news.json' ./ deploy/
 
       # Remove sourceMappingURL from CSS files
       - name: Remove sourceMappingURL from CSS files
