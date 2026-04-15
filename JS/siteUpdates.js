@@ -62,7 +62,7 @@
       dateEl.textContent = d.toLocaleDateString();
       const timeEl = document.createElement('p');
       timeEl.className = 'postTime';
-      timeEl.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      timeEl.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       dt.append(dateEl, timeEl);
 
       const bodyEl = document.createElement('div');
