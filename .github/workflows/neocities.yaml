@@ -160,6 +160,7 @@ jobs:
               echo "RSS file doesn't exist on site yet, creating initial RSS"
               {
                 echo '<?xml version="1.0" encoding="UTF-8"?>'
+                echo '<?xml-stylesheet type="text/xsl" href="/rss.xsl"?>'
                 echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
                 echo '  <channel>'
                 echo '    <title>The Possum Den</title>'
@@ -179,7 +180,15 @@ jobs:
           fi
           
           echo "Successfully downloaded/created RSS base"
-          
+
+          # ONE-TIME MIGRATION: ensure stylesheet PI is present in the live feed.
+          # Safe to delete this block after the first successful !rss deploy on this
+          # workflow — the PI will then ride along on every subsequent run since the
+          # workflow always downloads → appends → re-uploads the same file.
+          if ! grep -q 'xml-stylesheet' current-rss.xml; then
+            sed -i '1a <?xml-stylesheet type="text/xsl" href="/rss.xsl"?>' current-rss.xml
+          fi
+
           # Get the latest commit info
           COMMIT_SHA=$(git rev-parse HEAD)
           
