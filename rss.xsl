@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title><xsl:value-of select="rss/channel/title"/> — RSS Feed</title>
         <link rel="shortcut icon" type="image/jpg" href="/assets/favicon.ico"/>
+        <link rel="stylesheet" href="/css/fontMapping.css"/>
         <style>
           :root {
             --rotaorange: #ff602d;
@@ -25,10 +26,10 @@
           body {
             margin: 0;
             padding: 1.5rem;
-            background: #000;
+            background-color: #000;
             background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='Page-1' fill='none' fill-rule='evenodd'%3E%3Cg id='brick-wall' fill='%23673d6f' fill-opacity='0.73'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             color: white;
-            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            font-family: 'retron2000regular', system-ui, sans-serif;
             font-size: 1rem;
             line-height: 1.5;
           }
@@ -36,7 +37,8 @@
             max-width: 60rem;
             margin: 0 auto;
             padding: 1.5rem;
-            background: var(--darkpurple);
+            background-color: var(--darkpurple);
+            background-image: url(/assets/background.png);
             border: 3px outset var(--def-border-color);
             border-radius: 20px;
             outline: 1px outset var(--def-border-color);
@@ -50,7 +52,10 @@
             margin-bottom: 1.5rem;
             font-size: 0.95rem;
           }
-          .feed-explainer strong { color: var(--rotayellow); }
+          .feed-explainer strong {
+            color: var(--rotayellow);
+            font-family: 'inky_thin_pixelsregular', sans-serif;
+          }
           .feed-explainer code {
             background: rgba(0,0,0,0.4);
             padding: 0.1rem 0.4rem;
@@ -58,11 +63,13 @@
             color: var(--rotalightorange);
             font-size: 0.9em;
             word-break: break-all;
+            font-family: 'dec_terminal_modernregular', monospace;
           }
           h1 {
             color: var(--rotayellow);
             margin: 0 0 0.25rem 0;
-            font-size: 2rem;
+            font-size: 2.25rem;
+            font-family: 'computerfontregular', sans-serif;
           }
           .channel-desc {
             color: var(--def-detail-color);
@@ -73,6 +80,7 @@
             font-size: 0.85rem;
             margin-bottom: 1.5rem;
           }
+          .channel-meta a { color: var(--rotalightorange); }
           hr {
             border: none;
             border-top: 3px solid var(--def-border-color);
@@ -90,7 +98,8 @@
           .item h2 {
             color: var(--rotayellow);
             margin: 0 0 0.25rem 0;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+            font-family: 'inky_thin_pixelsregular', sans-serif;
           }
           .item .pub-date {
             color: var(--def-detail-color);
@@ -98,9 +107,18 @@
             margin: 0 0 0.75rem 0;
           }
           .item .description { word-wrap: break-word; overflow-wrap: break-word; }
-          .item .description p:first-child { margin-top: 0; }
+          .item .description p { margin: 0 0 0.75rem 0; }
           .item .description p:last-child { margin-bottom: 0; }
-          .item .description ul { padding-left: 1.5rem; }
+          .item .description strong {
+            color: var(--rotayellow);
+            font-family: 'inky_thin_pixelsregular', sans-serif;
+            font-weight: normal;
+          }
+          .item .description ul {
+            padding-left: 1.5rem;
+            margin: 0 0 0.75rem 0;
+          }
+          .item .description li { margin-bottom: 0.25rem; }
           .item a { color: var(--rotalightorange); }
           .item a:hover { color: var(--rotaorange); }
           .item img { max-width: 100%; height: auto; }
