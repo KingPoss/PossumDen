@@ -1,10 +1,5 @@
-/*
-BASE.CSS - FOR USE IN ALL MAIN SITE PAGES
-*/
+/* BASE.CSS - FOR USE IN ALL MAIN SITE PAGES */
 
-
-
-/* VARIABLES AND DEFINITIONS */
 :root{
   
   --rotared: #ff3f2d;
@@ -45,34 +40,30 @@ html {
 
 
 
-/*---SITE HEADER AND ANIMATION---*/
-
-.headerflex {
+#headerflex {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
   margin-inline: auto;
-  /* 2) Tile that exactly once every 1000px, and mask to text */
   background-size: 1000px 100%;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  /* 3) Slide it left by exactly one tile (1000px) over 8s */
   animation: slideRainbow 8s linear infinite;
   background-image: repeating-linear-gradient(
     90deg,
-    #ff3f2d   0px,    /* red start */
-    #ff602d  100px,   /* orange at 10% */
-    #ff8b2d  200px,   /* yellow at 20% */
-    #ffc72d  300px,   /* green at 30% */
-    #9dff2d  400px,   /* cyan at 40% */
-    #2dffae  500px,   /* blue at 50% */
-    #2d98ff  600px,   /* indigo at 60% */
-    #7e2dff  700px,   /* violet at 70% */
-    #b12dff  800px,   /* magenta at 80% */
-    #ff2df2  900px,   /* pink at 90% */
-    #ff3f2d  1000px    /* back to red at 100% */
+    #ff3f2d   0px,
+    #ff602d  100px,
+    #ff8b2d  200px,
+    #ffc72d  300px,
+    #9dff2d  400px,
+    #2dffae  500px,
+    #2d98ff  600px,
+    #7e2dff  700px,
+    #b12dff  800px,
+    #ff2df2  900px,
+    #ff3f2d  1000px
   );
 }
 .rainbow {
@@ -86,18 +77,14 @@ html {
   padding-left: 1rem;
   padding-right: 1rem;  
 }
-/* Slide from 0 → -1000px, then repeat seamlessly */
 @keyframes slideRainbow {
   from  { background-position:   0   0; }
   to  { background-position: 1000px 0; }
 }
 
-/* force the gradient‐clip into the active link’s rainbow text */
 .topnav > a.active .rainbow {
-  /* hide the fallback link color */
   color: transparent !important;
   font-size: 1.5rem;
-  /* clip the background into the text */
   background-clip: text;
   -webkit-background-clip: text;
   /* make sure the animated gradient is applied here too */
@@ -124,21 +111,20 @@ html {
 
 .navbar {
   display: flex;
-  flex-wrap: wrap;               /* let items wrap to new lines */
-  justify-content: center;       /* center each row under the one above */
-  gap: 0.5rem;                   /* gutter between buttons/rows */
-  padding: 0.5rem;
+  flex-wrap: wrap;              
+  justify-content: center;       
+  gap: 0.5rem;                  
   width: 100%;
 }
 
 .navbar a {
-  flex: 0 0 150px;            /* fixed total width = 150px */
-  display: flex;              /* make the <a> a flex container */
-  align-items: center;        /* vertical center */
-  justify-content: center;    /* horizontal center */
-  width: 150px;               /* explicitly set width */
-  height: 3rem;               /* or whatever height you like */
-  padding: 0 0.5rem;          /* small horizontal padding inside */
+  flex: 0 0 150px;            
+  display: flex;             
+  align-items: center;       
+  justify-content: center;   
+  width: 150px;               
+  height: 3rem;               
+  padding: 0 0.5rem;          
   box-sizing: border-box;  
   background: var(--darkpurple);
   text-decoration: none;
@@ -167,10 +153,9 @@ html {
   transform: translate(2px, 2px);
 }
 
-/* 1) Make .topnav flex & allow wrapping */
 .topnav {
   display: none;
-  flex-wrap: wrap;           /* allow items to wrap onto new lines */
+  flex-wrap: wrap;          
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem;
@@ -194,33 +179,27 @@ html {
   height: 50px;
   margin-top: -5px;
 }
-/* 2) Logo and icon stay on row 0 */
 .topnav > a.active,
 .topnav > a.icon {
-  flex: 0 0 auto;            /* never grow/shrink, stay their intrinsic width */
-  order: 0;                   /* force them to the first row */
-  
+  flex: 0 0 auto;          
+  order: 0;                  
 }
 
-/* 3) Links container becomes a full-width row when shown */
 .topnav #myLinks {
-  order: 1;                   /* always below the logo+icon */
-  flex: 1 1 100%;             /* take full row width when visible */
-  display: none;         /* hidden by default */
+  order: 1;
+  flex: 1 1 100%;
+  display: none;
 
 }
-/* when you press it, it moves down 2px and the shadow inverts */
 .topnav #myLinks a:active {
   transform: translate(2px, 2px);
   color: var(--rotaorange);
 
 }
-/* 4) When you click, show the links in-flow */
 .topnav.responsive #myLinks {
   display: block;
 }
 
-/* 5) Style the links themselves */
 .topnav #myLinks a {
   display: block;
   padding: 0.8rem 1rem;
@@ -236,7 +215,6 @@ html {
   background-color: var(--def-element-background);
 }
 
-/* 6) Hamburger container as before, but in flex */
 .topnav a.icon {
   display: flex;
   align-items: center;
@@ -247,11 +225,9 @@ html {
   background-color: var(--def-border-color);
   border-radius: 10px;
 }
-/* And change the hamburger icon’s background too */
 .topnav.responsive a.icon {
-  background-color: var(--rotaorange);    /* light grey to show “active” */
+  background-color: var(--rotaorange);   
 }
-/* 7) The SVG inside centers perfectly */
 .mobilemenu {
   width: 100%;
   height: 100%;
@@ -271,9 +247,7 @@ body {
 
 main {
   inline-size: clamp(0rem, 100%, 90rem);
-  /* 2) center the block itself in the viewport */
   margin-inline: auto;
-  /* 3) breathing room on the sides--but capped so it doesn’t explode */
   padding-inline: clamp(1rem, 0vw, 2.5rem);
   display: block;
   background-color: var(--darkpurple);
@@ -344,7 +318,7 @@ a:hover {
 }
 .textbox1 {
   min-width: 0;
-  margin-top: 0;/* allow it to collapse under its content’s min-size */
+  margin-top: 0;
 }
 .textbox2 { 
   min-width: 0;
@@ -365,24 +339,21 @@ hr{
 }
 
 
-/* 1) Your parent flex row */
 .flexholder {
   display: flex;
-  flex-wrap: wrap;          /* will wrap on narrow screens */
+  flex-wrap: wrap;         
   align-items: flex-start;  /* align top of both columns */
   gap: 1rem;
 }
 
-/* 2) Text column (left) */
 .text-column {
-  flex: 1 1 800px;          /* grow/shrink with 800px basis */
-  min-width: 0;             /* let it collapse naturally */
+  flex: 1 1 800px;        
+  min-width: 0;             
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-/* 3) Force HR to fill text column */
 .flextextbreak {
   width: 100%;
   border: none;
@@ -396,7 +367,7 @@ hr{
 /*RADIO WIDGET*/
 
 .radio {
-    flex: 0 0 205px;               /* fixed 205px column, no grow/shrink */
+    flex: 0 0 205px;            
   position: relative;
   float: right;
   margin-bottom: 0px;
@@ -448,13 +419,13 @@ hr{
 
 /* Full-screen modal overlay */
 .phone_modal {
-  display: none; /* Hidden by default */
+  display: none; 
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+  background-color: rgba(0, 0, 0, 0.8);
   z-index: 1000;
   align-items: center;
   justify-content: center;
@@ -462,17 +433,16 @@ hr{
 
 /* Modal content container */
 .phone_modal_content {
-  width: 50%;   /* Adjust as needed */
-  height: 90%;  /* Adjust as needed */
+  width: 50%;   
+  height: 90%;  
   max-width: 100%;
   max-height: 100%;
 }
 
-/* SVG image scales to fill the container */
 .phone_modal_content img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Keeps aspect ratio */
+  object-fit: contain; 
 }
 
 
@@ -517,41 +487,34 @@ hr{
 
 
 
-/* Add these styles to your base.css or create a new CSS file */
-
-/* Fix for the post wrapper to handle narrow viewports better */
 .postWrapper {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  flex-wrap: nowrap; /* Don't wrap by default */
+  flex-wrap: nowrap;
 }
 
-/* Ensure post title can shrink and wrap properly */
 .postTitle {
   color: var(--rotayellow);
   font-size: 1.25rem;
   margin-top: 0px;
-  flex: 1 1 0; /* Take available space but can shrink to 0 */
-  min-width: 0; /* Critical: allows text to wrap properly */
-  word-wrap: break-word; /* Break long words if needed */
-  overflow-wrap: break-word; /* Modern property for same purpose */
-  /* Limit max width to ensure date has space */
-  max-width: calc(100% - 100px); /* Reserve ~100px for date + gap */
+  flex: 1 1 0; 
+  min-width: 0; 
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  max-width: calc(100% - 100px);
 }
 
-/* Make date more flexible */
 .postDate {
   color: var(--def-detail-color);
   font-size: 0.9rem;
   margin: 0;
   margin-top: 0.3rem;
-  flex: 0 0 auto; /* Don't grow or shrink */
-  white-space: nowrap; /* Keep date on one line */
-  min-width: fit-content; /* Ensure date gets its needed space */
+  flex: 0 0 auto; 
+  white-space: nowrap;
+  min-width: fit-content;
   text-align: right;
 }
-/* time styling */
 .postTime {
   color: var(--def-detail-color);
   font-size: 0.8rem;
@@ -560,13 +523,11 @@ hr{
   text-align: right;
 }
 
-/* Fix for images inside posts */
 .post img {
   max-width: 100%;
   height: auto;
 }
 
-/* Fix for multiple images in a row */
 .post center {
   display: flex;
   flex-wrap: wrap;
@@ -574,20 +535,18 @@ hr{
   gap: 0.5rem;
 }
 
-/* Ensure post body text wraps properly */
 .postBody {
   margin-top: -9px;
   margin-bottom: 0;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  min-width: 0; /* Allow shrinking */
+  min-width: 0;
 
 }
 
-/* Fix the updates container itself */
 .updates {
-  min-width: 0; /* Critical: allow the container to shrink */
-  overflow-x: hidden; /* Hide horizontal overflow */
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 
@@ -639,15 +598,14 @@ footer {
   }
 }
 
-/* Optional: only wrap on truly narrow screens */
 @media (max-width: 400px) {
   .postWrapper {
-    flex-wrap: wrap; /* Now allow wrapping */
+    flex-wrap: wrap; 
   }
 
   .postTitle {
-    max-width: 100%; /* Remove the calc restriction */
-    flex: 1 1 100%; /* Take full width */
+    max-width: 100%; 
+    flex: 1 1 100%;
     margin-bottom: 0;
   }
 

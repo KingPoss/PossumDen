@@ -1,15 +1,6 @@
 /*
- *   - No Flash.
- *   - No telemetry, no cookies
- *   - No remote script loading.
- *   - Plain HTML5 <audio>, event-driven (no 500ms polling).
-
- *   - Hand-written HTML/CSS skins also supported -- pass a {html, css} object
- *     as the `skin` option, or call KPR.dumpSkinAsHtml(url) in the console
- *     to generate CSS/HTML from an existing XML skin so you can migrate.
- *   - Scrolling marquee for "now playing" metadata (Icecast / Shoutcast).
  *
- * Public API (drop-in compatible with the legacy KPR):
+ * Public API:
  *   KPR.insert(opts)            -- create a player instance
  *   KPR.play() / KPR.stop()
  *   KPR.setVolume(0..100)
@@ -76,22 +67,6 @@
  *                              only, new page loads won't see it)
  *   callbackFunction     -- same as setCallbackFunction
  *
- * AzuraCast example:
- *   KPR.insert({
- *     url: 'https://radio.kingposs.com/radio.mp3',
- *     codec: 'mp3', autoplay: false, volume: 40,
- *     title: 'KPradio.net',
- *     skin: '/radioThemes/oldradio/oldradio.xml',
- *     width: 205, height: 132,
- *     metadataMode: 'azuracast',
- *     metadataStation: 'kpradio'   // from /api/nowplaying/<shortcode>
- *   });
- *
- * NOTE on metadata + CORS: AzuraCast's /api/nowplaying endpoints ship with
- * Access-Control-Allow-Origin: * out of the box, so no proxy is needed.
- * Vanilla Icecast's /status-json.xsl usually does NOT send CORS headers; if
- * you're on plain Icecast, either enable CORS on the server or run a small
- * server-side proxy and pass it as `metadataProxy`.
  */
 
 (function (global) {

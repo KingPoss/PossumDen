@@ -11,19 +11,19 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-content: start; /* New */;
+    align-content: start;
 
   }
 
   
   .imageContainer {
-    width: 150px; /* Adjusted to accommodate padding */
+    width: 150px;
     text-align: center;
     margin: 10px;
     border: 3px solid orange;
-    padding: 10px; /* Space between the border and the content */
-    box-sizing: border-box; /* This includes border and padding in the element's total width and height */
-    align-self: flex-start; /*Uncommenting this will let the border resize to each image individually*/
+    padding: 10px;
+    box-sizing: border-box;
+    align-self: flex-start;
   }
   
   .imageContainer img {
@@ -37,14 +37,18 @@
     margin: 0;
     font-size: 0.9em;
     color: white;
-    word-wrap: break-word; /* New */
+    word-wrap: break-word; 
     cursor: pointer;
 
   }
   .clickable {
     cursor: pointer;
 }
-  /* The modal */
+
+
+
+
+
 
 
 .modal {
@@ -61,16 +65,13 @@
   background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
 }
 
-/* Modal Content (image) */
 .modal-content {
   margin: auto;
   display: block;
-  /*width: 80%;*/
-  max-width: 100%; /* this will prevent the image from exceeding its original size */
+  max-width: 100%;
   max-height: 90%;
 }
 
-/* Caption of Modal Image */
 #title{
   margin: auto;
   display: block;
@@ -95,7 +96,6 @@
   height: 150px;
 }
 
-/* Add Animation */
 .modal-content {
   -webkit-animation-name: zoom;
   -webkit-animation-duration: 0.6s;
@@ -113,7 +113,6 @@
   to {transform:scale(1)}
 }
 
-/* The Close Button */
 .close {
   position: absolute;
   top: 15px;

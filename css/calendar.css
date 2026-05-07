@@ -15,11 +15,11 @@
   --def-border-color: #df7126;
   --yellow-header: rgb(236, 233, 9);
   --def-element-background: rgba(57, 19, 94, 0.5);
-  /* ── Fonts ── */
+  /* --- Fonts --- */
   --font-body: 'retron2000regular';
   --font-heading: 'inky_thin_pixelsregular';
   --font-ui: 'retron2000regular';
-  /* ── Window Chrome ── */
+  /* --- Window Chrome --- */
   --win-bg: #41103e00;
   --win-body-bg: rgba(57, 19, 94, 0);
   --win-border-light: #df7126;
@@ -29,12 +29,12 @@
   --win-titlebar-end: #1084D0;
   --win-titlebar-text: #FFFFFF;
   --win-title-icon-bg: #00FFFF;
-  /* ── Text Colors ── */
+  /* --- Text Colors --- */
   --text-primary: #ffc72d;
   --text-secondary: #555555;
   --text-muted: #666666;
   --text-faint: #888888;
-  /* ── Calendar Grid ── */
+  /* --- Calendar Grid --- */
   --cal-header-bg: #41103e;
   --cal-header-text: rgb(236, 233, 9);
   --cal-cell-bg: rgba(57, 19, 94, 0.5);
@@ -69,7 +69,7 @@
   border-color: var(--rotayellow);
 }
 :root {
-  /* ── Event Pip Colors ── */
+  /* --- Event Pip Colors --- */
   --event-color-0: #ff8b2d;
   --event-color-1: #AA0000;
   --event-color-2: #00AA00;
@@ -77,7 +77,7 @@
   --event-color-4: #AA5500;
   --event-color-5: #008080;
   --event-pip-text: #FFFFFF;
-  /* ── Special Event Rainbow ── */
+  /* --- Special Event Rainbow --- */
   --special-r: #ff3f2d;
   --special-o: #ff8b2d;
   --special-y: #ffc72d;
@@ -104,7 +104,7 @@
   --special-glow-1: var(--rotapink);
   --special-glow-2: var(--rotacyan);
   --special-glow-3: var(--rotayellow);
-  /* ── Popup ── */
+  /* --- Popup --- */
   --popup-overlay: rgba(0,0,0,0.5);
   --popup-bg: rgba(57, 19, 94, 0);
   --popup-title-color: #ffc72d;
@@ -113,14 +113,14 @@
   --popup-empty-color: #ffffff;
   --popup-divider: #df7126;
   --popup-tz-color: #ffffff;
-  /* ── Status Bar ── */
+  /* --- Status Bar --- */
   --status-bg: #C0C0C0;
   --status-text: #444444;
-  /* ── Error & Loading ── */
+  /* --- Error & Loading --- */
   --error-text: #FF0000;
   --error-bg: #FFF0F0;
   --loading-text: #666666;
-  /* ── Sizing ── */
+  /* --- Sizing --- */
   --window-max-width: 2000px;
   --cell-min-height: clamp(48px, 10vw, 80px);
   --cell-min-height-mobile: 40px;
@@ -129,7 +129,7 @@
   --day-num-size: clamp(9px, 2vw, 12px);
   --pip-font-size: clamp(9px, 1.8vw, 13px);
   --pip-font-size-mobile: 12px;
-  /* ── Animation Speeds ── */
+  /* --- Animation Speeds --- */
   --special-rainbow-speed: 2s;
   --special-glow-speed: 1.5s;
   --rainbow-speed: 8s;
@@ -601,7 +601,7 @@
     gap: 4px;
   }
 }
-/* ── Next Broadcast Banner ── */
+/* --- Next Broadcast Banner --- */
 .next-broadcast-banner {
   width: 100%;
   max-width: var(--window-max-width);
@@ -673,7 +673,7 @@
   color: var(--text-faint);
 }
 
-/* ── kpradio.net Referral Popup ── */
+/* --- kpradio.net Referral Popup --- */
 .kpradio-popup-overlay {
   position: fixed;
   inset: 0;

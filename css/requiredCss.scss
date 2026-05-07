@@ -164,7 +164,6 @@ body, html{
       color: #de630b;
     }
     
-    /*used if you wanna make your text rainbow rainbow text*/
     .rainbowtext{
     background-image:
     linear-gradient(to right, #ff0000 0%, #ff9a00 10%, #d1de21 20%, #4fdc4a 30%, #3fdad8 40%, #2fc9e2 50%, #1c7fee 60%, #5f15f2 70%, #ba0cf8 80%, #fb07d9 90%, #ff0000 100%);
@@ -176,7 +175,6 @@ body, html{
     margin-bottom: 0;
     }
     
-    /*used if you wanna float an image in a paragraph one way or the other*/
     .imageleft{float: left;}
     .imageright{float: right;}
     

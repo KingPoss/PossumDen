@@ -59,10 +59,10 @@
       const d = new Date(p.date);
       const dateEl = document.createElement('p');
       dateEl.className = 'postDate';
-      dateEl.textContent = d.toLocaleDateString();
+      dateEl.textContent = d.toLocaleDateString('en-US');
       const timeEl = document.createElement('p');
       timeEl.className = 'postTime';
-      timeEl.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      timeEl.textContent = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
       dt.append(dateEl, timeEl);
 
       const bodyEl = document.createElement('div');

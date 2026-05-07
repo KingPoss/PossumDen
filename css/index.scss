@@ -5,18 +5,10 @@
   margin-bottom: 2rem;
 }
 
-
-
-
-
-
-
-
-
 /*---SITEMAP---*/
 
 .sitenav{
-  flex: 1 1 300px;       /* same “breakpoint” as before */
+  flex: 1 1 300px;      
   display: flex;
   flex-direction: column;
 }
@@ -41,8 +33,8 @@
 }
 
 .bulletinpost {
-  flex: 0 0 295px;         /* grow/shrink equally, base = 150px */
-  display: flex;           /* if you want to center img/text inside each post */
+  flex: 0 0 295px;      
+  display: flex;        
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
@@ -76,7 +68,6 @@
   padding-right: 0.4rem;
 }
 
-/* News posts share the site-updates layout — see .post/.postWrapper/etc. in base.scss */
 /* Markdown renders to block elements (<p>, <h2>, etc.) whose default vertical
    margins create extra space that site updates (plain inline HTML) doesn't have.
    Collapse the first/last child's outer margins so vertical footprint matches. */
@@ -92,8 +83,7 @@
 .newsPost.noTitle .postBody  {
   padding-top: 10px;
 }
-/* No-title posts: float the date so the body's first line sits beside it
-   at the top (where the title would have been) instead of below. */
+
 .newsPost.noTitle {
   display: flow-root;
 }

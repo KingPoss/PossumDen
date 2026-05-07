@@ -15,23 +15,21 @@
 
 .artists {
   display: flex;
-  flex-wrap: wrap;              /* let items wrap to new rows */
+  flex-wrap: wrap;             
   justify-content: center;
-  align-content: center;    /* center each row under the one above */
-  gap: 0rem;                    /* space between items */
+  align-content: center;    
+  gap: 0rem;                  
   list-style: none;
   margin: 0;
   padding: 0;
   max-width: 60rem;
 }
 
-/* give each item a “column” width, but allow shrink/grow */
 .artists li {
-  flex: 1 1 200px;              /* base width 200px, but can shrink/grow */
+  flex: 1 1 200px;            
   max-width: 250px;
 }
 
-/* style the links */
 .artists a {
   display: block;
   padding: 0.3rem;
