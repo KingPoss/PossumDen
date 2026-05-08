@@ -26,6 +26,6 @@
 
 .guestbookwrapper {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  width: 100%; /* Ensure it takes the full width of the table cell */
+  justify-content: center;
+  width: 100%;
 }/*# sourceMappingURL=guestbook.css.map */

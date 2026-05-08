@@ -40,7 +40,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-left: 15vw; /* Add some padding to prevent cut-off */
+  padding-left: 15vw;
   padding-right: 15vw;
 }
 
@@ -67,7 +67,6 @@
 }
 
 /*MAIN PROJECT PAGE CODE*/
-/*Everything after is for individual project post code, like centering the images*/
 .imagebox {
   display: flex;
   flex-direction: row;

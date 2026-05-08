@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .intro {
   flex: 1 1 800px; /* grow:1, shrink:1, basis:0 */
   min-width: 0;
@@ -8,7 +7,7 @@
 
 /*---SITEMAP---*/
 .sitenav {
-  flex: 1 1 300px; 
+  flex: 1 1 300px;
   display: flex;
   flex-direction: column;
 }
@@ -32,7 +31,7 @@
 }
 
 .bulletinpost {
-  flex: 0 0 295px; 
+  flex: 0 0 295px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -65,7 +64,9 @@
   padding-right: 0.4rem;
 }
 
-
+/* Markdown renders to block elements (<p>, <h2>, etc.) whose default vertical
+   margins create extra space that site updates (plain inline HTML) doesn't have.
+   Collapse the first/last child's outer margins so vertical footprint matches. */
 .newsPost .postBody > *:first-child {
   margin-top: 0;
 }
@@ -81,7 +82,6 @@
 .newsPost.noTitle .postBody {
   padding-top: 10px;
 }
-
 
 .newsPost.noTitle {
   display: flow-root;

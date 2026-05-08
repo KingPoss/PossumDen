@@ -1,4 +1,3 @@
-@charset "UTF-8";
 :root {
   --rotared: #ff3f2d;
   --rotaorange: #ff602d;
@@ -46,12 +45,6 @@
   --cal-today-text: #ffffff;
   --cal-overflow-text: #666666;
   /* -- Calendar Agenda* -- / */
-}
-:root .cal-agenda .event-pip {
-  /* inherits base .event-pip styles, override what you need */
-}
-:root .cal-agenda .event-pip.event-special {
-  /* inherits base .event-special, override what you need */
 }
 :root .cal-agenda .agenda-day {
   background-color: var(--def-element-background);
@@ -116,7 +109,7 @@
   /* --- Status Bar --- */
   --status-bg: #C0C0C0;
   --status-text: #444444;
-  /* --- Error & Loading --- */
+  /* --- Error & Loading - */
   --error-text: #FF0000;
   --error-bg: #FFF0F0;
   --loading-text: #666666;

@@ -1,7 +1,12 @@
-/* BASE.CSS - FOR USE IN ALL MAIN SITE PAGES */
+/*
+BASE.CSS - FOR USE IN ALL MAIN SITE PAGES
+*/
 
+
+
+/* VARIABLES AND DEFINITIONS */
 :root{
-  
+
   --rotared: #ff3f2d;
   --rotaorange: #ff602d;
   --rotalightorange: #ff8b2d;
@@ -40,7 +45,9 @@ html {
 
 
 
-#headerflex {
+/*---SITE HEADER AND ANIMATION---*/
+
+.headerflex {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
@@ -53,17 +60,17 @@ html {
   animation: slideRainbow 8s linear infinite;
   background-image: repeating-linear-gradient(
     90deg,
-    #ff3f2d   0px,
-    #ff602d  100px,
-    #ff8b2d  200px,
-    #ffc72d  300px,
-    #9dff2d  400px,
-    #2dffae  500px,
-    #2d98ff  600px,
-    #7e2dff  700px,
-    #b12dff  800px,
-    #ff2df2  900px,
-    #ff3f2d  1000px
+    #ff3f2d   0px,    /* red start */
+    #ff602d  100px,   /* orange at 10% */
+    #ff8b2d  200px,   /* yellow at 20% */
+    #ffc72d  300px,   /* green at 30% */
+    #9dff2d  400px,   /* cyan at 40% */
+    #2dffae  500px,   /* blue at 50% */
+    #2d98ff  600px,   /* indigo at 60% */
+    #7e2dff  700px,   /* violet at 70% */
+    #b12dff  800px,   /* magenta at 80% */
+    #ff2df2  900px,   /* pink at 90% */
+    #ff3f2d  1000px    /* back to red at 100% */
   );
 }
 .rainbow {
@@ -75,7 +82,7 @@ html {
   font-size: clamp(0.1rem, 1.5vw, 0.8rem);
   text-align: center;
   padding-left: 1rem;
-  padding-right: 1rem;  
+  padding-right: 1rem;
 }
 @keyframes slideRainbow {
   from  { background-position:   0   0; }
@@ -87,7 +94,6 @@ html {
   font-size: 1.5rem;
   background-clip: text;
   -webkit-background-clip: text;
-  /* make sure the animated gradient is applied here too */
   background-image: repeating-linear-gradient(
     90deg,
     #ff3f2d   0px,
@@ -111,21 +117,22 @@ html {
 
 .navbar {
   display: flex;
-  flex-wrap: wrap;              
-  justify-content: center;       
-  gap: 0.5rem;                  
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
   width: 100%;
 }
 
 .navbar a {
-  flex: 0 0 150px;            
-  display: flex;             
-  align-items: center;       
-  justify-content: center;   
-  width: 150px;               
-  height: 3rem;               
-  padding: 0 0.5rem;          
-  box-sizing: border-box;  
+  flex: 0 0 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 3rem;               /* or whatever height you like */
+  padding: 0 0.5rem;
+  box-sizing: border-box;
   background: var(--darkpurple);
   text-decoration: none;
   font-family: 'inky_thin_pixelsregular';
@@ -155,7 +162,7 @@ html {
 
 .topnav {
   display: none;
-  flex-wrap: wrap;          
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem;
@@ -181,8 +188,9 @@ html {
 }
 .topnav > a.active,
 .topnav > a.icon {
-  flex: 0 0 auto;          
-  order: 0;                  
+  flex: 0 0 auto;
+  order: 0;
+
 }
 
 .topnav #myLinks {
@@ -191,6 +199,7 @@ html {
   display: none;
 
 }
+/* when you press it, it moves down 2px and the shadow inverts */
 .topnav #myLinks a:active {
   transform: translate(2px, 2px);
   color: var(--rotaorange);
@@ -225,8 +234,9 @@ html {
   background-color: var(--def-border-color);
   border-radius: 10px;
 }
+/* And change the hamburger icon’s background too */
 .topnav.responsive a.icon {
-  background-color: var(--rotaorange);   
+  background-color: var(--rotaorange);
 }
 .mobilemenu {
   width: 100%;
@@ -260,7 +270,7 @@ main {
   outline-width: 1px;
   outline-offset: -6px;
   outline-color: var(--def-border-color);
-  
+
 }
 
 
@@ -320,7 +330,7 @@ a:hover {
   min-width: 0;
   margin-top: 0;
 }
-.textbox2 { 
+.textbox2 {
   min-width: 0;
   margin-top: 0;
   margin-bottom: 1.8rem;
@@ -341,14 +351,14 @@ hr{
 
 .flexholder {
   display: flex;
-  flex-wrap: wrap;         
-  align-items: flex-start;  /* align top of both columns */
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 1rem;
 }
 
 .text-column {
-  flex: 1 1 800px;        
-  min-width: 0;             
+  flex: 1 1 800px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -367,7 +377,7 @@ hr{
 /*RADIO WIDGET*/
 
 .radio {
-    flex: 0 0 205px;            
+    flex: 0 0 205px;
   position: relative;
   float: right;
   margin-bottom: 0px;
@@ -417,9 +427,8 @@ hr{
 
 
 
-/* Full-screen modal overlay */
 .phone_modal {
-  display: none; 
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -431,10 +440,9 @@ hr{
   justify-content: center;
 }
 
-/* Modal content container */
 .phone_modal_content {
-  width: 50%;   
-  height: 90%;  
+  width: 50%;
+  height: 90%;
   max-width: 100%;
   max-height: 100%;
 }
@@ -442,7 +450,7 @@ hr{
 .phone_modal_content img {
   width: 100%;
   height: 100%;
-  object-fit: contain; 
+  object-fit: contain;
 }
 
 
@@ -498,10 +506,10 @@ hr{
   color: var(--rotayellow);
   font-size: 1.25rem;
   margin-top: 0px;
-  flex: 1 1 0; 
-  min-width: 0; 
-  word-wrap: break-word; 
-  overflow-wrap: break-word; 
+  flex: 1 1 0;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   max-width: calc(100% - 100px);
 }
 
@@ -510,11 +518,12 @@ hr{
   font-size: 0.9rem;
   margin: 0;
   margin-top: 0.3rem;
-  flex: 0 0 auto; 
+  flex: 0 0 auto;
   white-space: nowrap;
   min-width: fit-content;
   text-align: right;
 }
+/* time styling */
 .postTime {
   color: var(--def-detail-color);
   font-size: 0.8rem;
@@ -550,11 +559,11 @@ hr{
 }
 
 
-.recording { 
+.recording {
   width: clamp(10rem, 100%, 45rem);
   margin-bottom: 1rem;
   margin-top: 0rem;
-  
+
 }
 
 
@@ -574,7 +583,7 @@ footer {
 
 /*--MEDIA QUERIES--*/
 @media (hover: none) and (pointer: coarse) {
-  .navbar{ 
+  .navbar{
     display: none;
   }
   .headerflex {
@@ -587,7 +596,7 @@ footer {
 
 @media only screen and (max-width: 800px) {
 
-  .navbar{ 
+  .navbar{
     display: none;
   }
   .headerflex {
@@ -600,11 +609,11 @@ footer {
 
 @media (max-width: 400px) {
   .postWrapper {
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
   }
 
   .postTitle {
-    max-width: 100%; 
+    max-width: 100%;
     flex: 1 1 100%;
     margin-bottom: 0;
   }
@@ -614,7 +623,6 @@ footer {
     margin-bottom: 0.5rem;
   }
 
-  /* Make images stack vertically on very small screens */
   .post center {
     flex-direction: column;
   }

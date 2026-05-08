@@ -62,9 +62,9 @@
   font-family: "retron2000regular";
   font-size: 16px;
   color: white;
-  width: 100%; /* Adjust this width as necessary */
-  max-width: 1000px; /* Set a max width to control the size of the widget */
-  margin: 0 auto; /* Center the widget within the guestbookwrapper */
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 #c_widget button, #c_widget input[type=submit] {
@@ -116,16 +116,16 @@
 .c-inputFields {
   display: flex;
   justify-content: center;
-  gap: 20px; /* Space between the input fields */
-  width: 100%; /* Ensure it takes the full width */
+  gap: 20px;
+  width: 100%;
 }
 
 .c-inputWrapper {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center items horizontally */
+  align-items: center;
   text-align: center;
-  flex: 1; /* Adjust to take available space */
+  flex: 1;
 }
 
 .c-input {
@@ -133,8 +133,8 @@
   color: white;
   border-radius: 10px;
   outline: none;
-  width: 100%; /* Ensure input takes full width of its container */
-  max-width: 250px; /* Adjust as needed */
+  width: 100%;
+  max-width: 250px;
   margin: 1%;
   background-color: var(--darkpurple);
   font-family: "retron2000regular";
@@ -149,12 +149,12 @@
   width: 100%;
   max-width: 900px;
   resize: none;
-  margin: 0 auto; /* Center the comment box */
+  margin: 0 auto;
 }
 
 #c_submitButton {
   display: block;
-  margin: 10px auto; /* Center the submit button */
+  margin: 10px auto;
   padding: 4px;
   font-family: "retron2000regular";
   text-decoration: none;

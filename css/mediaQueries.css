@@ -1,5 +1,4 @@
 /*REQUIRED MEDIA QUERIES*/
-/* changed width on sitebody to 100% if it detects the screen is below a certain width */
 @media screen and (max-width: 1210px) {
   .bottomFrame {
     height: 100%;
@@ -22,8 +21,8 @@
     display: none;
   }
   .widgetWrapper {
-    flex-direction: column; /* Stack items vertically on small screens */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -31,7 +30,7 @@
   .wrapper {
     margin-left: 0;
     margin-right: 0;
-    width: auto; /* Ensure full width on small screens */
+    width: auto;
     justify-content: center;
   }
   .postList {
@@ -57,7 +56,7 @@
     font-size: 12px;
   }
 }
-/* smartphones, touchscreens */
+/*smartphones, touchscreens*/
 @media (hover: none) and (pointer: coarse) {
   .SITEBODY {
     width: 100%;
@@ -72,8 +71,8 @@
     display: none;
   }
   .widgetWrapper {
-    flex-direction: column; /* Stack items vertically on small screens */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     margin-left: auto;
     margin-right: auto;
@@ -81,7 +80,7 @@
   .wrapper {
     margin-left: 0;
     margin-right: 0;
-    width: auto; /* Ensure full width on small screens */
+    width: auto;
   }
   .bottomFrame {
     height: 100%;

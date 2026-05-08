@@ -32,8 +32,8 @@
 }
 
 .bulletinpost {
-  flex: 1 1 0px; /* grow/shrink equally, base = 150px */
-  display: flex; /* if you want to center img/text inside each post */
+  flex: 1 1 0px;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
