@@ -1,5 +1,4 @@
 /*
- *
  * Public API:
  *   KPR.insert(opts)            -- create a player instance
  *   KPR.play() / KPR.stop()

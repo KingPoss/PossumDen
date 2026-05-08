@@ -53,7 +53,7 @@ const s_filteredWords = [ // Add words to filter by putting them in quotes and s
 // Enhanced real-time slur detection settings
 const s_realtimeFilterOn = true; // Enable real-time filtering
 const s_warningImageUrl = '/assets/thisisyou.jpg'; // Path to your warning image
-const s_warningAudioUrl = '/assets/audio/bitchitsthecircus.mp3'; // Path to your warning sound
+const s_warningAudioUrl = '/assets/audio/bitchitsthecircus.mp3'; // Path to warning sound
 const s_warningDuration = 3000; // How long to show the warning (in milliseconds)
 const s_persistentBlock = true; // Enable persistent blocking with cookies
 const s_blockDurationHours = 0; // How many hours to block the user (0 = permanent)
@@ -184,7 +184,6 @@ function createAdvancedSlurDetector() {
     };
 }
 
-// Optional: Add machine learning-like detection for new patterns
 function detectSuspiciousPatterns(text) {
     // Detect repetitive characters often used to bypass filters
     if (/(.)\1{4,}/i.test(text)) return true;
@@ -925,7 +924,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 });
 
-// Optional: Function to load slur list from CSV
 async function loadSlurListFromCSV(csvUrl) {
     try {
         const response = await fetch(csvUrl);

@@ -1,27 +1,5 @@
 {
-  "UNUSEDREMOVETHIS_specificTimeSchedules": [
-    {
-      "day": 3,
-      "time": "13:00",
-      "windowMinutes": 30,
-      "adKey": "live-broadcast"
-    },
-    {
-      "day": 5,
-      "time": "18:00",
-      "windowMinutes": 60,
-      "adKey": "live-broadcast"
-    },
-    {
-      "days": [
-        1,
-        3,
-        5
-      ],
-      "timeRange": "12:00-13:00",
-      "adKey": "lunch-special"
-    }
-  ],
+
   "timeBasedSchedule": {
     "9-17": "business-hours"
   },
@@ -38,6 +16,7 @@
         "caption": "Give me a ring!"
       }
     ],
+
     "live-broadcast": [
       {
         "src": "/assets/live-now.gif",
@@ -50,6 +29,7 @@
         "caption": "Broadcasting live!"
       }
     ],
+    
     "defaults": [
       {
         "src": "/assets/ads/500kv.png",
